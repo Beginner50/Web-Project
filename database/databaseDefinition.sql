@@ -17,7 +17,7 @@ Gender CHAR,
 Password VARCHAR(64),
 IsAuthorised BOOLEAN DEFAULT FALSE,
 
-CHECK (Email like('%@%.%')),
+CHECK (Email like('^[^@]+@[^@]+\.[^@]{2,}$')),
 PRIMARY KEY(UserID)
 );
 

@@ -1,5 +1,3 @@
--- Procedures must start with DELIMITER // and end with // DELIMITER ; (Space character is necessary in DELIMETER ;)
-
 /*
 	Call this procedure to restore the initial valid state of the database
 */
@@ -13,14 +11,14 @@ BEGIN
     TRUNCATE TABLE Student;
     TRUNCATE TABLE Teacher;
     TRUNCATE TABLE Class;
-    TRUNCATE TABLE ClassMessage;
-    TRUNCATE TABLE ClassStudent;
-    TRUNCATE TABLE Admin;
+    TRUNCATE TABLE Class_Student;
+    TRUNCATE TABLE Class_Message;
+    TRUNCATE TABLE Administrator;
     TRUNCATE TABLE Approval;
 
   SET FOREIGN_KEY_CHECKS = 1;
 END
-// DELIMETER ;
+// DELIMITER ;
 
 /*
 	Call this procedure to add a student in the database.
@@ -51,15 +49,11 @@ BEGIN
 	DECLARE userID INT;
     SELECT MAX(UserID) + 1 FROM User INTO userID;
     
-	IF(emailAddress NOT REGEXP '^[^@]+@[^@]+\.[^@]{2,}$') THEN
-		RETURN -1;
-	END IF;
-    
     INSERT INTO User VALUES(userID, dateOfBirth, firstname, lastname, emailAddress, gender, password, true);
     IF(ROW_COUNT() > 0) THEN
 		INSERT INTO Student VALUES(userID, level, classGroup);
 	ELSE
-		RETURN -1;
+		RETURN 1;
 	END IF;
     RETURN 0;
 END //
