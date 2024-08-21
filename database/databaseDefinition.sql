@@ -1,5 +1,5 @@
-CREATE DATABASE webApp;
-USE webApp;
+CREATE DATABASE WEBPROJECT;
+USE WEBPROJECT;
 
 CREATE TABLE Subject(
 SubjectCode VARCHAR(5) NOT NULL,
@@ -8,70 +8,100 @@ PRIMARY KEY(SubjectCode)
 );
 
 CREATE TABLE User(
-UserID INTEGER NOT NULL,
+UserID INTEGER NOT NULL AUTO_INCREMENT,
 DateOfBirth DATE,
 FirstName VARCHAR(64),
 LastName VARCHAR(64),
-Email VARCHAR(128),
+Email VARCHAR(128) UNIQUE,
 Gender CHAR,
-Password_ VARCHAR(64),
-isAuthorised BOOLEAN,
+Password VARCHAR(64),
+IsAuthorised BOOLEAN DEFAULT FALSE,
+
+CHECK (Email like('%@%.%')),
 PRIMARY KEY(UserID)
 );
 
 CREATE TABLE Student(
-UserID INTEGER,
+StudentID INTEGER,
 Level SMALLINT,
-ClassGroup CHAR,
-CHECK(ClassGroup IN('A', 'B')),
-PRIMARY KEY(UserID),
-FOREIGN KEY(UserID) REFERENCES User(UserID)
-);
+ClassGroup VARCHAR(5),
 
-CREATE TABLE StudentSubject(
-UserID INTEGER,
-SubjectCode VARCHAR(5),
-PRIMARY KEY(UserID, SubjectCode)
+CHECK(ClassGroup IN('RED', 'BLUE')),
+CHECK (Level > 0 AND level < 4),
+
+PRIMARY KEY(StudentID),
+FOREIGN KEY(StudentID) REFERENCES User(UserID)
 );
 
 CREATE TABLE Teacher(
-UserID INTEGER,
+TeacherID INTEGER,
 SubjectTaught VARCHAR(128),
 DateJoined DATE,
-PRIMARY KEY(UserID),
-FOREIGN KEY(UserID) REFERENCES User(UserID)
+
+PRIMARY KEY(TeacherID),
+FOREIGN KEY(TeacherID) REFERENCES User(UserID)
 );
+
 
 CREATE TABLE Class(
-Level SMALLINT,
-ClassGroup CHAR,
-SubjectCode VARCHAR(5),
-TeacherID INTEGER,
-CHECK(ClassGroup IN('A', 'B')),
-PRIMARY KEY(Level, ClassGroup, SubjectCode),
-FOREIGN KEY(SubjectCode) REFERENCES Subject(SubjectCode),
-FOREIGN KEY(TeacherID) REFERENCES Teacher(UserID)
+	
+    Level INTEGER,
+    ClassGroup VARCHAR(5),
+    SubjectCode VARCHAR(5),
+    TeacherID INTEGER,
+    
+    PRIMARY KEY(Level,ClassGroup, SubjectCode),
+    FOREIGN KEY(TeacherID) REFERENCES Teacher(TeacherID),
+    FOREIGN KEY(SubjectCode) REFERENCES Subject(SubjectCode),
+	
+    CHECK(ClassGroup IN('RED', 'BLUE')),
+	CHECK (Level > 0 AND level < 4)
+    
 );
 
-CREATE TABLE ClassMessage(
-Level SMALLINT,
-ClassGroup CHAR,
-SubjectCode VARCHAR(5),
-Message VARCHAR(256),
-PRIMARY KEY(Level, ClassGroup, SubjectCode, Message),
-FOREIGN KEY(SubjectCode) REFERENCES Class(SubjectCode),
-CHECK(Level > 1 AND Level <=5),
-FOREIGN KEY(ClassGroup) REFERENCES Class(ClassGroup)
+CREATE TABLE Class_Student(
+	Level INTEGER,
+    ClassGroup VARCHAR(5),
+    SubjectCode VARCHAR(5),
+	StudentID INTEGER,
+    
+    PRIMARY KEY(Level,ClassGroup, SubjectCode),
+    FOREIGN KEY(SubjectCode) REFERENCES Class(SubjectCode),
+	FOREIGN KEY(StudentID) REFERENCES Student(StudentID),
+     
+    CHECK(ClassGroup IN('RED', 'BLUE')),
+	CHECK (Level > 0 AND level < 4)
 );
 
-CREATE TABLE ClassStudent(
-Level SMALLINT,
-ClassGroup CHAR,
-SubjectCode VARCHAR(5),
-StudentID INTEGER,
-PRIMARY KEY(Level, ClassGroup, SubjectCode, StudentID),
-FOREIGN KEY(SubjectCode) REFERENCES Class(SubjectCode),
-CHECK(Level > 1 AND Level <=5),
-FOREIGN KEY(ClassGroup) REFERENCES Class(ClassGroup),
-FOREIGN KEY(StudentID) REFERENCES Student(UserID)
+CREATE TABLE Class_Message(
+	
+	Level INTEGER,
+    ClassGroup VARCHAR(5),
+    SubjectCode VARCHAR(5),
+    Message VARCHAR(256),
+    
+    PRIMARY KEY(Level,ClassGroup, SubjectCode,Message),
+    FOREIGN KEY(SubjectCode) REFERENCES Class(SubjectCode),
+	
+	CHECK(ClassGroup IN('RED', 'BLUE')),
+	CHECK (Level > 0 AND level < 4)
+);
+
+CREATE TABLE Administrator(
+	AdminID INTEGER,
+	DateJoined DATE,
+    
+    PRIMARY KEY(AdminID),
+    FOREIGN KEY (AdminID) REFERENCES User(UserID)
+
+);
+
+CREATE TABLE Approval (
+	
+    AdminID INTEGER,
+    UserID INTEGER,
+    
+    PRIMARY KEY(AdminID,UserID),
+    FOREIGN KEY (AdminID) REFERENCES Administrator(AdminID),
+    FOREIGN KEY (UserID) REFERENCES User(UserID)
 );
