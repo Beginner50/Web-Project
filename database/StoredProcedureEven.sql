@@ -1,5 +1,6 @@
 /*
 	2) Stored procedure to add a teacher/admin.
+	NOTE: USERID IS AUTO INCREMENTAL THUS NO NEED TO PLACE INSERT.
 */
 DELIMITER $$
 CREATE PROCEDURE sp_addTeacher(
