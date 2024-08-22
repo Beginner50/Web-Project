@@ -1,23 +1,3 @@
--- IMPORTANT: Disable Safe Updates: Settings (Right, setting icons) -> sql editor -> untick safe updates -> restart
-
-/*
-	5) Trigger to create classes after adding a subject
-*/
-DELIMITER //
-CREATE TRIGGER webproject.tg_createClass
-AFTER INSERT ON Subject
-FOR EACH ROW
-BEGIN
-	DECLARE lvl INT;
-    SET lvl = 1;
-	WHILE lvl < 4 DO
-		INSERT INTO Class VALUES(lvl, 'RED', NEW.subjectCode, NULL);
-        INSERT INTO Class VALUES(lvl, 'BLUE', NEW.subjectCode, NULL);
-		SET lvl = lvl + 1;
-    END WHILE;
-END
-// DELIMITER ;
-
 /*
 	WARNING: CREATE TRIGGER 5) FIRST!!!
     
@@ -29,15 +9,6 @@ BEGIN
 	DELETE FROM subject WHERE SubjectCode IN (SELECT SubjectCode FROM Subject);
 	DELETE FROM User WHERE UserID IN (SELECT UserID FROM User);
 
-	 SELECT * FROM User;
-     SELECT * FROM Student;
-     SELECT * FROM Teacher;
-     SELECT * FROM Administrator;
-     SELECT * FROM Approval;
-     SELECT * FROM Subject;
-     SELECT * FROM Class;
-     SELECT * FROM Class_Message;
-     SELECT * FROM Class_Student;
 	-- Create the procedure to add admin here. TEST IT FIRST!
     -- Add a default admin, name can be anything (e.g root, admin)
     INSERT INTO Subject VALUES('CS101', 'Computer Science');
@@ -62,17 +33,11 @@ CREATE PROCEDURE webproject.sp_addStudent(
 		IN classGroup VARCHAR(5)
 )
 BEGIN
-	DECLARE userID INT;
-    
-	IF EXISTS (SELECT * FROM User) THEN
-    SELECT MAX(UserID) + 1 INTO userID FROM User;
-    ELSE
-    SET userID = 1;
-    END IF;
-    
-    INSERT INTO User VALUES(userID, dateOfBirth, firstname, lastname, emailAddress, gender, password, true);
+	DECLARE userID_ INT;
+    INSERT INTO User VALUES(dateOfBirth, firstname, lastname, emailAddress, gender, password, true);
     IF(ROW_COUNT() > 0) THEN
-		INSERT INTO Student VALUES(userID, level, classGroup);
+		SELECT MAX(UserID) INTO userID_ FROM User;
+		INSERT INTO Student VALUES(userID_, level, classGroup);
 	END IF;
 END //
 DELIMITER ;
@@ -95,6 +60,24 @@ BEGIN
 END
 // DELIMITER ;
 
+/*
+	5) Trigger to create classes after adding a subject
+*/
+DELIMITER //
+CREATE TRIGGER webproject.tg_createClass
+AFTER INSERT ON Subject
+FOR EACH ROW
+BEGIN
+	DECLARE lvl INT;
+    SET lvl = 1;
+	WHILE lvl < 4 DO
+		INSERT INTO Class VALUES(lvl, 'RED', NEW.subjectCode, NULL);
+        INSERT INTO Class VALUES(lvl, 'BLUE', NEW.subjectCode, NULL);
+		SET lvl = lvl + 1;
+    END WHILE;
+END
+// DELIMITER ;
+
 /*					INCOMPLETE (NEED TO INCLUDE STUDENT, TEACHER & ADMIN DETAILS)
 	7) Lists all authorised/unauthorised users
     
@@ -107,12 +90,13 @@ CREATE PROCEDURE webproject.sp_listAuthorised(
 	IN isAuth BOOLEAN)
 BEGIN
 	SELECT * FROM User WHERE IsAuthorised = isAuth;
+	
 END
 // DELIMITER ;
 
 /*					INCOMPLETE + UNTESTED!!!
 	9) A collection of stored procedures to allow a user to update their account information by providing
-	   new values in the arguments
+	   new values in the arguments. Administrators can also update account information of a user.
     
     USAGE EXAMPLE:
     CALL sp_updateAccountInfo(userID, firstname, lastname, password, dateOfBirth)
