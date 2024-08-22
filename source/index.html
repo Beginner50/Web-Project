@@ -34,31 +34,27 @@
                     <button> Admin</button>
                 </div>
                 <form id="signUpForm">
-                    <div id="nameInput">
-                        <input placeholder="First name">
-                        <input placeholder="Last name">
-                    </div>
-                    <input placeholder="Email">
-                    <div id="genderDob">
-                        <input placeholder="Gender">
-                        <input placeholder="Date of Birth">
-                    </div>
-                    <input placeholder="Password">
-                    <input placeholder="Re-Enter Password">
-                    <input class="studentOption" placeholder="Level">
+                    <input placeholder="First name">
+                    <input placeholder="Last name">
+                    <input placeholder="Email" type="email">
+                    <input placeholder="Gender">
+                    <input placeholder="Date of Birth" type="date">
+                    <input placeholder="Password" type="password">
+                    <input placeholder="Re-Enter Password" type="password">
+                    <input class="studentOption" placeholder="Level" type="number" min="1" max="5">
                     <input class="studentOption" placeholder="Class Group">
                     <input class="teacherOption" placeholder="Subject Taught">
-                    <ul class="studentOption">
+                    <ul id="subjectList" class="studentOption">
                         <p class="studentOption">Subjects Taken:</p>
-                        <li> Subject 1</li>
-                        <li> Subject 2</li>
-                        <li> Subject 3</li>
-                        <li> Subject 4</li>
-                        <li> Subject 5</li>
-                        <li> Subject 6</li>
+                        <dt> Subject 1</dt>
+                        <dt> Subject 2</dt>
+                        <dt> Subject 3</dt>
+                        <dt> Subject 4</dt>
+                        <dt> Subject 5</dt>
                     </ul>
                 </form>
-                <button> Sign Up</button>
+                <button> Add Subject</button>
+                <button id="signUpButton"> Sign Up</button>
             </div>
         </div>
     </div>

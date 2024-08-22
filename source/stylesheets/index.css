@@ -8,7 +8,6 @@ body {
 
 input {
     margin-left: 10px;
-    width: 200px;
     margin-top: 5px;
 }
 
@@ -82,11 +81,48 @@ div {
 }
 
 #signUpForm {
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    justify-content: center;
+    display: grid;
     margin-top: 20px;
+}
+
+input:nth-child(n) {
+    width: min(200px, 90%);
+    padding-right: 5px;
+}
+
+input:nth-child(2) {
+    grid-column: 2;
+}
+
+input:nth-child(4) {
+    grid-column: 1;
+}
+
+input:nth-child(10) {
+    grid-column: 1;
+    height: fit-content;
+}
+
+#subjectList {
+    grid-column: 1;
+}
+
+#optionalInput {
+    padding-bottom: 5px;
+}
+
+#subjectList dt {
+    margin-left: 30px;
+}
+
+#subjectList button {
+    margin-left: 20px;
+}
+
+#signUpButton {
+    width: min(120px, 26%);
+    margin-top: 40px;
+    margin-left: 70%;
 }
 
 #userTypeSelectionSection {
