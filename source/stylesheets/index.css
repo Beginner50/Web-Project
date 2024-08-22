@@ -1,0 +1,95 @@
+body {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
+}
+
+input {
+    margin-left: 10px;
+    width: 200px;
+    margin-top: 5px;
+}
+
+span {
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+}
+
+div {
+    border: 1px red solid;
+}
+
+#heroImageSection {
+    height: 400px;
+}
+
+#mainSection {
+    display: flex;
+    height: 900px;
+    justify-content: center;
+    justify-items: center;
+    flex-direction: column;
+}
+
+#footer {
+    height: 200px;
+}
+
+#logo {
+    display: flex;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    margin-left: 15px;
+    top: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+#contactButton {
+    position: absolute;
+    width: min(150px, 25%);
+    height: 40px;
+    top: 20px;
+    right: min(20px, 5%);
+}
+
+#loginRegisterSection {
+    height: 70%;
+    width: min(95%, 950px);
+    margin: auto;
+    display: flex;
+}
+
+#slidingSection {
+    height: 100%;
+    min-width: 40%;
+}
+
+#reglogDiv {
+    margin-top: 70%;
+}
+
+#formSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    width: 100%;
+}
+
+#signUpForm {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#userTypeSelectionSection {
+    display: flex;
+    justify-content: center;
+}
