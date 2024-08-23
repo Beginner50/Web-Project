@@ -106,7 +106,8 @@ CALL sp_checkloginInfo('a@example.com','12');
 CALL sp_checkloginInfo('xyz@example.com','1');
 
 /*
-	6) DONE BY JATOO TOGETHER WITH NUMBER 7
+	6) DONE BY JATOO TOGETHER WITH NUMBER 7 (NOT DONE - Jatoo)
+    Change trigger to stored procedure, parameters should be studentID and subjectTaken (only 2 params)
 */
 
 /*

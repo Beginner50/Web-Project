@@ -11,7 +11,7 @@ PRIMARY KEY(SubjectCode)
 
 CREATE TABLE User(
 UserID INTEGER NOT NULL AUTO_INCREMENT,
-DateOfBirth DATE,
+DateOfBirth DATE NOT NULL,
 FirstName VARCHAR(64),
 LastName VARCHAR(32),
 Email VARCHAR(64) UNIQUE,
@@ -19,6 +19,7 @@ Gender CHAR,
 Password VARCHAR(16),
 IsAuthorised BOOLEAN DEFAULT FALSE,
 
+CHECK(Gender IN('M', 'F')),
 CHECK (Email like('%@%.%')),
 PRIMARY KEY(UserID)
 );
