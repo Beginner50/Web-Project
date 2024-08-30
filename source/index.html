@@ -2,63 +2,110 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="School Website" content="School website with student information and announcement system.">
-    <meta name="viewport" content="width=device-width">
-    <title> Login Page </title>
-    <link rel="stylesheet" href="stylesheets/index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="School Website for ABC Academy">
+    <link rel="stylesheet" href="stylesheets/common.css">
+    <link rel="stylesheet" href="stylesheets/registration.css">
+    <title>School Website</title>
 </head>
 
+<nav class="indigoTheme">
+    <div id="leftSection"></div>
+    <div id="rightSection">
+        <button class=" indigoTheme roundBorder shadow"> Contact Us</button>
+        <button class=" indigoTheme roundBorder shadow"> Terms & Conditions</button>
+    </div>
+</nav>
+
 <body>
-    <div id="heroImageSection">
-        <div id="logo">
-            <a>Logo</a>
-        </div>
-        <div id="contactButton"></div>
-    </div>
-    <div id="mainSection">
-        <div id="loginRegisterSection">
-            <div id="slidingSection">
-                <div id="reglogDiv">
-                    <h1> New To Education Portal?</h1>
-                    <button> Sign Up</button>
+    <div id="preMainWrapper">
+        <div id="mainWrapper" class="roundBorder-15">
+            <div id="CTAMoveableWrapper" class="registrationCTA">
+                <h class="callToAction">New to Education Portal?</h>
+                <button class="callToAction"> Sign Up</button>
+            </div>
+            <div id="formMoveableWrapper">
+                <h1> Sign In</h1>
+                <div class="login">
+                    <div class="formInput"> Email: <input type="email" name="email"></div>
+                    <div class="formInput"> Password: <input type="password" name="password"></div>
+
+                    <button id="submitButton" class="indigoTheme roundBorder" form="registrationForm"> Submit </button>
+                </div>
+                <div class="registration">
+                    <div id="userTypeSection">
+                        <button id="studentButton" class="indigoTheme active noGap"> Student </button>
+                        <button id="teacherButton" class="indigoTheme noGap"> Teacher </button>
+                        <button id="adminButton" class="indigoTheme noGap"> Admin </button>
+                    </div>
+                    <form id="registrationForm">
+                        <div id="generalAttributesWrapper">
+                            <div class="formInput"> First Name: <input type="text" name="fname"></div>
+                            <div class="formInput"> Last Name: <input type="text" name="lname"></div>
+                            <div class="formInput"> Email: <input type="email" name="email"></div>
+                            <div class="formInput"> Gender:
+                                <select name="gender">
+                                    <option> Male </option>
+                                    <option> Female </option>
+                                </select>
+                            </div>
+                            <div class="formInput"> Date of Birth: <input type="date" name="fname"></div>
+                            <div class="formInput"> Password: <input type="password" name="password"></div>
+                            <div class="formInput"> Re-enter Password: <input type="password" name="repassword"></div>
+                        </div>
+                        <div id="specificAttributesWrapper">
+                            <div class="flexRow">
+                                <div class="formInput student"> Class Group:
+                                    <select name="classGroup">
+                                        <option> Red </option>
+                                        <option> Blue </option>
+                                    </select>
+                                </div>
+                                <div class="formInput student"> Level :
+                                    <select name="level">
+                                        <option> 1</option>
+                                        <option> 2</option>
+                                        <option> 3</option>
+                                    </select>
+                                </div>
+                                <div class="teacher formInput">
+                                    Subject Taught: <input name="subjectTaught" type="text">
+                                </div>
+                                <div class="teacher formInput">
+                                    Date Joined: <input name="teacherDateJoined" type="date">
+                                </div>
+                                <div class="admin formInput">
+                                    Date Joined <input name="adminDateJoined" type="date">
+                                </div>
+                            </div>
+                            <div id="subjectWrapper" class="student">
+                                Subjects:
+                                <div id="subjectList">
+                                    <button id="addSubjectButton" class="indigoTheme" form="none">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <span id="errorOutput"> </span>
+                    <button id="submitButton" class="indigoTheme roundBorder" form="registrationForm"> Submit </button>
+                </div>
+                <div class="popUp window">
+                    <div class="shadow">
+                        <h> Select a subject: </h>
+                        <button class="indigoTheme popUp" value="CS101"> CS101 </button>
+                        <button class="indigoTheme popUp" value="BI102"> BI102 </button>
+                        <button class="indigoTheme popUp" value="CH103"> CH103 </button>
+                        <button class="indigoTheme popUp" value="PY104"> PY104 </button>
+                        <button class="indigoTheme popUp" value="MA105"> MA105 </button>
+                        <button class="indigoTheme popUp" value="GP106"> GP106 </button>
+                    </div>
                 </div>
             </div>
-            <div id="formSection">
-                <span>
-                    <h1>Sign Up</h1>
-                </span>
-                <div id="userTypeSelectionSection">
-                    <button> Student</button>
-                    <button> Teacher</button>
-                    <button> Admin</button>
-                </div>
-                <form id="signUpForm">
-                    <input placeholder="First name">
-                    <input placeholder="Last name">
-                    <input placeholder="Email" type="email">
-                    <input placeholder="Gender">
-                    <input placeholder="Date of Birth" type="date">
-                    <input placeholder="Password" type="password">
-                    <input placeholder="Re-Enter Password" type="password">
-                    <input class="studentOption" placeholder="Level" type="number" min="1" max="5">
-                    <input class="studentOption" placeholder="Class Group">
-                    <input class="teacherOption" placeholder="Subject Taught">
-                    <ul id="subjectList" class="studentOption">
-                        <p class="studentOption">Subjects Taken:</p>
-                        <dt> Subject 1</dt>
-                        <dt> Subject 2</dt>
-                        <dt> Subject 3</dt>
-                        <dt> Subject 4</dt>
-                        <dt> Subject 5</dt>
-                    </ul>
-                </form>
-                <button> Add Subject</button>
-                <button id="signUpButton"> Sign Up</button>
-            </div>
         </div>
     </div>
-    <div id="footer"></div>
+    <script src="scripts/jQuery.js"></script>
+    <script src="scripts/index.js"></script>
 </body>
 
 </html>
