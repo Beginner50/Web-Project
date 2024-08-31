@@ -68,25 +68,47 @@ h.callToAction {
 .login .formInput {
     font-size: 18px;
     color: rgb(82, 79, 79);
+    
+    border-radius: 10px;
     margin-left: 10px;
     margin-right: 40px;
     margin-top: 10px;
     margin-bottom: 10px;
+
     display: flex;
     flex-direction: column;
-    width: 350px;
+    width: 345px;
 }
 
 .registration .formInput {
-    font-size: 12px;
-    color: rgb(82, 79, 79);
+    font-size: 15px;
+    color: rgb(0, 0, 0);
     margin-left: 10px;
     margin-right: 40px;
     display: flex;
     flex-direction: column;
+
+    padding-top:2px;
     width: 150px;
 }
 
+.formInput_box {
+
+    padding-left:10px;
+    padding-top:7px;
+    padding-bottom:7px;
+
+    border-style: solid;
+    border-width: 1px;
+    border-color:rgb(114, 113, 113);
+    border-radius: 3px;
+    transition: all 0.15s;
+}
+
+.formInput_box:hover {
+
+    box-shadow: 5px 3px 7px rgb(0, 0, 0,0.3);
+}
 #registrationForm {
     display: flex;
     flex-direction: column;
@@ -97,6 +119,7 @@ h.callToAction {
     display: flex;
     justify-content: center;
     height: fit-content;
+
 }
 
 #generalAttributesWrapper {
@@ -126,7 +149,7 @@ h.callToAction {
     height: 50%;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 15px;
+    margin-top: 25px;
     border-radius: 5px;
     border: 1px var(--purpleMountain) solid;
 }
@@ -167,6 +190,8 @@ h.callToAction {
 #subjectWrapper {
     height: 100%;
     margin: 10px;
+    margin-top:20px;
+
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -203,7 +228,7 @@ div.popUp.window {
 div.popUp.window>div {
     width: 300px;
     height: 400px;
-    background-color: var(--duskSky);
+    background-color : var(--paleSky) ;
     border-radius: 15px;
     margin: auto;
     display: flex;
@@ -218,7 +243,9 @@ button.popUp {
 }
 
 #submitButton {
+    font-weight: 600;
     margin-top: 15px;
-    width: 80px;
+    width: 100px;
     height: 40px;
+    border-width: 2px;
 }
