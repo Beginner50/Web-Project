@@ -22,14 +22,14 @@
     <div id="preMainWrapper">
         <div id="mainWrapper" class="roundBorder-15">
             <div id="CTAMoveableWrapper" class="registrationCTA">
-                <h class="callToAction">New to Education Portal?</h>
-                <button class="callToAction"> Sign Up</button>
+                <h class="callToAction" style="font-size: 52px; text-align: center; color:aliceblue;font-family:Helvetica;">New to Education Portal?</h>
+                <button class="callToAction" style="margin-left: 120px; font-family:Helvetica;"> Sign Up</button>
             </div>
             <div id="formMoveableWrapper">
                 <h1> Sign In</h1>
                 <div class="login">
-                    <div class="formInput"> Email: <input type="email" name="email"></div>
-                    <div class="formInput"> Password: <input type="password" name="password"></div>
+                    <div class="formInput"> Email: <input class="formInput_box" type="email " name="email"></div>
+                    <div class="formInput"> Password: <input class="formInput_box" type="password" name="password"></div>
 
                     <button id="submitButton" class="indigoTheme roundBorder" form="registrationForm"> Submit </button>
                 </div>
@@ -41,42 +41,42 @@
                     </div>
                     <form id="registrationForm">
                         <div id="generalAttributesWrapper">
-                            <div class="formInput"> First Name: <input type="text" name="fname"></div>
-                            <div class="formInput"> Last Name: <input type="text" name="lname"></div>
-                            <div class="formInput"> Email: <input type="email" name="email"></div>
-                            <div class="formInput"> Gender:
-                                <select name="gender">
+                            <div class="formInput"> First Name: <input class="formInput_box" type="text" name="fname" ></div>
+                            <div class="formInput"> Last Name: <input class="formInput_box" type="text" name="lname" ></div>
+                            <div class="formInput"> Email: <input class="formInput_box" type="email" name="email"></div>
+                            <div class="formInput" > Gender:
+                                <select class="formInput_box" name="gender">
                                     <option> Male </option>
                                     <option> Female </option>
                                 </select>
                             </div>
-                            <div class="formInput"> Date of Birth: <input type="date" name="fname"></div>
-                            <div class="formInput"> Password: <input type="password" name="password"></div>
-                            <div class="formInput"> Re-enter Password: <input type="password" name="repassword"></div>
+                            <div class="formInput"> Date of Birth: <input class="formInput_box" type="date" name="fname"></div>
+                            <div class="formInput"> Password: <input class="formInput_box"  type="password" name="password"></div>
+                            <div class="formInput"> Re-enter Password: <input class="formInput_box"  type="password" name="repassword"></div>
                         </div>
                         <div id="specificAttributesWrapper">
                             <div class="flexRow">
                                 <div class="formInput student"> Class Group:
-                                    <select name="classGroup">
+                                    <select class="formInput_box" name="classGroup">
                                         <option> Red </option>
                                         <option> Blue </option>
                                     </select>
                                 </div>
                                 <div class="formInput student"> Level :
-                                    <select name="level">
+                                    <select class="formInput_box" style="padding-left:1px;" name="level">
                                         <option> 1</option>
                                         <option> 2</option>
                                         <option> 3</option>
                                     </select>
                                 </div>
                                 <div class="teacher formInput">
-                                    Subject Taught: <input name="subjectTaught" type="text">
+                                    Subject Taught: <input class="formInput_box"  name="subjectTaught" type="text">
                                 </div>
                                 <div class="teacher formInput">
-                                    Date Joined: <input name="teacherDateJoined" type="date">
+                                    Date Joined: <input class="formInput_box" name="teacherDateJoined" type="date">
                                 </div>
                                 <div class="admin formInput">
-                                    Date Joined <input name="adminDateJoined" type="date">
+                                    Date Joined <input class="formInput_box" name="adminDateJoined" type="date">
                                 </div>
                             </div>
                             <div id="subjectWrapper" class="student">
@@ -92,7 +92,7 @@
                 </div>
                 <div class="popUp window">
                     <div class="shadow">
-                        <h> Select a subject: </h>
+                        <h class="indigoTheme popUp" style="border: none; margin-bottom: 10px;"> Select a subject: </h>
                         <button class="indigoTheme popUp" value="CS101"> CS101 </button>
                         <button class="indigoTheme popUp" value="BI102"> BI102 </button>
                         <button class="indigoTheme popUp" value="CH103"> CH103 </button>
