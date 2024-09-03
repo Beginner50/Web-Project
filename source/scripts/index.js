@@ -68,13 +68,13 @@ $(document).ready(function () {
         $("#teacherButton").attr("disabled", "disabled");
         $("#adminButton").attr("disabled", "disabled");
 
-        $(".teacher").fadeOut(200);
-        $(".admin").fadeOut(200);
+        $(".teacher").fadeOut(100);
+        $(".admin").fadeOut(100);
         setTimeout(function () {
             $(".student").fadeIn();
             $("#teacherButton").removeAttr("disabled");
             $("#adminButton").removeAttr("disabled");
-        }, 400);
+        }, 200);
 
     });
     $("#teacherButton").click(function () {
@@ -85,13 +85,13 @@ $(document).ready(function () {
         $("#studentButton").attr("disabled", "disabled");
         $("#adminButton").attr("disabled", "disabled");
 
-        $(".student").fadeOut(200);
-        $(".admin").fadeOut(200);
+        $(".student").fadeOut(100);
+        $(".admin").fadeOut(100);
         setTimeout(function () {
             $(".teacher").fadeIn();
             $("#studentButton").removeAttr("disabled");
             $("#adminButton").removeAttr("disabled");
-        }, 400);
+        }, 200);
     });
     $("#adminButton").click(function () {
         $("#studentButton").removeClass('active');
@@ -101,13 +101,13 @@ $(document).ready(function () {
         $("#studentButton").attr("disabled", "disabled");
         $("#teacherButton").attr("disabled", "disabled");
 
-        $(".teacher").fadeOut(200);
-        $(".student").fadeOut(200);
+        $(".teacher").fadeOut(100);
+        $(".student").fadeOut(100);
         setTimeout(function () {
             $(".admin").fadeIn();
             $("#studentButton").removeAttr("disabled");
             $("#teacherButton").removeAttr("disabled");
-        }, 400);
+        }, 200);
     });
 
 

@@ -22,37 +22,57 @@
     <div id="preMainWrapper">
         <div id="mainWrapper" class="roundBorder-15">
             <div id="CTAMoveableWrapper" class="registrationCTA">
-                <h class="callToAction" style="font-size: 52px; text-align: center; color:aliceblue;font-family:Helvetica;">New to Education Portal?</h>
+                <h class="callToAction"
+                    style="font-size: 52px; text-align: center; color:aliceblue;font-family:Helvetica;">New to Education
+                    Portal?</h>
                 <button class="callToAction" style="margin-left: 120px; font-family:Helvetica;"> Sign Up</button>
             </div>
             <div id="formMoveableWrapper">
                 <h1> Sign In</h1>
-                <div class="login">
-                    <div class="formInput"> Email: <input class="formInput_box" type="email " name="email"></div>
-                    <div class="formInput"> Password: <input class="formInput_box" type="password" name="password"></div>
-
-                    <button id="submitButton" class="indigoTheme roundBorder" form="registrationForm"> Submit </button>
-                </div>
+                <form class="login" id="loginForm" method="post" action="">
+                    <div class="formInput"> Email: <input class="formInput_box" type="email " name="email" required>
+                    </div>
+                    <div class="formInput"> Password: <input class="formInput_box" type="password" name="password"
+                            required>
+                    </div>
+                    <button id="loginSubmitButton" type="submit" class="indigoTheme roundBorder" form="loginForm">
+                        Submit
+                    </button>
+                </form>
                 <div class="registration">
                     <div id="userTypeSection">
                         <button id="studentButton" class="indigoTheme active noGap"> Student </button>
                         <button id="teacherButton" class="indigoTheme noGap"> Teacher </button>
                         <button id="adminButton" class="indigoTheme noGap"> Admin </button>
                     </div>
-                    <form id="registrationForm">
+                    <form id="registrationForm" method="post">
                         <div id="generalAttributesWrapper">
-                            <div class="formInput"> First Name: <input class="formInput_box" type="text" name="fname" ></div>
-                            <div class="formInput"> Last Name: <input class="formInput_box" type="text" name="lname" ></div>
-                            <div class="formInput"> Email: <input class="formInput_box" type="email" name="email"></div>
-                            <div class="formInput" > Gender:
-                                <select class="formInput_box" name="gender">
+                            <div class="formInput">
+                                <label for="fname" class="text-label">First Name</label>
+                                <input id="fname" class="formInput_box" type="text" name="fname"
+                                    placeholder="First Name" required>
+                            </div>
+                            <div class="formInput"> <label for="lname" class="text-label">Last Name</label> <input
+                                    id="lname" class="formInput_box" type="text" name="lname" placeholder="Last Name"
+                                    required>
+                            </div>
+                            <div class="formInput"> <label for="email" class="text-label">Email </label><input
+                                    id="email" class="formInput_box" type="email" name="email" placeholder="Email"
+                                    required></div>
+                            <div class="formInput"> <label>Gender</label>
+                                <select class="formInput_box" name="gender" required>
                                     <option> Male </option>
                                     <option> Female </option>
                                 </select>
                             </div>
-                            <div class="formInput"> Date of Birth: <input class="formInput_box" type="date" name="fname"></div>
-                            <div class="formInput"> Password: <input class="formInput_box"  type="password" name="password"></div>
-                            <div class="formInput"> Re-enter Password: <input class="formInput_box"  type="password" name="repassword"></div>
+                            <div class="formInput"> <label>Date of Birth </label><input class="formInput_box"
+                                    type="date" required name="dob"></div>
+                            <div class="formInput">
+                                <lable>Password </lable><input class="formInput_box" type="password" required
+                                    name="password">
+                            </div>
+                            <div class="formInput"> <label>Re-enter Password </label><input class="formInput_box"
+                                    type="password" required name="repassword"></div>
                         </div>
                         <div id="specificAttributesWrapper">
                             <div class="flexRow">
@@ -70,7 +90,7 @@
                                     </select>
                                 </div>
                                 <div class="teacher formInput">
-                                    Subject Taught: <input class="formInput_box"  name="subjectTaught" type="text">
+                                    Subject Taught: <input class="formInput_box" name="subjectTaught" type="text">
                                 </div>
                                 <div class="teacher formInput">
                                     Date Joined: <input class="formInput_box" name="teacherDateJoined" type="date">
@@ -80,7 +100,7 @@
                                 </div>
                             </div>
                             <div id="subjectWrapper" class="student">
-                                Subjects:
+                                <h5> Subjects: </h5>
                                 <div id="subjectList">
                                     <button id="addSubjectButton" class="indigoTheme" form="none">+</button>
                                 </div>
@@ -88,7 +108,8 @@
                         </div>
                     </form>
                     <span id="errorOutput"> </span>
-                    <button id="submitButton" class="indigoTheme roundBorder" form="registrationForm"> Submit </button>
+                    <button id="registrationSubmitButton" class="indigoTheme roundBorder" form="registrationForm">
+                        Submit </button>
                 </div>
                 <div class="popUp window">
                     <div class="shadow">
