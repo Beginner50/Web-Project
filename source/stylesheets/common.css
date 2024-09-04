@@ -68,6 +68,19 @@ button.indigoTheme:active {
     transition: background-color 0.2s;
 }
 
+input[type="button"].indigoTheme:hover {
+    color: white;
+    cursor: pointer;
+    background-color: var(--purpleMountain);
+    transition: background-color 0.3s;
+}
+
+input[type="button"].indigoTheme:active {
+    color: white;
+    background-color: var(--purpleVortex);
+    transition: background-color 0.2s;
+}
+
 .roundBorder {
     border-radius: 5px;
 }
@@ -87,12 +100,6 @@ button.indigoTheme:active {
 .noGap {
     gap: 0px;
     margin: 0px;
-}
-
-.flexRow {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
 }
 
 div.popUp.window {

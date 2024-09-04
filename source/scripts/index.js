@@ -1,6 +1,10 @@
 var CTAStatus = "registration";
 var numSubjects = 1;
 var userType = "student";
+var inTransit = false;
+
+let buttons = ["#student-button", "#teacher-button", "#admin-button"];
+let tabs = [$(".student"), $(".teacher"), $(".admin")];
 
 $(".registration").hide();
 $(".popUp.window").hide();
@@ -14,18 +18,18 @@ $(document).ready(function () {
             $(".registration").slideDown(400);
             $(".login").slideUp(200);
             setTimeout(() => {
-                $("#CTAMoveableWrapper>h").text("Already Registered?");
-                $("#CTAMoveableWrapper>button").text("Log In");
+                $("#callToAction-wrapper>h1").text("Already Registered?");
+                $("#callToAction-wrapper>button").text("Log In");
 
-                $("#formMoveableWrapper>h1").text("Sign Up");
-                $("#CTAMoveableWrapper")
+                $("#form-wrapper>h1").text("Sign Up");
+                $("#callToAction-wrapper")
                     .css("gap", "8px");
             }, 500);
 
-            $("#CTAMoveableWrapper").animate({
+            $("#callToAction-wrapper").animate({
                 marginLeft: "0%"
             });
-            $("#formMoveableWrapper").animate({
+            $("#form-wrapper").animate({
                 marginLeft: "40%"
             });
 
@@ -38,18 +42,18 @@ $(document).ready(function () {
             $(".registration").slideUp(200);
             $(".login").slideDown(400);
             setTimeout(() => {
-                $("#CTAMoveableWrapper>h").text("New to Education Portal?");
-                $("#CTAMoveableWrapper>button").text("Sign Up");
-                $("#formMoveableWrapper>h1").text("Sign In");
+                $("#callToAction-wrapper>h1").text("New to Education Portal?");
+                $("#callToAction-wrapper>button").text("Sign Up");
+                $("#form-wrapper>h1").text("Sign In");
 
-                $("#CTAMoveableWrapper")
+                $("#callToAction-wrapper")
                     .css("gap", "0px");
             }, 500);
 
-            $("#CTAMoveableWrapper").animate({
+            $("#callToAction-wrapper").animate({
                 marginLeft: "60%"
             });
-            $("#formMoveableWrapper").animate({
+            $("#form-wrapper").animate({
                 marginLeft: "0%"
             });
 
@@ -60,56 +64,23 @@ $(document).ready(function () {
     })
 
     // Click events for user type buttons
-    $("#studentButton").click(function () {
-        $("#studentButton").addClass('active');
-        $("#adminButton").removeClass('active');
-        $("#teacherButton").removeClass('active');
+    for (let index = 0; index < buttons.length; index++) {
+        $(buttons[index]).click(function () {
+            if (!inTransit) {
+                inTransit = true;
+                $(buttons[index]).addClass('active');
+                $(buttons[(index + 1) % 3]).removeClass('active');
+                $(buttons[(index + 2) % 3]).removeClass('active');
 
-        $("#teacherButton").attr("disabled", "disabled");
-        $("#adminButton").attr("disabled", "disabled");
-
-        $(".teacher").fadeOut(100);
-        $(".admin").fadeOut(100);
-        setTimeout(function () {
-            $(".student").fadeIn();
-            $("#teacherButton").removeAttr("disabled");
-            $("#adminButton").removeAttr("disabled");
-        }, 200);
-
-    });
-    $("#teacherButton").click(function () {
-        $("#studentButton").removeClass('active');
-        $("#adminButton").removeClass('active');
-        $("#teacherButton").addClass('active');
-
-        $("#studentButton").attr("disabled", "disabled");
-        $("#adminButton").attr("disabled", "disabled");
-
-        $(".student").fadeOut(100);
-        $(".admin").fadeOut(100);
-        setTimeout(function () {
-            $(".teacher").fadeIn();
-            $("#studentButton").removeAttr("disabled");
-            $("#adminButton").removeAttr("disabled");
-        }, 200);
-    });
-    $("#adminButton").click(function () {
-        $("#studentButton").removeClass('active');
-        $("#adminButton").addClass('active');
-        $("#teacherButton").removeClass('active');
-
-        $("#studentButton").attr("disabled", "disabled");
-        $("#teacherButton").attr("disabled", "disabled");
-
-        $(".teacher").fadeOut(100);
-        $(".student").fadeOut(100);
-        setTimeout(function () {
-            $(".admin").fadeIn();
-            $("#studentButton").removeAttr("disabled");
-            $("#teacherButton").removeAttr("disabled");
-        }, 200);
-    });
-
+                tabs[(index + 1) % tabs.length].fadeOut(200);
+                tabs[(index + 2) % tabs.length].fadeOut(200);
+                setTimeout(function () {
+                    tabs[index % tabs.length].fadeIn(10);
+                    inTransit = false;
+                }, 300);
+            }
+        });
+    }
 
     // Event delegation to handle click and hover events on subject close icon
     $(document).on("mouseenter", ".subject img", function () {
@@ -139,7 +110,7 @@ $(document).ready(function () {
     });
 
     // Click event for add subject button
-    $("#addSubjectButton").click(function () {
+    $("#addSubject-button").click(function () {
         if (numSubjects < 6) {
             $("div.popUp.window").fadeToggle();
         }
@@ -147,7 +118,7 @@ $(document).ready(function () {
 
     // Event delegation to handle form options
     $(document).on("click", "button.popUp", function () {
-        $("addSubjectButton").detach();
+        $("addSubject-button").detach();
         setTimeout(() => {
             $("#subjectList").append(
                 '<div class="subject">'
@@ -156,7 +127,7 @@ $(document).ready(function () {
                 + '</div>'
             );
             $(this).remove();
-            $("#addSubjectButton").appendTo($("#subjectList"));
+            $("#addSubject-button").appendTo($("#subjectList"));
             ++numSubjects;
         }, 100)
     });
