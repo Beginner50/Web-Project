@@ -22,8 +22,7 @@ $(document).ready(function () {
                 $("#callToAction-wrapper>button").text("Log In");
 
                 $("#form-wrapper>h1").text("Sign Up");
-                $("#callToAction-wrapper")
-                    .css("gap", "8px");
+                $("#callToAction-wrapper").css("gap", "8px");
             }, 500);
 
             $("#callToAction-wrapper").animate({
@@ -33,12 +32,10 @@ $(document).ready(function () {
                 marginLeft: "40%"
             });
 
-
             setTimeout(() => {
                 CTAStatus = "login";
             }, 1000);
-        }
-        else {
+        } else {
             $(".registration").slideUp(200);
             $(".login").slideDown(400);
             setTimeout(() => {
@@ -46,8 +43,7 @@ $(document).ready(function () {
                 $("#callToAction-wrapper>button").text("Sign Up");
                 $("#form-wrapper>h1").text("Sign In");
 
-                $("#callToAction-wrapper")
-                    .css("gap", "0px");
+                $("#callToAction-wrapper").css("gap", "0px");
             }, 500);
 
             $("#callToAction-wrapper").animate({
@@ -61,7 +57,7 @@ $(document).ready(function () {
                 CTAStatus = "registration";
             }, 1000);
         }
-    })
+    });
 
     // Click events for user type buttons
     for (let index = 0; index < buttons.length; index++) {
@@ -106,7 +102,7 @@ $(document).ready(function () {
             );
             $(this).parent().remove();
             --numSubjects;
-        }, 100)
+        }, 100);
     });
 
     // Click event for add subject button
@@ -129,11 +125,25 @@ $(document).ready(function () {
             $(this).remove();
             $("#addSubject-button").appendTo($("#subjectList"));
             ++numSubjects;
-        }, 100)
+        }, 100);
     });
 
     $(document).on("click", "div.popUp.window", function () {
         $(this).hide();
+    });
+
+    //addition:
+    // Collect selected subjects and store in hidden input before form submission
+    $("#registration-form").submit(function () {
+        let subjectsArray = [];
+
+        // Collect all selected subjects from #subjectList
+        $("#subjectList .subject").each(function () {
+            subjectsArray.push($(this).text().trim()); // Get the subject text
+        });
+
+        // Store subjects in a hidden input field
+        $("#selected-subjects").val(subjectsArray.join(",")); // Join them as a comma-separated string
     });
 });
 

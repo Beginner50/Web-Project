@@ -46,8 +46,9 @@
                 </button>
             </form>
 
+         
             <!-- Registration Form (Default: off)-->
-            <form id="registration-form" class="registration" method="get">
+            <form id="registration-form" class="registration" action="registration.php" method="post">
                 <!-- User Type Fieldset (Select between different users) -->
                 <fieldset id="userType-fieldset">
                     <input id="student-button" class="indigoTheme active noGap" type="button" value="Student"
@@ -56,6 +57,24 @@
                     <input id="admin-button" class="indigoTheme noGap" type="button" form="none" value="Admin">
                 </fieldset>
 
+                <!-- Hidden input to store the user type -->
+                <input type="hidden" id="user-type" name="role" value="student">
+
+                <script>  //places whichever field you click in the hidden type attribute.
+                    // Event listeners for the buttons
+                    document.getElementById('student-button').addEventListener('click', function() {
+                        document.getElementById('user-type').value = 'student'; // Set hidden input value to 'student'
+                    });
+                    
+                    document.getElementById('teacher-button').addEventListener('click', function() {
+                        document.getElementById('user-type').value = 'teacher'; // Set hidden input value to 'teacher'
+                    });
+                    
+                    document.getElementById('admin-button').addEventListener('click', function() {
+                        document.getElementById('user-type').value = 'admin'; // Set hidden input value to 'admin'
+                });
+                 </script>
+
                 <!-- General Attributes Fieldset -->
                 <fieldset id="generalAttr-fieldset">
                     <div class="input-group">
@@ -63,7 +82,7 @@
                         <input id="fname" class="input-group_box" type="text" name="fname" placeholder="First Name"
                             required>
                     </div>
-                    <div class="input-group"> <label for="lname" class="text-label">Last Name</label> <input id="lname"
+                    <div class="input-group"> <label for="lname" class="text-label">Last Name</label><input id="lname"
                             class="input-group_box" type="text" name="lname" placeholder="Last Name" required>
                     </div>
                     <div class="input-group"> <label for="email" class="text-label">Email </label><input id="email"
@@ -112,18 +131,23 @@
                             Date Joined <input class="input-group_box" name="adminDateJoined" type="date">
                         </div>
                     </div>
-                    <div id="subjectWrapper" class="student">
+                    <div id="subjectWrapper" class="student" name="subjects">
                         <h5> Subjects: </h5>
                         <div id="subjectList">
                             <button id="addSubject-button" class="indigoTheme" form="none">+</button>
                         </div>
                     </div>
                 </fieldset>
+
+                <!-- Hidden input to store selected subjects -->
+                <input type="hidden" id="selected-subjects" name="subjects" value="">
+
                 <!-- Error Message -->
                 <span id="errorOutput"> </span>
                 <!-- Register button -->
-                <button id="registrationSubmit-button" class="indigoTheme roundBorder" form="registration-form">
-                    Submit </button>
+                <button type="submit"  name="registrationSubmit-buttonCheck" id="registrationSubmit-button" class="indigoTheme roundBorder" form="registration-form"> Submit</button>
+ 
+                    
             </form>
         </div>
     </div>
