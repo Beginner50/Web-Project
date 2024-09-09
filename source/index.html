@@ -47,7 +47,7 @@
             </form>
 
             <!-- Registration Form (Default: off)-->
-            <form id="registration-form" class="registration" method="form" action="php/registration.php"
+            <form id="registration-form" class="registration" method="post" action="php/registration.php"
                 style="display: none;">
                 <!-- User Type Fieldset (Select between different users) -->
                 <fieldset id="userType-fieldset">
@@ -57,7 +57,7 @@
                     <input id="admin-button" class="indigoTheme noGap" type="button" form="none" value="Admin">
                 </fieldset>
                 <!-- Hidden input to store the user type (Triggered by above inputs) -->
-                <input type="hidden" id="user-type" name="role" value="Student">
+                <input type="hidden" id="user-type" name="user-type" name="role" value="Student">
 
                 <!-- General Attributes Fieldset -->
                 <fieldset id="generalAttr-fieldset">
@@ -74,8 +74,8 @@
                     <div class="input-group"> <label>Gender</label>
                         <select class="input-group_box" name="gender" required>
                             <option> </option>
-                            <option> Male </option>
-                            <option> Female </option>
+                            <option value="M"> Male </option>
+                            <option value="F"> Female </option>
                         </select>
                     </div>
                     <div class="input-group"> <label>Date of Birth </label><input class="input-group_box" type="date"
