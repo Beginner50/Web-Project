@@ -2,16 +2,32 @@ var inTransit = false;
 
 var CTAStatus = "registration";
 let buttons = ["#student-button", "#teacher-button", "#admin-button"];
+let userTypes = ["Student", "Teacher", "Admin"];
 let tabs = [$(".student"), $(".teacher"), $(".admin")];
 
 // Max num subjects = 5
 var numSubjects = 1;
 $(document).ready(function () {
+    // AJAX to fetch list of subjects from the database
+    $.ajax({
+        url: "php/getSubjects.php",
+        method: "GET",
+        dataType: "json",
+        success: function (data) {
+            data.forEach(function (elem) {
+                addPopupButton(elem);
+            });
+        },
+        error: function (xhr, status, error) {
+            console.log(xhr);
+            $("#errorOutput").text(status + " " + error);
+        }
+    });
+
     // Sliding window effect for the moveable wrapper
     $("button.callToAction").click(function () {
         if (inTransit)
             return;
-
         if (CTAStatus === "registration") {
             inTransit = true;
             $(".registration").slideDown(400);
@@ -65,6 +81,8 @@ $(document).ready(function () {
                 $(buttons[(index + 1) % 3]).removeClass('active');
                 $(buttons[(index + 2) % 3]).removeClass('active');
 
+                $("#user-type").val(userTypes[index]);
+
                 tabs[(index + 1) % tabs.length].fadeOut(200);
                 tabs[(index + 2) % tabs.length].fadeOut(200);
                 setTimeout(function () {
@@ -87,16 +105,21 @@ $(document).ready(function () {
         $(this).parent().css('border-color', 'var(--purpleVortex)');
     });
 
+    // Function to add buttons in popup menu
+    function addPopupButton(value) {
+        $("div.popUp.window>div").append(
+            '<button class="indigoTheme popUp" value="'
+            + value + '">'
+            + value
+            + '</button>'
+        );
+    }
+
+    // Click event on subject deletion image
     $(document).on("click", ".subject img", function () {
         $(this).parent().fadeToggle();
         setTimeout(() => {
-            $("div.popUp.window>div").append(
-                '<button class="indigoTheme popUp" value="'
-                + $(this).parent().text()
-                + '">'
-                + $(this).parent().text()
-                + '</button>'
-            );
+            addPopupButton($(this).parent().text());
             $(this).parent().remove();
             --numSubjects;
         }, 100);
@@ -109,7 +132,7 @@ $(document).ready(function () {
         }
     });
 
-    // Event delegation to handle form options
+    // Event delegation to handle popup buttons
     $(document).on("click", "button.popUp", function () {
         $("addSubject-button").detach();
         setTimeout(() => {
@@ -129,7 +152,6 @@ $(document).ready(function () {
         $(this).hide();
     });
 
-    //addition:
     // Collect selected subjects and store in hidden input before form submission
     $("#registration-form").submit(function () {
         let subjectsArray = [];

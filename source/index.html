@@ -47,32 +47,17 @@
             </form>
 
             <!-- Registration Form (Default: off)-->
-            <form id="registration-form" class="registration" method="get" style="display: none;">
+            <form id="registration-form" class="registration" method="form" action="php/registration.php"
+                style="display: none;">
                 <!-- User Type Fieldset (Select between different users) -->
                 <fieldset id="userType-fieldset">
-                    <input id="student-button" class="indigoTheme active noGap" type="button" value="Student"
-                        form="none">
+                    <input id="student-button" class="indigoTheme active noGap" type="button" form="none"
+                        value="Student">
                     <input id="teacher-button" class="indigoTheme noGap" type="button" form="none" value="Teacher">
                     <input id="admin-button" class="indigoTheme noGap" type="button" form="none" value="Admin">
                 </fieldset>
-
-                <!-- Hidden input to store the user type -->
-                <input type="hidden" id="user-type" name="role" value="student">
-
-                <script>  //places whichever field you click in the hidden type attribute.
-                    // Event listeners for the buttons
-                    document.getElementById('student-button').addEventListener('click', function () {
-                        document.getElementById('user-type').value = 'student'; // Set hidden input value to 'student'
-                    });
-
-                    document.getElementById('teacher-button').addEventListener('click', function () {
-                        document.getElementById('user-type').value = 'teacher'; // Set hidden input value to 'teacher'
-                    });
-
-                    document.getElementById('admin-button').addEventListener('click', function () {
-                        document.getElementById('user-type').value = 'admin'; // Set hidden input value to 'admin'
-                    });
-                </script>
+                <!-- Hidden input to store the user type (Triggered by above inputs) -->
+                <input type="hidden" id="user-type" name="role" value="Student">
 
                 <!-- General Attributes Fieldset -->
                 <fieldset id="generalAttr-fieldset">
@@ -146,8 +131,6 @@
                 <!-- Register button -->
                 <button type="submit" name="registrationSubmit-buttonCheck" id="registrationSubmit-button"
                     class="indigoTheme roundBorder" form="registration-form"> Submit</button>
-
-
             </form>
         </div>
     </div>
@@ -156,12 +139,6 @@
     <div class="popUp window" style="display:none;">
         <div class="shadow">
             <h class="indigoTheme popUp" style="border: none; margin-bottom: 10px;"> Select a subject: </h>
-            <button class="indigoTheme popUp" value="CS101"> CS101 </button>
-            <button class="indigoTheme popUp" value="BI102"> BI102 </button>
-            <button class="indigoTheme popUp" value="CH103"> CH103 </button>
-            <button class="indigoTheme popUp" value="PY104"> PY104 </button>
-            <button class="indigoTheme popUp" value="MA105"> MA105 </button>
-            <button class="indigoTheme popUp" value="GP106"> GP106 </button>
         </div>
     </div>
 
