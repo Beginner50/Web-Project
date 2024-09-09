@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 #main-wrapper {
     position: relative;
     width: min(90%, 800px);
@@ -41,6 +45,16 @@ button.callToAction:hover {
     color: var(--purpleMountain);
     background-color: white;
     transition: background-color 0.3s;
+}
+
+button.callToAction>a {
+    text-decoration: none;
+    color: white;
+}
+
+button.callToAction:hover>a {
+    text-decoration: none;
+    color: var(--purpleVortex);
 }
 
 h1.callToAction {

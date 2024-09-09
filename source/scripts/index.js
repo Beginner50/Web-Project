@@ -1,28 +1,27 @@
-var CTAStatus = "registration";
-var numSubjects = 1;
-var userType = "student";
 var inTransit = false;
 
+var CTAStatus = "registration";
 let buttons = ["#student-button", "#teacher-button", "#admin-button"];
 let tabs = [$(".student"), $(".teacher"), $(".admin")];
 
-$(".registration").hide();
-$(".popUp.window").hide();
-$(".teacher").hide();
-$(".admin").hide();
-
+// Max num subjects = 5
+var numSubjects = 1;
 $(document).ready(function () {
     // Sliding window effect for the moveable wrapper
     $("button.callToAction").click(function () {
+        if (inTransit)
+            return;
+
         if (CTAStatus === "registration") {
+            inTransit = true;
             $(".registration").slideDown(400);
             $(".login").slideUp(200);
+
             setTimeout(() => {
                 $("#callToAction-wrapper>h1").text("Already Registered?");
-                $("#callToAction-wrapper>button").text("Log In");
+                $("#callToAction-wrapper>button>a").text("Log In");
 
                 $("#form-wrapper>h1").text("Sign Up");
-                $("#callToAction-wrapper").css("gap", "8px");
             }, 500);
 
             $("#callToAction-wrapper").animate({
@@ -32,18 +31,17 @@ $(document).ready(function () {
                 marginLeft: "40%"
             });
 
-            setTimeout(() => {
-                CTAStatus = "login";
-            }, 1000);
-        } else {
+            inTransit = false;
+            CTAStatus = "login";
+        }
+        else {
+            inTransit = true;
             $(".registration").slideUp(200);
             $(".login").slideDown(400);
             setTimeout(() => {
                 $("#callToAction-wrapper>h1").text("New to Education Portal?");
-                $("#callToAction-wrapper>button").text("Sign Up");
+                $("#callToAction-wrapper>button>a").text("Sign Up");
                 $("#form-wrapper>h1").text("Sign In");
-
-                $("#callToAction-wrapper").css("gap", "0px");
             }, 500);
 
             $("#callToAction-wrapper").animate({
@@ -53,9 +51,8 @@ $(document).ready(function () {
                 marginLeft: "0%"
             });
 
-            setTimeout(() => {
-                CTAStatus = "registration";
-            }, 1000);
+            inTransit = false;
+            CTAStatus = "registration";
         }
     });
 

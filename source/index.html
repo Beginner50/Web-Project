@@ -27,7 +27,7 @@
             <h1 class="callToAction">
                 New to Education
                 Portal?</h1>
-            <button class="callToAction"> Sign Up</button>
+            <button class="callToAction"> <a href="#main-wrapper">Sign Up</a></button>
         </div>
         <!-- Form Wrapper -->
         <div id="form-wrapper">
@@ -46,9 +46,8 @@
                 </button>
             </form>
 
-         
             <!-- Registration Form (Default: off)-->
-            <form id="registration-form" class="registration" action="registration.php" method="post">
+            <form id="registration-form" class="registration" method="get" style="display: none;">
                 <!-- User Type Fieldset (Select between different users) -->
                 <fieldset id="userType-fieldset">
                     <input id="student-button" class="indigoTheme active noGap" type="button" value="Student"
@@ -62,18 +61,18 @@
 
                 <script>  //places whichever field you click in the hidden type attribute.
                     // Event listeners for the buttons
-                    document.getElementById('student-button').addEventListener('click', function() {
+                    document.getElementById('student-button').addEventListener('click', function () {
                         document.getElementById('user-type').value = 'student'; // Set hidden input value to 'student'
                     });
-                    
-                    document.getElementById('teacher-button').addEventListener('click', function() {
+
+                    document.getElementById('teacher-button').addEventListener('click', function () {
                         document.getElementById('user-type').value = 'teacher'; // Set hidden input value to 'teacher'
                     });
-                    
-                    document.getElementById('admin-button').addEventListener('click', function() {
+
+                    document.getElementById('admin-button').addEventListener('click', function () {
                         document.getElementById('user-type').value = 'admin'; // Set hidden input value to 'admin'
-                });
-                 </script>
+                    });
+                </script>
 
                 <!-- General Attributes Fieldset -->
                 <fieldset id="generalAttr-fieldset">
@@ -121,13 +120,13 @@
                                 <option> 3</option>
                             </select>
                         </div>
-                        <div class="teacher input-group">
+                        <div class="teacher input-group" style="display:none;">
                             Subject Taught: <input class="input-group_box" name="subjectTaught" type="text">
                         </div>
-                        <div class="teacher input-group">
+                        <div class="teacher input-group" style="display:none;">
                             Date Joined: <input class="input-group_box" name="teacherDateJoined" type="date">
                         </div>
-                        <div class="admin input-group">
+                        <div class="admin input-group" style="display:none;">
                             Date Joined <input class="input-group_box" name="adminDateJoined" type="date">
                         </div>
                     </div>
@@ -145,15 +144,16 @@
                 <!-- Error Message -->
                 <span id="errorOutput"> </span>
                 <!-- Register button -->
-                <button type="submit"  name="registrationSubmit-buttonCheck" id="registrationSubmit-button" class="indigoTheme roundBorder" form="registration-form"> Submit</button>
- 
-                    
+                <button type="submit" name="registrationSubmit-buttonCheck" id="registrationSubmit-button"
+                    class="indigoTheme roundBorder" form="registration-form"> Submit</button>
+
+
             </form>
         </div>
     </div>
 
     <!-- Popup window (Default: off) -->
-    <div class="popUp window">
+    <div class="popUp window" style="display:none;">
         <div class="shadow">
             <h class="indigoTheme popUp" style="border: none; margin-bottom: 10px;"> Select a subject: </h>
             <button class="indigoTheme popUp" value="CS101"> CS101 </button>
