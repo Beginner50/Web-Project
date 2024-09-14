@@ -32,11 +32,12 @@
         <!-- Form Wrapper -->
         <div id="form-wrapper">
             <!-- Sign In/Up Header -->
-            <h1> Sign In</h1>
+            <h1>Sign In</h1>
 
             <!-- Login Form (Default: on) -->
             <form class="login" id="login-form" method="post" action="">
-                <div class="input-group"> Email: <input class="input-group_box" type="email " name="email" required>
+                <div class="input-group"> Email: <input class="input-group_box" type="email" name="email" required
+                        autocomplete="email">
                 </div>
                 <div class="input-group"> Password: <input class="input-group_box" type="password" name="password"
                         required>
@@ -60,7 +61,7 @@
                 <input type="hidden" id="user-type" name="user-type" name="role" value="Student">
 
                 <!-- General Attributes Fieldset -->
-                <fieldset id="generalAttr-fieldset">
+                <div id="generalAttr-fieldset">
                     <div class="input-group">
                         <label for="fname" class="text-label">First Name</label>
                         <input id="fname" class="input-group_box" type="text" name="fname" placeholder="First Name"
@@ -70,7 +71,8 @@
                             class="input-group_box" type="text" name="lname" placeholder="Last Name" required>
                     </div>
                     <div class="input-group"> <label for="email" class="text-label">Email </label><input id="email"
-                            class="input-group_box" type="email" name="email" placeholder="Email" required></div>
+                            class="input-group_box" type="email" name="email" placeholder="Email" required
+                            autocomplete="email"></div>
                     <div class="input-group"> <label>Gender</label>
                         <select class="input-group_box" name="gender" required>
                             <option> </option>
@@ -85,10 +87,10 @@
                     </div>
                     <div class="input-group"> <label>Re-enter Password </label><input class="input-group_box"
                             type="password" required name="repassword"></div>
-                </fieldset>
+                </div>
 
                 <!-- Specific Attributes Fieldset -->
-                <fieldset id="specificAttr-fieldset">
+                <div id="specificAttr-fieldset">
                     <div>
                         <div class="input-group student"> Class Group:
                             <select class="input-group_box" name="classGroup">
@@ -121,7 +123,7 @@
                             <button id="addSubject-button" class="indigoTheme" form="none">+</button>
                         </div>
                     </div>
-                </fieldset>
+                </div>
 
                 <!-- Hidden input to store selected subjects -->
                 <input type="hidden" id="selected-subjects" name="subjects" value="">
@@ -142,8 +144,7 @@
         </div>
     </div>
 
-    <script src="scripts/jQuery.js"></script>
-    <script src="scripts/index.js"></script>
+    <script src="scripts/registration.js"></script>
 </body>
 
 </html>
