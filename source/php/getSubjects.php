@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 include 'connect.php';
 
 // Query the database
-$result = $conn->query("SELECT SubjectCode FROM Subject;");
+$result = $conn->query("SELECT SubjectCode FROM subject;");
 
 // Fetch and return data as json
 $values = [];

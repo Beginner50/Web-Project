@@ -2,10 +2,9 @@
 
 $host = "localhost";
 $user = "root";
-// $pass="umair1108";
-// $db="web_project";
+$db="web_project";
 $pass = " ";
-$db = "webProject";
+// $pass="umair1108";
 
 $conn = new mysqli($host, $user, $pass, $db);
 

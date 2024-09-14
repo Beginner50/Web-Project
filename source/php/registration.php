@@ -89,11 +89,11 @@
                     array_push($errors, "Email address is NOT valid");
                 } else {
 
-                    $verifyemail = mysqli_query($conn, "SELECT Email FROM User WHERE Email='$email' ");
+                    $verifyemail = mysqli_query($conn, "SELECT Email FROM user WHERE Email='$email' ");
 
                     //checks if query  returns anything
                     if (mysqli_num_rows($verifyemail) != 0) {
-                        array_push($errors, "Email alraedy exist! Use another email");
+                        array_push($errors, "Email already exist! Use another email");
                     }
                 }
 
@@ -130,7 +130,7 @@
                 } else {
 
                     //INSERTING INTO USER
-                    $sqlquery = "INSERT INTO User(DateOfBirth,FirstName,LastName,Email,Gender,Password,AuthorisationType) VALUES (?,?,?,?,?,?,?)";
+                    $sqlquery = "INSERT INTO user(DateOfBirth,FirstName,LastName,Email,Gender,Password,AuthorisationType) VALUES (?,?,?,?,?,?,?)";
                     $stmt = mysqli_stmt_init($conn); //initialises connection
 
                     if (mysqli_stmt_prepare($stmt, $sqlquery)) {
@@ -140,7 +140,7 @@
                         mysqli_stmt_execute($stmt);
 
                         //searching maximum userid- most recent insert
-                        $sqlquery = "SELECT MAX(Userid) AS max_userid FROM User";
+                        $sqlquery = "SELECT MAX(Userid) AS max_userid FROM user";
                         $result = mysqli_query($conn, $sqlquery);
 
                         if ($result) {
@@ -159,7 +159,7 @@
                         if ($usertype == 'Student') {
 
                             //INSERTING INTO STUDENT
-                            $sqlquery = "INSERT INTO Student(StudentID,Level,ClassGroup) VALUES (?,?,?)";
+                            $sqlquery = "INSERT INTO student(StudentID,Level,ClassGroup) VALUES (?,?,?)";
                             if (mysqli_stmt_prepare($stmt, $sqlquery)) {
 
                                 //binds and execute statement
@@ -184,7 +184,7 @@
                                 die("Something went wrong in student table!");
                             }
                             mysqli_stmt_close($stmt); //must close stmt
-                        } else if ($usertype == 'teacher') {
+                        } else if ($usertype == 'Teacher') {
 
                             //INSERTING INTO TEACHER
                             $stmt = mysqli_stmt_init($conn);
@@ -198,7 +198,7 @@
                                 die("Something went wrong in teacher table!");
                             }
                             mysqli_stmt_close($stmt); //must close stmt
-                        } else if ($usertype == 'admin') {
+                        } else if ($usertype == 'Admin') {
                             //INSERTING INTO ADMIN
                             $stmt = mysqli_stmt_init($conn);
                             $sqlquery = "INSERT INTO administrator(AdminID,DateJoined) VALUES (?,?)";

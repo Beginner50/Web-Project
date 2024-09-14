@@ -1,7 +1,7 @@
 /*
 Changes to ERD:
 - Removed UnauthorisedUser table since unauthorised users can be represented in
-User table with new attribute AuthorisationType. Approval table is only meant
+User table with new attribute AuthorisationType. approval table is only meant
 to log which administrator approved a certain user.
 
 Explanation to database structure:
@@ -16,13 +16,13 @@ tg_createClasses to simplify insert statements.
 - A student does not need to be authenticated by admin, but teachers and other admins do.
 */
 
-CREATE TABLE Subject (
+CREATE TABLE subject (
     SubjectCode VARCHAR(5) NOT NULL,
     SubjectName VARCHAR(128),
     PRIMARY KEY (SubjectCode)
 );
 
-CREATE TABLE User (
+CREATE TABLE user (
     UserID INTEGER NOT NULL AUTO_INCREMENT,
     DateOfBirth DATE NOT NULL,
     FirstName VARCHAR(64),
@@ -45,7 +45,7 @@ CREATE TABLE User (
     PRIMARY KEY (UserID)
 );
 
-CREATE TABLE Student (
+CREATE TABLE student (
     StudentID INTEGER,
     Level SMALLINT,
     ClassGroup VARCHAR(5),
@@ -55,18 +55,18 @@ CREATE TABLE Student (
         AND level < 4
     ),
     PRIMARY KEY (StudentID),
-    FOREIGN KEY (StudentID) REFERENCES User (UserID) ON DELETE CASCADE
+    FOREIGN KEY (StudentID) REFERENCES user (UserID) ON DELETE CASCADE
 );
 
-CREATE TABLE Teacher (
+CREATE TABLE teacher (
     TeacherID INTEGER,
     SubjectTaught VARCHAR(5),
     DateJoined DATE,
     PRIMARY KEY (TeacherID),
-    FOREIGN KEY (TeacherID) REFERENCES User (UserID) ON DELETE CASCADE
+    FOREIGN KEY (TeacherID) REFERENCES user (UserID) ON DELETE CASCADE
 );
 
-CREATE TABLE Class (
+CREATE TABLE class (
     Level SMALLINT,
     ClassGroup VARCHAR(5),
     SubjectCode VARCHAR(5),
@@ -76,8 +76,8 @@ CREATE TABLE Class (
         ClassGroup,
         SubjectCode
     ),
-    FOREIGN KEY (TeacherID) REFERENCES Teacher (TeacherID) ON DELETE CASCADE,
-    FOREIGN KEY (SubjectCode) REFERENCES Subject (SubjectCode) ON DELETE CASCADE,
+    FOREIGN KEY (TeacherID) REFERENCES teacher (TeacherID) ON DELETE CASCADE,
+    FOREIGN KEY (SubjectCode) REFERENCES subject (SubjectCode) ON DELETE CASCADE,
     CHECK (ClassGroup IN ('RED', 'BLUE')),
     CHECK (
         Level > 0
@@ -85,7 +85,7 @@ CREATE TABLE Class (
     ) -- Ammend the trigger to add class for subject if values for level modified
 );
 
-CREATE TABLE Class_Student (
+CREATE TABLE class_student (
     Level SMALLINT,
     ClassGroup VARCHAR(5),
     SubjectCode VARCHAR(5),
@@ -95,8 +95,8 @@ CREATE TABLE Class_Student (
         ClassGroup,
         SubjectCode
     ),
-    FOREIGN KEY (SubjectCode) REFERENCES Class (SubjectCode) ON DELETE CASCADE,
-    FOREIGN KEY (StudentID) REFERENCES Student (StudentID) ON DELETE CASCADE,
+    FOREIGN KEY (SubjectCode) REFERENCES class (SubjectCode) ON DELETE CASCADE,
+    FOREIGN KEY (StudentID) REFERENCES student (StudentID) ON DELETE CASCADE,
     CHECK (ClassGroup IN ('RED', 'BLUE')),
     CHECK (
         Level > 0
@@ -104,7 +104,7 @@ CREATE TABLE Class_Student (
     )
 );
 
-CREATE TABLE Class_Message (
+CREATE TABLE class_message (
     Level SMALLINT,
     ClassGroup VARCHAR(5),
     SubjectCode VARCHAR(5),
@@ -115,7 +115,7 @@ CREATE TABLE Class_Message (
         SubjectCode,
         Message
     ),
-    FOREIGN KEY (SubjectCode) REFERENCES Class (SubjectCode) ON DELETE CASCADE,
+    FOREIGN KEY (SubjectCode) REFERENCES class (SubjectCode) ON DELETE CASCADE,
     CHECK (ClassGroup IN ('RED', 'BLUE')),
     CHECK (
         Level > 0
@@ -123,44 +123,42 @@ CREATE TABLE Class_Message (
     )
 );
 
-CREATE TABLE Administrator (
+CREATE TABLE administrator (
     AdminID INTEGER,
     DateJoined DATE,
     PRIMARY KEY (AdminID),
-    FOREIGN KEY (AdminID) REFERENCES User (UserID) ON DELETE CASCADE
+    FOREIGN KEY (AdminID) REFERENCES user (UserID) ON DELETE CASCADE
 );
 
-CREATE TABLE Approval (
+CREATE TABLE approval (
     AdminID INTEGER,
     UserID INTEGER,
     PRIMARY KEY (AdminID, UserID),
-    FOREIGN KEY (AdminID) REFERENCES Administrator (AdminID) ON DELETE CASCADE,
-    FOREIGN KEY (UserID) REFERENCES User (UserID) ON DELETE CASCADE
+    FOREIGN KEY (AdminID) REFERENCES administrator (AdminID) ON DELETE CASCADE,
+    FOREIGN KEY (UserID) REFERENCES user (UserID) ON DELETE CASCADE
 );
 
 -- Trigger to create all classes for a subject
-DELIMITER / /
-
+delimiter //
 CREATE TRIGGER tg_createClass
-AFTER INSERT ON Subject
+AFTER INSERT ON subject
 FOR EACH ROW
 BEGIN
 	DECLARE lvl INT;
     SET lvl = 1;
 	WHILE lvl < 4 DO
-		INSERT INTO Class VALUES(lvl, 'RED', NEW.subjectCode, NULL);
-        INSERT INTO Class VALUES(lvl, 'BLUE', NEW.subjectCode, NULL);
+		INSERT INTO class VALUES(lvl, 'RED', NEW.subjectCode, NULL);
+        INSERT INTO class VALUES(lvl, 'BLUE', NEW.subjectCode, NULL);
 		SET lvl = lvl + 1;
     END WHILE;
 END;
+//
+delimiter ;
 
-/ /
-
-DELIMITER;
-
+-- Initialisation Data
 -- Insert the first user as an admin (root)
 INSERT INTO
-    User (
+    user (
         DateOfBirth,
         FirstName,
         LastName,
@@ -180,21 +178,17 @@ VALUES (
     );
 
 INSERT INTO
-    Administrator (AdminID, DateJoined)
-SELECT UserID, CURDATE()
-FROM User
-WHERE
-    Email = 'root@email.com';
+     administrator (AdminID, DateJoined) SELECT UserID, CURDATE()
+      FROM user WHERE Email = 'root@email.com';
 
 -- Insert some subjects
-INSERT INTO
-    Subject (SubjectCode, SubjectName)
-VALUES ('MATH1', 'Mathematics 1'),
-    ('ENG1', 'English 1');
+INSERT INTO subject(SubjectCode, SubjectName)VALUES 
+              ('MATH1', 'Mathematics 1'),
+              ('ENG1', 'English 1');
 
 -- Insert students
 INSERT INTO
-    User (
+    user (
         DateOfBirth,
         FirstName,
         LastName,
@@ -223,23 +217,23 @@ VALUES (
     );
 
 INSERT INTO
-    Student (StudentID, Level, ClassGroup)
+    student (StudentID, Level, ClassGroup)
 SELECT UserID, 1, 'RED'
-FROM User
+FROM user
 WHERE
     Email = 'john.doe@email.com';
 
 INSERT INTO
-    Student (StudentID, Level, ClassGroup)
+    student (StudentID, Level, ClassGroup)
 SELECT UserID, 1, 'BLUE'
-FROM User
+FROM user
 WHERE
     Email = 'jane.smith@email.com';
 
 -- Insert unauthorised and authorised teachers
 -- Unauthorised teachers are not yet recognised and hence are not added into Teacher table.
 INSERT INTO
-    User (
+    user (
         DateOfBirth,
         FirstName,
         LastName,
@@ -253,13 +247,13 @@ VALUES (
         'Mark',
         'Twain',
         'mark.twain@email.com',
-        'M',
+        'M' ,
         'teacherPass123',
         'teacherUnauthorised'
     );
 
 INSERT INTO
-    User (
+    user (
         DateOfBirth,
         FirstName,
         LastName,
@@ -279,7 +273,7 @@ VALUES (
     );
 
 INSERT INTO
-    User (
+    user (
         DateOfBirth,
         FirstName,
         LastName,
@@ -299,19 +293,19 @@ VALUES (
     );
 
 INSERT INTO
-    Teacher (
+    teacher (
         TeacherID,
         SubjectTaught,
         DateJoined
     )
 SELECT UserID, 'ENG1', CURDATE()
-FROM User
+FROM user
 WHERE
     Email = 'michael.bron@email.com';
 
 -- Assign students to classes
 INSERT INTO
-    Class_Student (
+    class_student (
         Level,
         ClassGroup,
         SubjectCode,
@@ -323,11 +317,11 @@ VALUES (
         'MATH1',
         (
             SELECT StudentID
-            FROM Student
+            FROM student
             WHERE
                 StudentID = (
                     SELECT UserID
-                    FROM User
+                    FROM user
                     WHERE
                         Email = 'john.doe@email.com'
                 )
@@ -339,48 +333,48 @@ VALUES (
         'ENG1',
         (
             SELECT StudentID
-            FROM Student
+            FROM student
             WHERE
                 StudentID = (
                     SELECT UserID
-                    FROM User
+                    FROM user
                     WHERE
                         Email = 'jane.smith@email.com'
                 )
         )
     );
 -- Assign teacher to class level= 1, class group= RED and subject = ENG1
-UPDATE Class
+UPDATE class
 SET
     teacherID = (
         SELECT teacherID
-        FROM Teacher
+        FROM teacher
     );
 
 -- Admin approves the unauthorised teacher: Mark Twain
 INSERT INTO
-    Approval (AdminID, UserID)
+    approval (AdminID, UserID)
 VALUES (
         (
             SELECT AdminID
-            FROM Administrator
+            FROM  administrator
             WHERE
                 AdminID = (
                     SELECT UserID
-                    FROM User
+                    FROM user
                     WHERE
                         Email = 'root@email.com'
                 )
         ),
         (
             SELECT UserID
-            FROM User
+            FROM user
             WHERE
                 Email = 'mark.twain@email.com'
         )
     );
 
-UPDATE User
+UPDATE user
 SET
     AuthorisationType = 'teacherAuthorised'
 WHERE
@@ -388,7 +382,7 @@ WHERE
 
 -- Add a message to the class
 INSERT INTO
-    Class_Message (
+    class_message (
         Level,
         ClassGroup,
         SubjectCode,
@@ -400,7 +394,7 @@ VALUES (
         'ENG1',
         (
             SELECT TeacherID
-            FROM Class
+            FROM class
             WHERE
                 Level = 1
                 AND ClassGroup = 'BLUE'
