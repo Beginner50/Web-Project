@@ -1,0 +1,84 @@
+#specificAttr-fieldset {
+    height: 35%;
+    width: 87%;
+    margin-left: 7%;
+    margin-right: auto;
+    margin-top: 25px;
+    border-radius: 5px;
+    border: 1px var(--purpleMountain) solid;
+    padding: 0px;
+}
+
+#specificAttr-fieldset-student>div:nth-child(1) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#specificAttr-fieldset-teacher {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#specificAttr-fieldset-teacher>div:nth-child(1)>input {
+    width: 100%;
+}
+
+#specificAttr-fieldset-admin {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.subject {
+    width: 60px;
+    height: 19px;
+    margin-left: 10px;
+    font-size: 12px;
+    padding: 5px;
+    border: 1px var(--purpleVortex) solid;
+    color: var(--purpleVortex);
+    font-weight: 600;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.subject img {
+    position: absolute;
+    left: 70%;
+    cursor: pointer;
+    fill: var(--purpleMountain);
+    width: 16px;
+    height: 16px;
+}
+
+#subjectWrapper {
+    height: 50%;
+    margin: 10px;
+    margin-top: 20px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    row-gap: 5px;
+}
+
+#subjectList {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 5px;
+}
+
+#addSubject-button {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    grid-column: auto;
+    grid-row: auto;
+}

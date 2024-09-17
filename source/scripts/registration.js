@@ -77,13 +77,13 @@ class MoveableWrapperManager {
     else if (this.formStatus === "registration")
       this.showLoginForm();
 
-    this.inTransit = false;
   }
 
   showLoginForm() {
     setTimeout(() => {
       this.loginElems.forEach(elem => { elem.style.display = "flex" });
       this.registrationElems.forEach(elem => { elem.style.display = "none" });
+      this.inTransit = false;
     }, 250);
     this.formWrapper.animate(this.formkeyframesLeft, this.options);
     this.CTAWrapper.animate(this.CTAkeyframesRight, this.options);
@@ -98,7 +98,8 @@ class MoveableWrapperManager {
   showRegistrationForm() {
     setTimeout(() => {
       this.loginElems.forEach(elem => { elem.style.display = "none" });
-      this.registrationElems.forEach(elem => { elem.style.display = "block" });
+      this.registrationElems.forEach(elem => { elem.style.display = "flex" });
+      this.inTransit = false;
     }, 250);
     this.formWrapper.animate(this.formkeyframesRight, this.options);
     this.CTAWrapper.animate(this.CTAkeyframesLeft, this.options);

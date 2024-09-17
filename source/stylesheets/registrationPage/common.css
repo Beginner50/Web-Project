@@ -1,0 +1,143 @@
+html {
+    scroll-behavior: smooth;
+}
+
+#main-wrapper {
+    position: relative;
+    width: min(95%, 800px);
+    height: 650px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--paleSky);
+}
+
+/* Call To Action(CTA) */
+/* View callToAction.css*/
+#callToAction-wrapper {
+    position: absolute;
+    border-radius: 15px;
+    margin-left: 60%;
+    height: 100%;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right, var(--purpleMountain), var(--purpleVortex));
+}
+
+#form-wrapper {
+    position: relative;
+    height: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60%;
+}
+
+/* Common attributes for login form */
+#login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login .input-group {
+    font-size: 18px;
+    color: rgb(82, 79, 79);
+
+    border-radius: 10px;
+    margin-left: 2rem;
+    margin-right: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    display: flex;
+    flex-direction: column;
+    width: 120%;
+}
+
+.login .input-box {
+    padding-left: 0.2rem;
+    font-size: 0.9rem;
+    padding-top: 0.15rem;
+    padding-bottom: 0.2rem;
+
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(114, 113, 113);
+    border-radius: 3px;
+    transition: all 0.15s;
+}
+
+#loginSubmit-button {
+    font-weight: 600;
+    margin-top: 35px;
+    width: 100px;
+    height: 40px;
+    border-width: 2px;
+    margin-left: 40%;
+    margin-right: 40%;
+}
+
+/* Common attributes for registration form */
+/* View registrationFormGeneral.css & registrationFormSpecific.css */
+#registration-form {
+    display: flex;
+    flex-direction: column;
+    height: 492px;
+    width: 100%;
+}
+
+.registration .input-group {
+    position: relative;
+    font-size: 0.8rem;
+    color: rgb(0, 0, 0);
+    margin-left: 0.8rem;
+    margin-right: 2.5rem;
+    display: flex;
+    flex-direction: column;
+
+    padding: 0px;
+    width: min(85%, 190px);
+}
+
+.registration .input-box {
+    padding-left: 0.2rem;
+    font-size: 0.9rem;
+    padding-top: 0.15rem;
+    padding-bottom: 0.2rem;
+
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(114, 113, 113);
+    border-radius: 3px;
+    transition: all 0.15s;
+}
+
+#registrationSubmit-button {
+    position: fixed;
+    top: 90%;
+    font-weight: 600;
+    width: 100px;
+    height: 40px;
+    border-width: 2px;
+    margin-left: 41%;
+    margin-right: auto;
+}
+
+.error-message {
+    color: red;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+
+    max-width: 400px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
