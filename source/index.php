@@ -14,15 +14,6 @@
 </head>
 
 <body>
-    <!-- Navigation Bar -->
-    <nav class="indigoTheme">
-        <div id="leftSection"></div>
-        <div id="rightSection">
-            <button class=" indigoTheme roundBorder shadow"> Contact Us</button>
-            <button class=" indigoTheme roundBorder shadow"> Terms & Conditions</button>
-        </div>
-    </nav>
-
     <!-- Main Wrapper -->
     <div id="main-wrapper" class="roundBorder-15">
         <!-- Call To Action Wrapper -->
@@ -30,7 +21,7 @@
             <h1 class="callToAction">
                 New to Education
                 Portal?</h1>
-            <button class="callToAction"> <a href="#main-wrapper">Sign Up</a></button>
+            <button class="callToAction"> <a href="main-wrapper">Sign Up</a></button>
         </div>
         <!-- Form Wrapper -->
         <div id="form-wrapper">
@@ -53,7 +44,7 @@
             <form id="registration-form" class="registration" method="post" action="phpFunctions/registration.php"
                 style="display: none;">
                 <!-- User Type Fieldset (Select between different users) -->
-                <fieldset id="userType-fieldset">
+                <fieldset id="userType-fieldset" >
                     <input id="student-button" class="indigoTheme active noGap" type="button" form="none"
                         value="Student">
                     <input id="teacher-button" class="indigoTheme noGap" type="button" form="none" value="Teacher">
@@ -106,18 +97,18 @@
                 <!-- Specific Attributes Fieldset -->
                 <fieldset id="specificAttr-fieldset">
                     <!-- Student specific attributes -->
-                    <fieldset id="specificAttr-fieldset-student" class="no-border">
+                    <fieldset id="specificAttr-fieldset-student" class="no-border student">
                         <div>
                             <div class="input-group student"> Class Group:
-                                <select class="input-box transparent-placeholder hover" name="classGroup">
+                                <select class="input-box transparent-placeholder hover student" name="classGroup" required>
                                     <option> </option>
                                     <option> Red </option>
                                     <option> Blue </option>
                                 </select>
                             </div>
                             <div class="input-group student"> Level :
-                                <select class="input-box transparent-placeholder hover" style="padding-left:1px;"
-                                    name="level">
+                                <select class="input-box transparent-placeholder hover " style="padding-left:1px;"
+                                    name="level" required>
                                     <option> </option>
                                     <option> 1</option>
                                     <option> 2</option>
@@ -128,25 +119,25 @@
                         <div id="subjectWrapper" class="student" name="subjects">
                             <h5> Subjects: </h5>
                             <div id="subjectList">
-                                <button id="addSubject-button" class="indigoTheme" form="none">+</button>
+                                <button id="addSubject-button" class="indigoTheme " form="none">+</button>
                             </div>
                         </div>
                     </fieldset>
                     <!-- Teacher specific attributes -->
-                    <fieldset id="specificAttr-fieldset-teacher" disabled class="no-border">
-                        <div class="teacher input-group" style="display:none;">
-                            Subject Taught: <input class="input-box hover transparent-placeholder" name="subjectTaught"
-                                type="text">
+                    <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;">
+                        <div class="teacher input-group">
+                            Subject Taught: <input class="input-box hover transparent-placeholder " name="subjectTaught"
+                                type="text" required>
                         </div>
-                        <div class="teacher input-group" style="display:none;">
-                            Date Joined: <input class="input-box hover transparent-placeholder" name="teacherDateJoined"
-                                type="date">
+                        <div class="teacher input-group">
+                            Date Joined: <input class="input-box hover transparent-placeholder " name="teacherDateJoined"
+                                type="date" required>
                         </div>
                     </fieldset>
-                    <fieldset id="specificAttr-fieldset-admin" disabled class="no-border">
-                        <div class="admin input-group" style="display:none;">
-                            Date Joined <input class="input-box hover transparent-placeholder" name="adminDateJoined"
-                                type="date">
+                    <fieldset id="specificAttr-fieldset-admin" class="no-border" style="display:none;">
+                        <div class="admin input-group">
+                            Date Joined <input class="input-box hover transparent-placeholder " name="adminDateJoined"
+                                type="date" required>
                         </div>
                     </fieldset>
                 </fieldset>

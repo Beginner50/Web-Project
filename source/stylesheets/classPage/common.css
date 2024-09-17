@@ -1,0 +1,91 @@
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+}
+
+#main-wrapper {
+    position: relative;
+    width: 70%;
+    height: 500px;
+    border: 1px gray solid;
+    margin: auto;
+    margin-top: 80px;
+    margin-bottom: 100px;
+    display: flex;
+}
+
+#left-wrapper {
+    width: 30%;
+    height: 100%;
+    border: 1px solid black;
+}
+
+#left-wrapper>h1 {
+    padding-top: 15%;
+    padding-left: 15%;
+    font-size: 2.5rem;
+}
+
+#class-menu {
+    width: 60%;
+    height: 40%;
+    border: 1px solid black;
+    margin-left: 15%;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+#right-wrapper {
+    width: 70%;
+    height: 100%;
+    border: 1px solid black;
+}
+
+#classChat-header {
+    width: 100%;
+    height: 10%;
+    border: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+}
+
+#classChat-header #left-section {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#classChat-header #left-section>div {
+    margin-top: 2.5%;
+    margin-left: 3%;
+}
+
+#classChat-body {
+    width: 100%;
+    height: 75%;
+    border: 1px solid black;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+#classChat-footer {
+    width: 100%;
+    height: 15%;
+}
+
+#message-input {
+    width: 80%;
+    padding: 5px;
+    height: 40px;
+    text-wrap: pretty;
+    margin-top: 1.5%;
+    margin-left: 1%;
+}

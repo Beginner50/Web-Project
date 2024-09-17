@@ -70,7 +70,7 @@ class MoveableWrapperManager {
       return;
 
     this.inTransit = true;
-    this.CTAButtonLink.href = "#main-wrapper";
+    this.formWrapper.scrollIntoView();
 
     if (this.formStatus === "login")
       this.showRegistrationForm();
@@ -141,7 +141,7 @@ class SubjectManager {
     // When user clicks on add subject button, show the popup.
     this.addSubjectButton.addEventListener("mousedown", () => {
       if (this.numSubjectsChosen < 6) {
-        this.popUp.style.display = "flex";
+        this.popUp.style.display = "";
         this.popUp.animate([{ opacity: "0" }, { opacity: "100" }], { duration: 200, easing: "ease-in-out" });
       }
     });
@@ -218,10 +218,10 @@ class UserTabManager {
       document.getElementById("teacher-button"),
       document.getElementById("admin-button")
     ];
-    this.userElems = [
-      document.querySelectorAll(".student"),
-      document.querySelectorAll(".teacher"),
-      document.querySelectorAll(".admin")
+    this.userFieldsets = [
+      document.querySelector("#specificAttr-fieldset-student"),
+      document.querySelector("#specificAttr-fieldset-teacher"),
+      document.querySelector("#specificAttr-fieldset-admin")
     ];
     this.userTypes = ["Student", "Teacher", "Admin"];
 
@@ -248,10 +248,10 @@ class UserTabManager {
     this.userButtons[(i + 2) % 3].classList.remove("active");
 
     setTimeout(() => {
-      this.userElems[i].forEach(elem => { elem.style.display = "flex"; });
+      this.userFieldsets[i].style.display = ""; this.userFieldsets[i].disabled = false;
     }, 200)
-    this.userElems[(i + 1) % 3].forEach(elem => { elem.style.display = "none"; });
-    this.userElems[(i + 2) % 3].forEach(elem => { elem.style.display = "none" });
+    this.userFieldsets[(i + 1) % 3].style.display = "none"; this.userFieldsets[(i + 1) % 3].disabled = true;
+    this.userFieldsets[(i + 2) % 3].style.display = "none"; this.userFieldsets[(i + 2) % 3].disabled = true;
 
     this.userTypeInput.value = this.userTypes[i];
   }
