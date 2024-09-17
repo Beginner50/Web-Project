@@ -32,7 +32,6 @@
                 $password = $_POST["password"];
                 $repeatpassword = $_POST["repassword"];
 
-
                 $passwordhash = password_hash($password, PASSWORD_DEFAULT); //Hashing of password
                 $errors = array(); //array to store errors
                 $usertype = $_POST["user-type"];

@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("registration-form").addEventListener("submit", () => {
     document.getElementById("selected-subjects").value = subjectManager.subjectsChosen.toString();
   });
+
 });
 
 /* ---------------------------------------------------------------------- */
@@ -122,7 +123,9 @@ class SubjectManager {
     this.formSubjectList = document.getElementById("subjectList");
     this.addSubjectButton = document.getElementById("addSubject-button");
 
-    this.fetchSubjectList()
+    // Fetches subjects asynchronously
+    fetch("phpFunctions/getSubjects.php")
+      .then(response => response.json())
       .then(subjects => {
         subjects.forEach(subject => {
           const button = document.createElement("button");
@@ -159,11 +162,6 @@ class SubjectManager {
           this.selectSubject(subjectButton);
       });
     });
-  }
-
-  // Fetch list of subjects from database asynchronously
-  fetchSubjectList() {
-    return fetch("php/getSubjects.php").then(response => response.json());
   }
 
   // User selects a subject from popUp menu
