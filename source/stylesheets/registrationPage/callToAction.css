@@ -14,7 +14,7 @@ button.callToAction {
 }
 
 button.callToAction:hover {
-    color: var(--purpleMountain);
+    color: var(--blueOcean);
     background-color: white;
     transition: background-color 0.3s;
 }

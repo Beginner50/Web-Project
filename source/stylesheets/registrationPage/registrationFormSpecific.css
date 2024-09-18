@@ -1,4 +1,4 @@
-#specificAttr-fieldset {
+#registration-form #specificAttr-fieldset {
     display: inline;
     height: 35%;
     width: 87%;
@@ -6,7 +6,7 @@
     margin-right: auto;
     margin-top: 25px;
     border-radius: 5px;
-    border: 1px var(--purpleMountain) solid;
+    border: 1px var(--blueOcean) solid;
     padding: 0px;
 }
 
@@ -51,7 +51,7 @@
     position: absolute;
     left: 70%;
     cursor: pointer;
-    fill: var(--purpleMountain);
+    fill: var(--blueOcean);
     width: 16px;
     height: 16px;
 }

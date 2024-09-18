@@ -18,8 +18,8 @@ class MoveableWrapperManager {
     this.formStatus = "login";
     this.inTransit = false;
 
-    this.loginElems = document.querySelectorAll(".login");
-    this.registrationElems = document.querySelectorAll(".registration");
+    this.loginForm = document.querySelector("#login-form");
+    this.registrationForm = document.querySelector("#registration-form");
 
     this.CTAWrapper = document.querySelector("#callToAction-wrapper");
     this.formWrapper = document.querySelector("#form-wrapper");
@@ -49,7 +49,7 @@ class MoveableWrapperManager {
       { transform: "translate(65%)", opacity: "100" },
       { transform: "translate(65%)", opacity: "0" },
       { transform: "translate(10%)", opacity: "0" },
-      { transform: "translate(-5%)" }
+      { transform: "translate(0%)" }
     ];
 
     this.options = {
@@ -81,8 +81,8 @@ class MoveableWrapperManager {
 
   showLoginForm() {
     setTimeout(() => {
-      this.loginElems.forEach(elem => { elem.style.display = "flex" });
-      this.registrationElems.forEach(elem => { elem.style.display = "none" });
+      this.loginForm.style.display = "";
+      this.registrationForm.style.display = "none";
       this.inTransit = false;
     }, 250);
     this.formWrapper.animate(this.formkeyframesLeft, this.options);
@@ -97,8 +97,8 @@ class MoveableWrapperManager {
 
   showRegistrationForm() {
     setTimeout(() => {
-      this.loginElems.forEach(elem => { elem.style.display = "none" });
-      this.registrationElems.forEach(elem => { elem.style.display = "flex" });
+      this.loginForm.style.display = "none";
+      this.registrationForm.style.display = "";
       this.inTransit = false;
     }, 250);
     this.formWrapper.animate(this.formkeyframesRight, this.options);

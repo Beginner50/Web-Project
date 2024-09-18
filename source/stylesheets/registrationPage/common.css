@@ -10,12 +10,12 @@ html {
     margin-bottom: 100px;
     margin-left: auto;
     margin-right: auto;
-    background-color: var(--paleSky);
+    background-color: var(--orchid);
 }
 
 /* Call To Action(CTA) */
 /* View callToAction.css*/
-#callToAction-wrapper {
+#main-wrapper #callToAction-wrapper {
     position: absolute;
     border-radius: 15px;
     margin-left: 60%;
@@ -25,10 +25,10 @@ html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(to right, var(--purpleMountain), var(--purpleVortex));
+    background: linear-gradient(to top right, hsl(218, 51%, 75%), hsl(276, 97%, 36%));
 }
 
-#form-wrapper {
+#main-wrapper #form-wrapper {
     position: relative;
     height: inherit;
     display: flex;
@@ -38,14 +38,14 @@ html {
 }
 
 /* Common attributes for login form */
-#login-form {
+#form-wrapper #login-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.login .input-group {
+#login-form .input-group {
     font-size: 18px;
     color: rgb(82, 79, 79);
 
@@ -60,7 +60,7 @@ html {
     width: 120%;
 }
 
-.login .input-box {
+#login-form .input-box {
     padding-left: 0.2rem;
     font-size: 0.9rem;
     padding-top: 0.15rem;
@@ -73,7 +73,7 @@ html {
     transition: all 0.15s;
 }
 
-#loginSubmit-button {
+#login-form #loginSubmit-button {
     font-weight: 600;
     margin-top: 35px;
     width: 100px;
@@ -85,14 +85,15 @@ html {
 
 /* Common attributes for registration form */
 /* View registrationFormGeneral.css & registrationFormSpecific.css */
-#registration-form {
+#form-wrapper #registration-form {
     display: flex;
     flex-direction: column;
     height: 492px;
     width: 100%;
+    /* border: 1px solid red; */
 }
 
-.registration .input-group {
+#registration-form .input-group {
     position: relative;
     font-size: 0.8rem;
     color: rgb(0, 0, 0);
@@ -105,7 +106,7 @@ html {
     width: min(85%, 190px);
 }
 
-.registration .input-box {
+#registration-form .input-box {
     padding-left: 0.2rem;
     font-size: 0.9rem;
     padding-top: 0.15rem;
@@ -118,9 +119,9 @@ html {
     transition: all 0.15s;
 }
 
-#registrationSubmit-button {
+#registration-form #registrationSubmit-button {
     position: fixed;
-    top: 80%;
+    top: 90%;
     font-weight: 600;
     width: 100px;
     height: 40px;

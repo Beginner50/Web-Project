@@ -6,14 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="School Website for ABC Academy">
     <link rel="stylesheet" href="stylesheets/common.css">
+    <link rel="stylesheet" href="stylesheets/navBar.css">
     <link rel="stylesheet" href="stylesheets/registrationPage/common.css">
     <link rel="stylesheet" href="stylesheets/registrationPage/callToAction.css">
     <link rel="stylesheet" href="stylesheets/registrationPage/registrationFormGeneral.css">
     <link rel="stylesheet" href="stylesheets/registrationPage/registrationFormSpecific.css">
     <title>School Website</title>
+
+    <script>
+        /*to prevent Firefox FOUC, this must be here*/
+        let FF_FOUC_FIX;
+    </script>
+
 </head>
 
 <body>
+    <!-- Navigation Bar -->
+    <?php $page = 'registration';
+    require_once('navBar.php') ?>
+
     <!-- Main Wrapper -->
     <div id="main-wrapper" class="roundBorder-15">
         <!-- Call To Action Wrapper -->
@@ -21,7 +32,7 @@
             <h1 class="callToAction">
                 New to Education
                 Portal?</h1>
-            <button class="callToAction"> <a href="main-wrapper">Sign Up</a></button>
+            <button class="callToAction"> <a>Sign Up</a></button>
         </div>
         <!-- Form Wrapper -->
         <div id="form-wrapper">
@@ -29,7 +40,7 @@
             <h1>Sign In</h1>
 
             <!-- Login Form (Default: on) -->
-            <form class="login" id="login-form" method="post" action="phpFunctions/login.php">
+            <form id="login-form" method="post" action="phpFunctions/login.php">
                 <div class="input-group"> Email: <input class="input-box" type="email" name="email" required
                         autocomplete="email">
                 </div>
@@ -41,10 +52,10 @@
             </form>
 
             <!-- Registration Form (Default: off)-->
-            <form id="registration-form" class="registration" method="post" action="phpFunctions/registration.php"
+            <form id="registration-form" method="post" action="phpFunctions/registration.php"
                 style="display: none;">
                 <!-- User Type Fieldset (Select between different users) -->
-                <fieldset id="userType-fieldset" >
+                <fieldset id="userType-fieldset">
                     <input id="student-button" class="indigoTheme active noGap" type="button" form="none"
                         value="Student">
                     <input id="teacher-button" class="indigoTheme noGap" type="button" form="none" value="Teacher">
