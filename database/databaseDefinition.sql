@@ -22,6 +22,7 @@ CREATE TABLE subject (
     PRIMARY KEY (SubjectCode)
 );
 
+
 CREATE TABLE user (
     UserID INTEGER NOT NULL AUTO_INCREMENT,
     DateOfBirth DATE NOT NULL,
@@ -30,16 +31,8 @@ CREATE TABLE user (
     Email VARCHAR(64) UNIQUE,
     Gender CHAR,
     Password VARCHAR(125),
-    AuthorisationType VARCHAR(30),
-    CHECK (
-        AuthorisationType IN (
-            'teacherUnauthorised',
-            'teacherAuthorised',
-            'adminUnauthorised',
-            'adminAuthorised',
-            'student'
-        )
-    ),
+ 
+ 
     CHECK (Gender IN ('M', 'F')),
     CHECK (Email like('%@%.%')),
     PRIMARY KEY (UserID)
@@ -65,16 +58,16 @@ CREATE TABLE teacher (
     PRIMARY KEY (TeacherID),
     FOREIGN KEY (TeacherID) REFERENCES user (UserID) ON DELETE CASCADE
 );
-
+/* USE STORED PROCEDURE TO ADD CLASS, CHECK IF ALREADY EXIST*/
 CREATE TABLE class (
+    ClassID AUTO_INCREMENT INT; 
     Level SMALLINT,
     ClassGroup VARCHAR(5),
     SubjectCode VARCHAR(5),
     TeacherID INTEGER,
+
     PRIMARY KEY (
-        Level,
-        ClassGroup,
-        SubjectCode
+        ClassID
     ),
     FOREIGN KEY (TeacherID) REFERENCES teacher (TeacherID) ON DELETE CASCADE,
     FOREIGN KEY (SubjectCode) REFERENCES subject (SubjectCode) ON DELETE CASCADE,
@@ -86,41 +79,33 @@ CREATE TABLE class (
 );
 
 CREATE TABLE class_student (
-    Level SMALLINT,
-    ClassGroup VARCHAR(5),
-    SubjectCode VARCHAR(5),
+    ClassID INTEGER,
     StudentID INTEGER,
+
     PRIMARY KEY (
-        Level,
-        ClassGroup,
-        SubjectCode
+        ClassID,
+        StudentID
     ),
-    FOREIGN KEY (SubjectCode) REFERENCES class (SubjectCode) ON DELETE CASCADE,
+    FOREIGN KEY (ClassID) REFERENCES class (ClassID) ON DELETE CASCADE,
     FOREIGN KEY (StudentID) REFERENCES student (StudentID) ON DELETE CASCADE,
-    CHECK (ClassGroup IN ('RED', 'BLUE')),
-    CHECK (
-        Level > 0
-        AND level < 4
-    )
+
 );
 
 CREATE TABLE class_message (
-    Level SMALLINT,
-    ClassGroup VARCHAR(5),
-    SubjectCode VARCHAR(5),
+    ClassID INTEGER,
+    UserID INTEGER,
+    DateSent DATETIME,
     Message VARCHAR(256),
+
     PRIMARY KEY (
-        Level,
-        ClassGroup,
-        SubjectCode,
-        Message
+        UserID,
+        ClassID,
+        DateSent
     ),
-    FOREIGN KEY (SubjectCode) REFERENCES class (SubjectCode) ON DELETE CASCADE,
-    CHECK (ClassGroup IN ('RED', 'BLUE')),
-    CHECK (
-        Level > 0
-        AND level < 4
-    )
+
+    FOREIGN KEY (ClassID) REFERENCES class (ClassID) ON DELETE CASCADE,
+    FOREIGN KEY (UserID) REFERENCES user (UserID) ON DELETE CASCADE,
+
 );
 
 CREATE TABLE administrator (
@@ -131,9 +116,18 @@ CREATE TABLE administrator (
 );
 
 CREATE TABLE approval (
-    AdminID INTEGER,
+    AdminID  INTEGER DEFAULT NULL,
     UserID INTEGER,
-    PRIMARY KEY (AdminID, UserID),
+    UserType VARCHAR(15),
+    IsApproved BOOLEAN DEFAULT FALSE,
+
+       CHECK (
+        UserType IN (
+            'teacher',
+            'admin',
+        )
+    ),
+    PRIMARY KEY (UserID),
     FOREIGN KEY (AdminID) REFERENCES administrator (AdminID) ON DELETE CASCADE,
     FOREIGN KEY (UserID) REFERENCES user (UserID) ON DELETE CASCADE
 );
@@ -147,8 +141,8 @@ BEGIN
 	DECLARE lvl INT;
     SET lvl = 1;
 	WHILE lvl < 4 DO
-		INSERT INTO class VALUES(lvl, 'RED', NEW.subjectCode, NULL);
-        INSERT INTO class VALUES(lvl, 'BLUE', NEW.subjectCode, NULL);
+		INSERT INTO class(Level,ClassGroup,SubjectCode,TeacherID) VALUES(lvl, 'RED', NEW.subjectCode,NULL);
+        INSERT INTO class(Level,ClassGroup,SubjectCode,TeacherID) VALUES(lvl, 'BLUE', NEW.subjectCode, NULL);
 		SET lvl = lvl + 1;
     END WHILE;
 END;
@@ -401,3 +395,20 @@ VALUES (
                 AND SubjectCode = 'ENG1'
         )
     );
+
+--INSERTING ALL SUBJECTS
+INSERT INTO subject (SubjectCode, SubjectName)
+VALUES 
+    ('CS101', 'Introduction to Computer Science'),
+    ('MA102', 'Calculus I'),
+    ('PH103', 'Physics for Engineers'),
+    ('CS201', 'Data Structures'),
+    ('CS202', 'Database Systems'),
+    ('MA203', 'Linear Algebra'),
+    ('PH204', 'Electromagnetism'),
+    ('CS301', 'Operating Systems'),
+    ('CS302', 'Software Engineering'),
+    ('MA304', 'Discrete Mathematics'),
+    ('CS305', 'Computer Networks'),
+    ('CS306', 'Artificial Intelligence');
+
