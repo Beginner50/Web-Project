@@ -1,3 +1,7 @@
+DROP DATABASE DatabaseTesting;
+CREATE DATABASE DatabaseTesting;
+USE DatabaseTesting;
+
 /*
 Changes to ERD:
 - Removed UnauthorisedUser table since unauthorised users can be represented in
@@ -60,7 +64,7 @@ CREATE TABLE teacher (
 );
 /* USE STORED PROCEDURE TO ADD CLASS, CHECK IF ALREADY EXIST*/
 CREATE TABLE class (
-    ClassID AUTO_INCREMENT INT; 
+    ClassID INT  AUTO_INCREMENT ,
     Level SMALLINT,
     ClassGroup VARCHAR(5),
     SubjectCode VARCHAR(5),
@@ -87,7 +91,7 @@ CREATE TABLE class_student (
         StudentID
     ),
     FOREIGN KEY (ClassID) REFERENCES class (ClassID) ON DELETE CASCADE,
-    FOREIGN KEY (StudentID) REFERENCES student (StudentID) ON DELETE CASCADE,
+    FOREIGN KEY (StudentID) REFERENCES student (StudentID) ON DELETE CASCADE
 
 );
 
@@ -104,7 +108,7 @@ CREATE TABLE class_message (
     ),
 
     FOREIGN KEY (ClassID) REFERENCES class (ClassID) ON DELETE CASCADE,
-    FOREIGN KEY (UserID) REFERENCES user (UserID) ON DELETE CASCADE,
+    FOREIGN KEY (UserID) REFERENCES user (UserID) ON DELETE CASCADE
 
 );
 
@@ -121,12 +125,12 @@ CREATE TABLE approval (
     UserType VARCHAR(15),
     IsApproved BOOLEAN DEFAULT FALSE,
 
-       CHECK (
-        UserType IN (
-            'teacher',
-            'admin',
-        )
-    ),
+	 CHECK (
+		UserType IN (
+			'teacher',
+			'admin'
+		)
+	),
     PRIMARY KEY (UserID),
     FOREIGN KEY (AdminID) REFERENCES administrator (AdminID) ON DELETE CASCADE,
     FOREIGN KEY (UserID) REFERENCES user (UserID) ON DELETE CASCADE
@@ -158,8 +162,7 @@ INSERT INTO
         LastName,
         Email,
         Gender,
-        Password,
-        AuthorisationType
+        Password
     )
 VALUES (
         '1970-01-01',
@@ -167,8 +170,7 @@ VALUES (
         'admin',
         'root@email.com',
         'M',
-        'rootPass123',
-        'adminAuthorised'
+        'rootPass123'
     );
 
 INSERT INTO
@@ -188,8 +190,7 @@ INSERT INTO
         LastName,
         Email,
         Gender,
-        Password,
-        AuthorisationType
+        Password
     )
 VALUES (
         '2005-02-15',
@@ -197,8 +198,7 @@ VALUES (
         'Doe',
         'john.doe@email.com',
         'M',
-        'studentPass123',
-        'student'
+        'studentPass123'
     ),
     (
         '2005-05-23',
@@ -206,8 +206,7 @@ VALUES (
         'Smith',
         'jane.smith@email.com',
         'F',
-        'studentPass123',
-        'student'
+        'studentPass123'
     );
 
 INSERT INTO
@@ -233,8 +232,7 @@ INSERT INTO
         LastName,
         Email,
         Gender,
-        Password,
-        AuthorisationType
+        Password
     )
 VALUES (
         '1980-03-10',
@@ -242,8 +240,7 @@ VALUES (
         'Twain',
         'mark.twain@email.com',
         'M' ,
-        'teacherPass123',
-        'teacherUnauthorised'
+        'teacherPass123'
     );
 
 INSERT INTO
@@ -253,8 +250,7 @@ INSERT INTO
         LastName,
         Email,
         Gender,
-        Password,
-        AuthorisationType
+        Password
     )
 VALUES (
         '1980-03-10',
@@ -262,8 +258,7 @@ VALUES (
         'Lord',
         'lord.kelvin@email.com',
         'M',
-        'teacherPass123',
-        'teacherUnauthorised'
+        'teacherPass123'
     );
 
 INSERT INTO
@@ -273,8 +268,7 @@ INSERT INTO
         LastName,
         Email,
         Gender,
-        Password,
-        AuthorisationType
+        Password
     )
 VALUES (
         '1980-03-10',
@@ -282,8 +276,7 @@ VALUES (
         'Bron',
         'michael.bron@email.com',
         'M',
-        'teacherPass123',
-        'teacherAuthorised'
+        'teacherPass123'
     );
 
 INSERT INTO
@@ -297,18 +290,13 @@ FROM user
 WHERE
     Email = 'michael.bron@email.com';
 
--- Assign students to classes
 INSERT INTO
     class_student (
-        Level,
-        ClassGroup,
-        SubjectCode,
+        ClassId,
         StudentID
     )
 VALUES (
         1,
-        'RED',
-        'MATH1',
         (
             SELECT StudentID
             FROM student
@@ -322,9 +310,7 @@ VALUES (
         )
     ),
     (
-        1,
-        'BLUE',
-        'ENG1',
+        2,  -- Assuming ClassID 2 is appropriate for Jane Smith
         (
             SELECT StudentID
             FROM student
@@ -337,14 +323,18 @@ VALUES (
                 )
         )
     );
+
 -- Assign teacher to class level= 1, class group= RED and subject = ENG1
 UPDATE class
 SET
     teacherID = (
-        SELECT teacherID
+        SELECT TeacherID
         FROM teacher
-    );
-
+        WHERE TeacherID=6
+    )
+WHERE
+    Level = 1 AND ClassGroup = 'RED' AND SubjectCode = 'ENG1';
+    
 -- Admin approves the unauthorised teacher: Mark Twain
 INSERT INTO
     approval (AdminID, UserID)
@@ -368,35 +358,30 @@ VALUES (
         )
     );
 
-UPDATE user
+
+UPDATE approval
 SET
-    AuthorisationType = 'teacherAuthorised'
+    UserType = 'Teacher',
+    IsApproved=true
 WHERE
-    Email = 'mark.twain@email.com';
+    UserID=4;
 
 -- Add a message to the class
 INSERT INTO
     class_message (
-        Level,
-        ClassGroup,
-        SubjectCode,
+        ClassID,
+        UserID,
+        DateSent,
         Message
     )
 VALUES (
-        1,
-        'BLUE',
-        'ENG1',
-        (
-            SELECT TeacherID
-            FROM class
-            WHERE
-                Level = 1
-                AND ClassGroup = 'BLUE'
-                AND SubjectCode = 'ENG1'
-        )
+        1, -- Assuming ClassID 1 is the correct class
+        (SELECT UserID FROM user WHERE Email = 'michael.bron@email.com'), -- Teacher's UserID
+        NOW(),
+        'Welcome to the class'
     );
 
---INSERTING ALL SUBJECTS
+-- INSERTING ALL SUBJECTS
 INSERT INTO subject (SubjectCode, SubjectName)
 VALUES 
     ('CS101', 'Introduction to Computer Science'),
