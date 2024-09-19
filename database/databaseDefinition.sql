@@ -1,6 +1,3 @@
-DROP DATABASE DatabaseTesting;
-CREATE DATABASE DatabaseTesting;
-USE DatabaseTesting;
 
 /*
 Changes to ERD:
