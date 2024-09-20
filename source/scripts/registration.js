@@ -226,6 +226,7 @@ class UserTabManager {
     this.userTypes = ["Student", "Teacher", "Admin"];
 
     this.userTypeInput = document.getElementById("user-type");
+    this.userTypeInput.value = this.userTypes[0];
     this.inTransit = false;
 
     this.userButtons.forEach(button => {
@@ -240,6 +241,8 @@ class UserTabManager {
         this.inTransit = false;
       });
     })
+
+    this.showTab(0);
   }
 
   showTab(i) {
