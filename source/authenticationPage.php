@@ -7,10 +7,10 @@
     <meta name="description" content="School Website for ABC Academy">
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/navBar.css">
-    <link rel="stylesheet" href="stylesheets/registrationPage/common.css">
-    <link rel="stylesheet" href="stylesheets/registrationPage/callToAction.css">
-    <link rel="stylesheet" href="stylesheets/registrationPage/registrationFormGeneral.css">
-    <link rel="stylesheet" href="stylesheets/registrationPage/registrationFormSpecific.css">
+    <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
+    <link rel="stylesheet" href="stylesheets/authenticationPage/callToAction.css">
+    <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
+    <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormSpecific.css">
     <title>School Website</title>
 
     <script>
@@ -40,7 +40,7 @@
             <h1>Sign In</h1>
 
             <!-- Login Form (Default: on) -->
-            <form id="login-form" method="post" action="phpFunctions/login.php">
+            <form id="login-form" method="post" action="Authentication/login.php">
                 <div class="input-group"> Email: <input class="input-box" type="email" name="email" required
                         autocomplete="email">
                 </div>
@@ -52,7 +52,7 @@
             </form>
 
             <!-- Registration Form (Default: off)-->
-            <form id="registration-form" method="post" action="phpFunctions/registration.php"
+            <form id="registration-form" method="post" action="Authentication/registration.php"
                 style="display: none;">
                 <!-- User Type Fieldset (Select between different users) -->
                 <fieldset id="userType-fieldset">
@@ -172,7 +172,7 @@
         </div>
     </div>
 
-    <script src="scripts/registration.js"></script>
+    <script src="scripts/authenticationPage.js"></script>
 </body>
 
 </html>

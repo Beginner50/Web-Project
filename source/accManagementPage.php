@@ -7,23 +7,21 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Management</title>
-    <link rel="stylesheet" href="stylesheets/Acc_management.css">
+    <link rel="stylesheet" href="stylesheets/accountManagementPage/Acc_management.css">
     <link rel="stylesheet" href="stylesheets/common.css">
-    <link rel="stylesheet" href="stylesheets/registration.css">
+    <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="stylesheets/navBar.css">
+    <script>
+        0
+        </script>
 </head>
+<?php
+    $page = 'accountManagementTab';
+    require_once('navBar.php');
+    ?>
 <body>
-
-    <!-- Navigation Bar -->
-    <nav class="indigoTheme">
-        <div id="leftSection"></div>
-        <div id="rightSection">
-            <button class=" indigoTheme roundBorder shadow"> Contact Us</button>
-            <button class=" indigoTheme roundBorder shadow"> Terms & Conditions</button>
-        </div>
-    </nav>
-    <div class="wrapper">
-
+    <div class="wrapper"> 
         <!--  Side Navigation bar -->
         <div class="sidebar">
             <h2>Account management</h2>
@@ -57,7 +55,7 @@ session_start();
                 <div class="information description">This is your private general information that is stored and will be used only for educative purposes.</div>
             </div>
             <div class="personalinfo-content2  second-column">     
-                <form id="personalinfo-form" class="personalinfo-grid" method="post" action="php/AccountManagment/personalinfo.php">
+                <form id="personalinfo-form" class="personalinfo-grid" method="post" action="AccountManagement/personalinfo.php">
                     <div class="information" > 
                         <label class="sub-information" >First Name: </label>
                         <input class="information-input" type="text" id="firstname" name="firstname" value="<?php echo $_SESSION['FirstName'];?>" >
@@ -141,7 +139,7 @@ session_start();
             <div class="login-content2  second-column">
                 <h2 style="margin-bottom: 10px;">Change Password</h2>
                 <div class="inputpassword">
-                    <form id="passwordchange-form" class="inputpassword" method="post" action="php/AccountManagment/passchange.php">
+                    <form id="passwordchange-form" class="inputpassword" method="post" action="AccountManagement/passchange.php">
                         <div class="login-password">
                             <input type="password" required placeholder=" " name="currentpassword">
                             <label >Current Password</label>
@@ -166,8 +164,7 @@ session_start();
                 <div id="logout-content" class="information description" >Worried that your account or password has been compromised? You can forcibly log out from all devices. </div>
             </div>
             <div class="logout-content2 second-column">
-
-                <a href="php/AccountManagment/logout.php" class="indigoTheme roundBorder savebutton" id="logout-button">Logout Out Everywhere</a>
+                <a href="AccountManagement/logout.php" class="indigoTheme roundBorder savebutton" id="logout-button">Logout Out Everywhere</a>
             </div>
         </div>
     </div>

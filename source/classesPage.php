@@ -13,11 +13,11 @@
     </script>
 </head>
 
-<body>
-    <!-- Navigation Bar -->
-    <?php $page = 'classTab';
-    require_once('navBar.php') ?>
+<!-- Navigation Bar -->
+<?php $page = 'classTab';
+require_once('navBar.php') ?>
 
+<body>
     <div id="main-wrapper">
         <div id="left-wrapper">
             <h1> Classes </h1>

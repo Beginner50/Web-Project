@@ -8,6 +8,7 @@
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" href="../stylesheets/common.css">
+        <link rel="stylesheet" href="../stylesheets/authenticationPage/common.css">
     </head>
 
     <body style="background-color: var(--duskSky);">
@@ -30,6 +31,7 @@
                 $dateofbirth = $_POST["dob"];
                 $password = $_POST["password"];
                 $repeatpassword = $_POST["repassword"];
+
 
                 $passwordhash = password_hash($password, PASSWORD_DEFAULT); //Hashing of password
                 $errors = array(); //array to store errors
@@ -128,13 +130,13 @@
                 } else {
 
                     //INSERTING INTO USER
-                    $sqlquery = "INSERT INTO user(DateOfBirth,FirstName,LastName,Email,Gender,Password,AuthorisationType) VALUES (?,?,?,?,?,?,?)";
+                    $sqlquery = "INSERT INTO user(DateOfBirth,FirstName,LastName,Email,Gender,Password) VALUES (?,?,?,?,?,?)";
                     $stmt = mysqli_stmt_init($conn); //initialises connection
 
                     if (mysqli_stmt_prepare($stmt, $sqlquery)) {
 
                         //binds and execute statement
-                        mysqli_stmt_bind_param($stmt, "sssssss", $dateofbirth, $firstname, $lastname, $email, $gender, $passwordhash, $authtype);
+                        mysqli_stmt_bind_param($stmt, "ssssss", $dateofbirth, $firstname, $lastname, $email, $gender, $passwordhash);
                         mysqli_stmt_execute($stmt);
 
                         //searching maximum userid- most recent insert
@@ -184,6 +186,21 @@
                             mysqli_stmt_close($stmt); //must close stmt
                         } else if ($usertype == 'Teacher') {
 
+                            //INSERTING INTO APPROVAL
+                            $stmt = mysqli_stmt_init($conn);
+
+                            $sqlquery = "INSERT INTO approval(AdminID,UserID,UserType,IsApproved) VALUES (?,?,?,?)";
+                            if (mysqli_stmt_prepare($stmt, $sqlquery)) {
+
+                                $AdminID=NULL;
+                                $IsApproved=0;
+                                mysqli_stmt_bind_param($stmt, "iisi",$AdminID, $max_userid,$usertype,$IsApproved);
+                                mysqli_stmt_execute($stmt);
+                            } else {
+                                die("Something went wrong in approval table!");
+                            }
+                            mysqli_stmt_close($stmt); //must close stmt
+
                             //INSERTING INTO TEACHER
                             $stmt = mysqli_stmt_init($conn);
 
@@ -197,6 +214,21 @@
                             }
                             mysqli_stmt_close($stmt); //must close stmt
                         } else if ($usertype == 'Admin') {
+
+                            
+                            //INSERTING INTO APPROVAL
+                            $stmt = mysqli_stmt_init($conn);
+
+                            $sqlquery = "INSERT INTO approval(AdminID,UserID,UserType,IsApproved) VALUES (?,?,?,?)";
+                            if (mysqli_stmt_prepare($stmt, $sqlquery)) {
+
+                                mysqli_stmt_bind_param($stmt, "iisi",NULL, $max_userid,$usertype,0);
+                                mysqli_stmt_execute($stmt);
+                            } else {
+                                die("Something went wrong in approval table!");
+                            }
+                            mysqli_stmt_close($stmt); //must close stmt
+
                             //INSERTING INTO ADMIN
                             $stmt = mysqli_stmt_init($conn);
                             $sqlquery = "INSERT INTO administrator(AdminID,DateJoined) VALUES (?,?)";

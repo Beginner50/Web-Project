@@ -125,7 +125,7 @@ class SubjectManager {
     this.addSubjectButton = document.getElementById("addSubject-button");
 
     // Fetches subjects asynchronously
-    fetch("phpFunctions/getSubjects.php")
+    fetch("Authentication/getSubjects.php")
       .then(response => response.json())
       .then(subjects => {
         subjects.forEach(subject => {
@@ -140,7 +140,7 @@ class SubjectManager {
     // Assign event listener to the addSubject-button
     // When user clicks on add subject button, show the popup.
     this.addSubjectButton.addEventListener("mousedown", () => {
-      if (this.numSubjectsChosen < 6) {
+      if (this.numSubjectsChosen < 5) {
         this.popUp.style.display = "";
         this.popUp.animate([{ opacity: "0" }, { opacity: "100" }], { duration: 200, easing: "ease-in-out" });
       }

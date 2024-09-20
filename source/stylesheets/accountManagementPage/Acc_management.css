@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+    font-family: "Josefin Sans", sans-serif;
+}
+
+nav {
+    position: fixed;
+    /* Fix the nav at the top */
+    top: 0;
+    /* Align it to the top */
+    left: 0;
+    /* Align it to the left */
+    width: 100%;
+    /* Make the nav span the full width of the viewport */
+    z-index: 1000;
+    /* Ensures it stays on top of other elements */
+    background-color: #3f51b5;
+    /* Ensure the nav has a background color (your indigo theme) */
+    padding: 10px;
+    /* Optional: Add some padding to the nav */
+
+}
+
+.wrapper {
+    display: flex;
+    position: relative;
+}
+
+.wrapper .sidebar {
+
+    position: fixed;
+    background-color: #705ba5;
+    width: 300px;
+    height: 100%;
+
+    padding-left: 45px;
+}
+
+.wrapper .sidebar h2 {
+
+    color: rgb(250, 250, 250);
+    padding-top: 100px;
+    font-weight: bolder;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.wrapper .sidebar ul li {
+
+    padding: 10px;
+    border-radius: 10px;
+    transition: 0.15s;
+}
+
+.wrapper .sidebar ul li:hover {
+
+    background-color: hsl(256, 66%, 25%);
+    ;
+    color: rgba(227, 215, 244, 0.613);
+
+}
+
+.wrapper .sidebar ul li a {
+
+    color: whitesmoke;
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.wrapper .sidebar ul li a .fa {
+    width: 30px;
+    height: 20px;
+    font-size: small;
+}
+
+.wrapper .main-content {
+
+    width: 100%;
+    margin-left: 325px;
+
+    margin-right: 50px;
+
+
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    grid-row-gap: 15px;
+    padding-top: 100px;
+    padding-bottom: 160px;
+}
+
+.wrapper .main-content .first-column {
+
+    padding: 40px 45px;
+
+    background-color: #b7a7e2;
+
+}
+
+.wrapper .main-content .second-column {
+
+    padding: 40px 45px;
+    background-color: #ccbbfb;
+}
+
+.wrapper .main-content .information {
+    color: rgb(28, 28, 28);
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 15px;
+    background-color: #ececfa;
+    padding: 8px;
+    border-radius: 7px;
+    border: 2px solid transparent;
+    /* Default border */
+    transition: border 0.3s ease;
+    /* Smooth transition for border change */
+}
+
+.wrapper .main-content .description {
+
+    background-color: #5d4d8749;
+    color: rgb(44, 44, 44)
+}
+
+.wrapper .main-content .information-input {
+    all: unset;
+    border: none;
+    background-color: transparent;
+    font-size: 15px;
+    padding-top: 7px;
+    margin-right: 20px;
+}
+
+
+.wrapper .main-content .information:focus-within {
+    border: 2px solid;
+    color: hsl(256, 66%, 25%);
+}
+
+
+.wrapper .main-content .personalinfo-grid {
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+
+}
+
+.wrapper .main-content .savebutton {
+    margin-top: 15px;
+
+    border-width: 2px;
+    padding: 5px 13px;
+    font-weight: bold;
+
+
+}
+
+.wrapper .main-content .sub-information {
+
+    color: var(--purpleVortex);
+    padding-bottom: 10px;
+}
+
+.personalinfo-email {
+
+    grid-column: span 2;
+}
+
+.studentinfo-grid {
+
+    grid-column: span 2;
+}
+
+.wrapper .main-content .studentinformation-content2 {
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+
+}
+
+
+.login-password {
+    position: relative;
+
+    margin-bottom: 10px;
+}
+
+.login-password input {
+
+
+    padding: 20px 15px;
+    border: 2px solid var(--purpleVortex);
+    border-radius: 5px;
+    width: 250px;
+
+    color: hsl(256, 66%, 25%);
+    outline: none;
+
+}
+
+.login-password label {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+
+    transform: translateY(-50%);
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 3px;
+    color: var(--purpleVortex);
+    pointer-events: none;
+    transition: 0.25s;
+}
+
+input:focus~label,
+input:not(:placeholder-shown)~label {
+
+    top: 0;
+    left: 15px;
+    font-size: 10px;
+    padding: 0 2px;
+    background: #ccbbfb;
+
+
+}

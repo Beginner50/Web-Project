@@ -1,3 +1,3 @@
 <?php
-
-header("Location: registrationPage.php");
+// To add session stuff here
+header("Location: authenticationPage.php");
