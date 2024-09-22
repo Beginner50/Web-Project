@@ -1,0 +1,35 @@
+1) Always use single quotes for strings
+
+   PHP will automatically escape single quote characters in strings with single quotes,
+   meaning that the programmer will not have to worry about sql injections.
+
+2) Always sanitize and filter form inputs using
+
+    htmlspecialchars($str)
+    filter_var($str, FILTER_VALIDATE_EMAIL);
+
+3) Understand the differences between include, include_once, require, require_once
+
+    include - Includes a php file and re-includes the file on subsequent requests.
+
+    include_once - Includes a php file only once. Works across different php files.
+    
+    require - Same as include except execution of script is halted if 
+              script is not found.
+
+    require_once - Same as require and include_once.
+
+4) Split up large html code into different php files for modularity.
+
+   Adv: Common php files can be cached on the client side, reducing need to
+        make redundant requests to server.
+
+5) Use PDO instead of mysqli to interact with databases.
+
+   Adv: PDO provides a unified data access abstraction layer, meaning that it
+        can work with different databases whereas mysqli can only work with
+        mysql database.
+
+6) If a script has executed once, the states of all global variables are saved in
+   the web server until the next restart. Take advantage of this caching mechanism
+   to optimise website performance on subsequent requests to the file.

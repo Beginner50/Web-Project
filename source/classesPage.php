@@ -21,9 +21,6 @@ require_once('navBar.php') ?>
     <div id="sidebar">
         <h1> Classes </h1>
         <menu id="class-menu">
-            <ul>CS101, Level 1, Red</ul>
-            <ul>CS101, Level 1, Red</ul>
-            <ul>CS101, Level 1, Red</ul>
         </menu>
     </div>
     <div id="main-wrapper">
@@ -37,14 +34,6 @@ require_once('navBar.php') ?>
             </button>
         </div>
         <div id="classChat-body" class="classChat">
-            <span class="message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat accusantium consectetur vero optio aliquid minima omnis ex, iste, iure quam laudantium similique culpa illo suscipit autem cupiditate nihil, obcaecati corporis.</span>
-            <span class="message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat accusantium consectetur vero optio aliquid minima omnis ex, iste, iure quam laudantium similique culpa illo suscipit autem cupiditate nihil, obcaecati corporis.</span>
-            <span class="message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat accusantium consectetur vero optio aliquid minima omnis ex, iste, iure quam laudantium similique culpa illo suscipit autem cupiditate nihil, obcaecati corporis.</span>
-            <span class="message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat accusantium consectetur vero optio aliquid minima omnis ex, iste, iure quam laudantium similique culpa illo suscipit autem cupiditate nihil, obcaecati corporis.</span>
-            <span class="message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat accusantium consectetur vero optio aliquid minima omnis ex, iste, iure quam laudantium similique culpa illo suscipit autem cupiditate nihil, obcaecati corporis.</span>
-            <span class="message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat accusantium consectetur vero optio aliquid minima omnis ex, iste, iure quam laudantium similique culpa illo suscipit autem cupiditate nihil, obcaecati corporis.</span>
-            <span class="message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat accusantium consectetur vero optio aliquid minima omnis ex, iste, iure quam laudantium similique culpa illo suscipit autem cupiditate nihil, obcaecati corporis.</span>
-            <span class="message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat accusantium consectetur vero optio aliquid minima omnis ex, iste, iure quam laudantium similique culpa illo suscipit autem cupiditate nihil, obcaecati corporis.</span>
         </div>
         <div id="classChat-footer" class="classChat">
             <form id="message-form" method="post" action="">

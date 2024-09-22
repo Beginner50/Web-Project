@@ -26,17 +26,13 @@ body #sidebar {
     height: 40%;
     margin-left: 15%;
     overflow-y: scroll;
-    /* IE and Edge */
-    -ms-overflow-style: none;
-    /* Firefox */
-    scrollbar-width: none;
     padding-left: 0px;
     gap: 5px;
 }
 
 #class-menu ul {
     font-size: 15px;
-    padding-top: 10px
+    padding-top: 10px;
 }
 
 #class-menu ul:hover {

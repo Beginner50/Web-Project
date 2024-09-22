@@ -131,8 +131,8 @@ class SubjectManager {
         subjects.forEach(subject => {
           const button = document.createElement("button");
           button.className = "indigoTheme popUp";
-          button.value = subject;
-          button.innerHTML = subject;
+          button.value = subject.SubjectCode;
+          button.innerHTML = subject.SubjectName;
           this.popUpList.appendChild(button);
         })
       });
