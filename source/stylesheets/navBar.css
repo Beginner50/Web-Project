@@ -1,5 +1,14 @@
+.relative {
+    position: relative;
+}
+
+.fixed {
+    position: fixed;
+}
+
 nav.indigoTheme {
     width: 100%;
+    z-index: 1000;
     height: 80px;
     background: var(--paleSky);
     box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 8px 0 rgba(0, 0, 0, 0.19);

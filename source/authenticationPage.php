@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="School Website for ABC Academy">
-    <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/navBar.css">
+    <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/callToAction.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
@@ -22,7 +22,7 @@
 
 <body>
     <!-- Navigation Bar -->
-    <?php $page = 'registration';
+    <?php $page = 'authenticationPage';
     require_once('navBar.php') ?>
 
     <!-- Main Wrapper -->
