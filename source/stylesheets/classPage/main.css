@@ -115,7 +115,6 @@ body #main-wrapper {
 #classChat-footer #message-input {
     width: 88.5%;
     padding: 5px;
-    height: 40px;
     text-wrap: stable;
     margin-top: 1.4%;
     margin-bottom: 1.5%;
@@ -127,8 +126,9 @@ body #main-wrapper {
 #classChat-footer #send-button {
     cursor: pointer;
     margin-left: 2%;
+    padding: 0.76%;
     margin-bottom: 1%;
-    padding: 1%;
+    margin-top: 1%;
     border-radius: 3px;
     background-color: rgba(255, 255, 255, 0.6);
 }
