@@ -9,31 +9,12 @@ body {
     font-family: "Josefin Sans", sans-serif;
 }
 
-nav {
-    position: fixed;
-    /* Fix the nav at the top */
-    top: 0;
-    /* Align it to the top */
-    left: 0;
-    /* Align it to the left */
-    width: 100%;
-    /* Make the nav span the full width of the viewport */
-    z-index: 1000;
-    /* Ensures it stays on top of other elements */
-    background-color: #3f51b5;
-    /* Ensure the nav has a background color (your indigo theme) */
-    padding: 10px;
-    /* Optional: Add some padding to the nav */
-
-}
-
 .wrapper {
     display: flex;
     position: relative;
 }
 
 .wrapper .sidebar {
-
     position: fixed;
     background-color: #705ba5;
     width: 250px;
@@ -44,7 +25,6 @@ nav {
 }
 
 .wrapper .sidebar h2 {
-
     color: rgb(250, 250, 250);
     padding-top: 125px;
     font-weight: bolder;

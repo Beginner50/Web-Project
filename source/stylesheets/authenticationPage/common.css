@@ -2,6 +2,11 @@ html {
     scroll-behavior: smooth;
 }
 
+nav {
+    position: relative;
+    margin-top: 0px;
+}
+
 #main-wrapper {
     position: relative;
     width: min(95%, 800px);

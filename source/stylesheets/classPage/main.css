@@ -1,53 +1,38 @@
 body {
     position: relative;
     width: 100%;
-    height: 100%;
-    padding: 0px;
-    background-image: url("../../icons/blue-orange-background-with-white-background-blue-background.jpg");
-    background-size: cover;
-}
-
-#main-wrapper {
-    position: relative;
-    width: 80%;
-    height: 550px;
+    height: 100vh;
+    overflow-y: hidden;
+    margin-top: 20%;
     margin: auto;
-    margin-top: 80px;
-    margin-bottom: 50px;
     display: flex;
+    flex-direction: row;
 }
 
-#main-wrapper #left-wrapper {
-    width: 30%;
+body #sidebar {
+    width: 26.55%;
     height: 100%;
-    border: 1px solid var(--blueOcean);
-    border-right: 0px;
-    border-radius: 5px 0px 0px 5px;
-    background: linear-gradient(to left, hsl(218, 51%, 75%), hsl(276, 97%, 36%));
+    background-color: #705ba5;
+    color: white;
 }
 
-#left-wrapper>h1 {
-    padding-top: 15%;
+#sidebar>h1 {
+    padding-top: 25%;
     padding-left: 15%;
-    font-size: 2.5rem;
 }
 
-#left-wrapper #class-menu {
+#sidebar #class-menu {
     width: 60%;
     height: 40%;
     margin-left: 15%;
     overflow-y: scroll;
-    /* IE and Edge */
-    -ms-overflow-style: none;
-    /* Firefox */
-    scrollbar-width: none;
     padding-left: 0px;
     gap: 5px;
 }
 
 #class-menu ul {
     font-size: 15px;
-    padding-top: 10px
+    padding-top: 10px;
 }
 
 #class-menu ul:hover {
@@ -56,20 +41,21 @@ body {
     color: var(--purpleVortex);
 }
 
-#main-wrapper #right-wrapper {
-    width: 70%;
-    height: 100%;
+body #main-wrapper {
+    width: 74.7%;
+    margin-top: 6%;
+    background: url("../../icons/cool-background.png");
 }
 
-#right-wrapper #classChat-header {
+#main-wrapper #classChat-header {
     width: 100%;
     height: 10%;
     display: flex;
     justify-content: space-between;
-    border: 1px solid var(--blueOcean);
     border-bottom: 0px;
     border-radius: 0px 5px 0px 0px;
-    background-color: var(--paleSky);
+    background-color: rgba(222, 222, 255, 0.5);
+    box-shadow: 1px 2px 3px grey;
 }
 
 #classChat-header #left-section {
@@ -98,55 +84,47 @@ body {
     margin-right: 1%;
 }
 
-#right-wrapper #classChat-body {
+#main-wrapper #classChat-body {
     position: relative;
     width: 100%;
     height: 75%;
-    border: 1px solid var(--blueOcean);
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-wrap: break-word;
-    /* IE and Edge */
-    /* -ms-overflow-style: none; */
-    /* Firefox */
-    /* scrollbar-width: none; */
     display: flex;
     flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.5);
 }
 
 #classChat-body .message {
     width: 60%;
-    border: 1px solid var(--blueOcean);
     border-radius: 10px;
+    background-color: rgba(222, 222, 255, 0.7);
     margin: 1%;
     padding: 1%;
 }
 
-#right-wrapper #classChat-footer {
+#main-wrapper #classChat-footer {
     width: 100%;
     height: 14.7%;
-    border: 1px solid var(--blueOcean);
-    background-color: var(--paleSky);
-    border-top: 0px;
-    border-radius: 0px 0px 5px 0px;
+    background-color: rgba(222, 222, 255, 0.6);
 }
 
 #classChat-footer #message-input {
-    width: 85%;
+    width: 88.5%;
     padding: 5px;
-    height: 40px;
     text-wrap: stable;
-    margin-top: 1.5%;
+    margin-top: 1.4%;
     margin-bottom: 1.5%;
     margin-left: 1%;
     font-size: 15px;
+    border-radius: 5px;
 }
 
 #classChat-footer #send-button {
     cursor: pointer;
     margin-left: 2%;
+    padding: 0.76%;
     margin-bottom: 1%;
-    border: 1px solid purple;
-    padding: 1%;
+    margin-top: 1%;
     border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.6);
 }
