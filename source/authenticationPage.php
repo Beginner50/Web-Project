@@ -173,6 +173,7 @@
     </div>
 
     <script src="scripts/authenticationPage.js"></script>
+
 </body>
 
 </html>

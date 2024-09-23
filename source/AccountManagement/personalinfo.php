@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +31,7 @@
             $gender = $_POST["gender"];
             $dateofbirth = $_POST["dateofbirth"];
      
-           
+            $UserID=$_SESSION['UserID'];
             $errors = array(); //array to store errors
 
 
@@ -41,13 +44,17 @@
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 array_push($errors, "Email address is NOT valid");
             } else {
+                if($email != $_SESSION['Email']){ //if user has changed current email, we must check if the new email already exist in db
 
-                $verifyemail = mysqli_query($conn, "SELECT Email FROM user WHERE Email='$email' ");
+                    $verifyemail = mysqli_query($conn, "SELECT Email FROM user WHERE Email='$email' ");
 
-                //checks if query  returns anything
-                if (mysqli_num_rows($verifyemail) != 0) {
-                    array_push($errors, "Email already exist! Use another email");
+                    //checks if query  returns anything
+                    if (mysqli_num_rows($verifyemail) != 0) {
+                        array_push($errors, "Email already exist! Use another email");
+                    }
+
                 }
+    
             }
 
             //checking for errors
@@ -64,13 +71,32 @@
                 GO BACK </button>";
             }
             else{
-                 //displaying sucessful registraton status
-                 echo "<h2 style='text-align: center; color: rgb(11, 91, 32); ;  '>Successfully Saved Changes!</h2>";
-                 echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px; font-size:25px;'> Back </button>";
+
+                //MAKING CHANGES INTO USER
+
+                $sqlquery = "UPDATE user
+                            SET DateOfBirth = ?,
+                            FirstName =?,
+                            LastName =?,
+                            Email =?,
+                            Gender =?
+                            WHERE UserId =$UserID ";
+
+                $stmt = mysqli_stmt_init($conn); //initialises connection
+
+                if (mysqli_stmt_prepare($stmt, $sqlquery)) {
+
+                    //binds and execute statement
+                    mysqli_stmt_bind_param($stmt, "sssss", $dateofbirth, $firstname, $lastname, $email, $gender);
+                    mysqli_stmt_execute($stmt);
+
+                    //displaying sucessful registraton status
+                    echo "<h2 style='text-align: center; color: rgb(11, 91, 32); ;  '>Successfully Saved Changes!</h2>";
+                    echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px; font-size:25px;'> Back </button>";
+                }
+                mysqli_stmt_close($stmt);
+  
             }
-
-
-            
         }
         ?>
     </div>

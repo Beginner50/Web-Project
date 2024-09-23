@@ -28,7 +28,7 @@ session_start();
             <ul>
                 <li><a href="#main-content"><i class="fa fa-user" aria-hidden="true"></i>UserID</a></li>
                 <li><a href="#userID-content"><i class="fa fa-address-card" aria-hidden="true"></i>Personal Information</a></li>
-                <li><a href="#personalinfo-savechanges"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Student/Teacher Information</a></li>
+                <li><a href="#personalinfo-savechanges" style="font-size:12px;"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Student/Teacher Information</a></li>
                 <li><a href="#loginmanagement"><i class="fa fa-key" aria-hidden="true"></i>Login Management</a></li>
                 <li><a href="#logout-button"><i class="fa fa-sign-out" aria-hidden="true"></i>Log out </a></li>
             </ul>
@@ -138,21 +138,32 @@ session_start();
             </div>
             <div class="login-content2  second-column">
                 <h2 style="margin-bottom: 10px;">Change Password</h2>
-                <div class="inputpassword">
+                 <div class="inputpassword">
                     <form id="passwordchange-form" class="inputpassword" method="post" action="AccountManagement/passchange.php">
-                        <div class="login-password">
-                            <input type="password" required placeholder=" " name="currentpassword">
-                            <label >Current Password</label>
-                        </div>
-                        <div class="login-password">
-                            <input type="password" required placeholder=" " name="newpassword">
-                            <label >New Password</label>
-                        </div>
-                        <div class="login-password">
-                            <input type="password" required placeholder=" " name="renewpassword">
-                            <label >Confirm New Password</label>
+
+                        <div class="login-passwordbox">
+                            <div class="login-password">
+                                <input type="password" name="currentpassword" id="password" placeholder=" " required>
+                                <label for="password">Password</label>
+                                <img src="icons/eye-close.png" id="toggle-password" onclick="togglePasswordVisibility('password','toggle-password')">
+                            </div>
                         </div>
 
+                        <div class="login-passwordbox">
+                        <div class="login-password">
+                            <input type="password" required placeholder=" " name="newpassword" id="newpassword">
+                            <label >New Password</label>
+                            <img src="icons/eye-close.png" id="toggle-newpassword" onclick="togglePasswordVisibility('newpassword','toggle-newpassword')">
+                        </div>
+                        </div>
+                        
+                        <div class="login-passwordbox">
+                        <div class="login-password">
+                            <input type="password" required placeholder=" " name="renewpassword" id="renewpassword">
+                            <label >Confirm New Password</label>
+                            <img src="icons/eye-close.png" id="toggle-renewpassword" onclick="togglePasswordVisibility('renewpassword','toggle-renewpassword')">
+                        </div>
+                        </div>
                         <button type="submit" id="personalinfo-changepassword" name="personalinfo-changepassword" class="indigoTheme roundBorder savebutton" form="passwordchange-form" style="margin-left: 50px;">Save Changes</button>
                     </form>
                 </div>
@@ -164,11 +175,17 @@ session_start();
                 <div id="logout-content" class="information description" >Worried that your account or password has been compromised? You can forcibly log out from all devices. </div>
             </div>
             <div class="logout-content2 second-column">
-                <a href="AccountManagement/logout.php" class="indigoTheme roundBorder savebutton" id="logout-button">Logout Out Everywhere</a>
+
+            <form action="AccountManagement/logout.php">
+             <button type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
+            </form>
+
             </div>
         </div>
     </div>
-
+    
+    <script src="scripts/accManagementPage.js"></script>
+            
 </body>
 </html>
 
