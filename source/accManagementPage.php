@@ -12,14 +12,15 @@ session_start();
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="stylesheets/navBar.css">
+    <link rel="stylesheet" href="stylesheets/partials/navBar.css">
+    <link rel="stylesheet" href="stylesheets/partials/sidebar.css">
     <script>
         0
     </script>
 </head>
 <?php
 $page = 'accountManagementTab';
-require_once('navBar.php');
+require 'partials/navBar.php';
 ?>
 
 <body>
@@ -34,8 +35,8 @@ require_once('navBar.php');
                 <li><a href="#loginmanagement"><i class="fa fa-key" aria-hidden="true"></i>Login Management</a></li>
                 <li><a href="#logout-button"><i class="fa fa-sign-out" aria-hidden="true"></i>Log out </a></li>
             </ul>
-
         </div>
+
         <div id="main-content" class="main-content">
 
             <!--USERID information  -->
@@ -142,7 +143,7 @@ require_once('navBar.php');
             </div>
             <div class="login-content2  second-column">
                 <h2 style="margin-bottom: 10px;">Change Password</h2>
-                 <div class="inputpassword">
+                <div class="inputpassword">
                     <form id="passwordchange-form" class="inputpassword" method="post" action="AccountManagement/passchange.php">
 
                         <div class="login-passwordbox">
@@ -154,19 +155,19 @@ require_once('navBar.php');
                         </div>
 
                         <div class="login-passwordbox">
-                        <div class="login-password">
-                            <input type="password" required placeholder=" " name="newpassword" id="newpassword">
-                            <label >New Password</label>
-                            <img src="icons/eye-close.png" id="toggle-newpassword" onclick="togglePasswordVisibility('newpassword','toggle-newpassword')">
+                            <div class="login-password">
+                                <input type="password" required placeholder=" " name="newpassword" id="newpassword">
+                                <label>New Password</label>
+                                <img src="icons/eye-close.png" id="toggle-newpassword" onclick="togglePasswordVisibility('newpassword','toggle-newpassword')">
+                            </div>
                         </div>
-                        </div>
-                        
+
                         <div class="login-passwordbox">
-                        <div class="login-password">
-                            <input type="password" required placeholder=" " name="renewpassword" id="renewpassword">
-                            <label >Confirm New Password</label>
-                            <img src="icons/eye-close.png" id="toggle-renewpassword" onclick="togglePasswordVisibility('renewpassword','toggle-renewpassword')">
-                        </div>
+                            <div class="login-password">
+                                <input type="password" required placeholder=" " name="renewpassword" id="renewpassword">
+                                <label>Confirm New Password</label>
+                                <img src="icons/eye-close.png" id="toggle-renewpassword" onclick="togglePasswordVisibility('renewpassword','toggle-renewpassword')">
+                            </div>
                         </div>
                         <button type="submit" id="personalinfo-changepassword" name="personalinfo-changepassword" class="indigoTheme roundBorder savebutton" form="passwordchange-form" style="margin-left: 50px;">Save Changes</button>
                     </form>
@@ -180,16 +181,16 @@ require_once('navBar.php');
             </div>
             <div class="logout-content2 second-column">
 
-            <form action="AccountManagement/logout.php">
-             <button type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
-            </form>
+                <form action="AccountManagement/logout.php">
+                    <button type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
+                </form>
 
             </div>
         </div>
     </div>
-    
+
     <script src="scripts/accManagementPage.js"></script>
-            
+
 </body>
 
 </html>

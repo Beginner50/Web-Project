@@ -1,5 +1,7 @@
+import PopUpManager from '../scripts/popUp.js';
+
 document.addEventListener('DOMContentLoaded', () => {
-    const chatManager = new ChatManager();
+    const chatManager = new ChatManager(new PopUpManager());
     const classListManager = new ClassListManager();
 
     const sendButton = document.getElementById('send-button');
@@ -20,11 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Incomplete
 class ClassListManager {
-    constructor() {
+    constructor(popUpManager) {
         this.menu = document.getElementById('class-menu');
         this.classChat = document.getElementById('classChat-body');
 
-        fetch("Classes/getClasses.php")
+        // Get classes
+        fetch("ClassMessaging/getClasses.php")
             .then(response => response.json())
             .then(classMap => this.addClassesToMenu(classMap));
 
@@ -39,7 +42,7 @@ class ClassListManager {
 
                     // Get class messages
                     const xhr = new XMLHttpRequest();
-                    xhr.open("POST", "Classes/getClassMessages.php", true);
+                    xhr.open("POST", "ClassMessaging/getClassMessages.php", true);
                     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
                     const data = `SubjectCode=${subjectCode}&Level=${level}&ClassGroup=${classGroup}`;
@@ -73,8 +76,45 @@ class ClassListManager {
 }
 
 class ChatManager {
-    constructor() {
+    constructor(popUpManager) {
         this.classMessageElems = document.querySelectorAll(".classChat");
+        this.popUpManager = popUpManager;
+        this.viewMembersButton = document.getElementById('viewMembers-button');
+        this.sendButton = document.getElementById('send-button');
+
+        // Get class members
+        fetch('ClassMessaging/getClassMembers.php')
+            .then(response => response.json())
+            .then(members => members.forEach(member => {
+                const button = document.createElement('button');
+                button.classList.add('indigoTheme');
+                button.innerHTML = member['FirstName'] + ' ' + member['LastName'];
+                button.disabled = true;
+                this.popUpManager.addButton(button);
+            }));
+
+        // Assign event listener to view members button
+        this.viewMembersButton.addEventListener("mousedown", () => {
+            this.popUpManager.showPopUp();
+        });
+
+        // Assign event listener to send button
+        this.sendButton.addEventListener('mousedown', () => {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open("POST", "ClassMessaging/sendMessage.php", true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            let messageInput = document.getElementById('message-input');
+            let Message = messageInput.value;
+            console.log(Message);
+            const data = `message-input=${Message}`;
+            xhr.send(data);
+            messageInput.value = "";
+
+            // document.querySelectorAll('.message').forEach(message => message.remove());
+            // store class ids in hidden input somewhere
+        });
     }
 
     showClassMessageTab() {

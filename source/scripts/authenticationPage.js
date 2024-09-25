@@ -1,6 +1,7 @@
+import PopUpManager from './popUp.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-  const subjectManager = new SubjectManager();
+  const subjectManager = new SubjectManager(new PopUpManager());
   const moveableWrapperManager = new MoveableWrapperManager();
   const userTabManager = new UserTabManager();
 
@@ -115,12 +116,11 @@ class MoveableWrapperManager {
 /* ------------------------------------------------------------------------------------------- */
 
 class SubjectManager {
-  constructor() {
+  constructor(popUpManager) {
     this.numSubjectsChosen = 0;
     this.subjectsChosen = [];
 
-    this.popUp = document.querySelector("div.popUp.window");
-    this.popUpList = this.popUp.querySelector("div");
+    this.popUpManager = popUpManager;
     this.formSubjectList = document.getElementById("subjectList");
     this.addSubjectButton = document.getElementById("addSubject-button");
 
@@ -133,7 +133,7 @@ class SubjectManager {
           button.className = "indigoTheme popUp";
           button.value = subject.SubjectCode;
           button.innerHTML = subject.SubjectName;
-          this.popUpList.appendChild(button);
+          this.popUpManager.addButton(button);
         })
       });
 
@@ -141,27 +141,14 @@ class SubjectManager {
     // When user clicks on add subject button, show the popup.
     this.addSubjectButton.addEventListener("mousedown", () => {
       if (this.numSubjectsChosen < 5) {
-        this.popUp.style.display = "";
-        this.popUp.animate([{ opacity: "0" }, { opacity: "100" }], { duration: 200, easing: "ease-in-out" });
+        this.popUpManager.showPopUp();
       }
     });
 
-    // Assign event listeners to popUp
-    // When user clicks anywhere on the popup, close the popup
-    this.popUp.addEventListener("mousedown", () => {
-      this.popUp.animate([{ opacity: "100" }, { opacity: "0" }], { duration: 200, easing: "ease-in-out" });
-      setTimeout(() => {
-        this.popUp.style.display = "none";
-      }, 180);
-    });
-
-    // When user clicks on a popup button, select the subject
-    this.popUp.addEventListener("mousedown", event => {
-      let subjectButtons = this.popUp.querySelectorAll("div>button");
-      subjectButtons.forEach(subjectButton => {
-        if (event.target == subjectButton)
-          this.selectSubject(subjectButton);
-      });
+    // Dependency injection of an event into popUp since popUp does
+    // not need to be aware of the caller
+    this.popUpManager.buttonEvent((button) => {
+      this.selectSubject(button);
     });
   }
 
@@ -190,7 +177,6 @@ class SubjectManager {
       subjectEntryIcon.parentElement.remove();
     });
 
-    subjectButton.style.display = "none";
 
     this.addSubjectButton = this.formSubjectList.removeChild(this.formSubjectList.querySelector("button"));
     this.formSubjectList.appendChild(subjectListEntry);
@@ -202,8 +188,8 @@ class SubjectManager {
 
   // User deselects a subject from the subject list in the form
   unselectSubject(subject) {
-    let popUpButton = this.popUpList.querySelector(`button[value=${subject}]`);
-    popUpButton.style.display = "inline";
+    let popUpButton = this.popUpManager.getButton(subject);
+    this.popUpManager.showButton(popUpButton);
 
     this.subjectsChosen = this.subjectsChosen.filter(elem => { return (elem != subject); });
     this.numSubjectsChosen--;

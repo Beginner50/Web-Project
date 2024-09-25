@@ -1,0 +1,31 @@
+#popUp-window {
+    position: fixed;
+    z-index: 1001;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#popUp-window #popUp-wrapper {}
+
+#popUp-wrapper #popUp-menu {
+    width: 300px;
+    height: 400px;
+    background-color: var(--paleSky);
+    border-radius: 15px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#popUp-menu button.popUp {
+    width: 100%;
+    height: 100%;
+}

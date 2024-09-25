@@ -14,55 +14,7 @@ body {
     position: relative;
 }
 
-.wrapper .sidebar {
-    position: fixed;
-    background-color: #705ba5;
-    width: 250px;
-    height: 100%;
 
-    padding-left: 0px;
-    padding-right:40px;
-}
-
-.wrapper .sidebar h2 {
-    color: rgb(250, 250, 250);
-    padding-top: 125px;
-    font-weight: bolder;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.wrapper .sidebar ul li {
-    list-style-type: none;
-    padding: 10px 5px;
-    border-radius: 10px;
-    transition: 0.15s;
-}
-
-.wrapper .sidebar ul li:hover {
-
-    background-color: hsl(256, 66%, 25%);
-    ;
-    color: rgba(227, 215, 244, 0.613);
-
-}
-
-.wrapper .sidebar ul li a {
-
-    text-decoration: none;
-    width:270px;
-    color: whitesmoke;
-    display: block;
-    font-size: 15px;
-    font-weight: bold;
-    text-align: left;
-}
-
-.wrapper .sidebar ul li a .fa {
-    width: 30px;
-    height: 20px;
-    font-size: small;
-}
 
 .wrapper .main-content {
 
@@ -171,20 +123,21 @@ body {
 }
 
 .login-passwordbox {
-    position: relative; 
+    position: relative;
 }
 
 .login-passwordbox img {
     position: absolute;
-    right: 15px; 
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    cursor: pointer; 
-    width: 20px; 
+    cursor: pointer;
+    width: 20px;
 }
+
 .login-password {
     position: relative;
-    width:280px;
+    width: 280px;
     margin-bottom: 10px;
 }
 

@@ -10,39 +10,11 @@ body {
 }
 
 body #sidebar {
-    width: 26.55%;
-    height: 100%;
-    background-color: #705ba5;
-    color: white;
-}
-
-#sidebar>h1 {
-    padding-top: 25%;
-    padding-left: 15%;
-}
-
-#sidebar #class-menu {
-    width: 60%;
-    height: 40%;
-    margin-left: 15%;
-    overflow-y: scroll;
-    padding-left: 0px;
-    gap: 5px;
-}
-
-#class-menu ul {
-    font-size: 15px;
-    padding-top: 10px;
-}
-
-#class-menu ul:hover {
-    text-decoration: underline;
-    cursor: pointer;
-    color: var(--purpleVortex);
+    position: relative;
 }
 
 body #main-wrapper {
-    width: 74.7%;
+    width: 100%;
     margin-top: 6%;
     background: url("../../icons/cool-background.png");
 }

@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="School Website for ABC Academy">
-    <link rel="stylesheet" href="stylesheets/navBar.css">
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/callToAction.css">
@@ -23,7 +22,7 @@
 <body>
     <!-- Navigation Bar -->
     <?php $page = 'authenticationPage';
-    require_once('navBar.php') ?>
+    require 'partials/navBar.php' ?>
 
     <!-- Main Wrapper -->
     <div id="main-wrapper" class="roundBorder-15">
@@ -166,13 +165,9 @@
     </div>
 
     <!-- Popup window (Default: off) -->
-    <div class="popUp window" style="display:none;">
-        <div class="shadow">
-            <h class="indigoTheme popUp" style="border: none; margin-bottom: 10px;"> Select a subject: </h>
-        </div>
-    </div>
+    <?php require 'partials/popUp.php'; ?>
 
-    <script src="scripts/authenticationPage.js"></script>
+    <script src="scripts/authenticationPage.js" type="module"></script>
 
 </body>
 
