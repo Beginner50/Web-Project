@@ -1,7 +1,7 @@
-.sidebar {
+aside.sidebar {
     position: fixed;
     background-color: #705ba5;
-    width: 250px;
+    width: 18%;
     height: 100%;
 
     padding-left: 0px;

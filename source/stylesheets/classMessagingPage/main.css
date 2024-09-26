@@ -11,6 +11,11 @@ body {
 
 body #sidebar {
     position: relative;
+    width: 22.8%;
+}
+
+#sidebar ul {
+    height: 20%;
 }
 
 body #main-wrapper {

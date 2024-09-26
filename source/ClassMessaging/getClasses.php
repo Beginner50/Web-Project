@@ -8,6 +8,7 @@
    not cause it to execute again. Thus, the database connection is established
    only once, meaning bigger performance gain, meaning more money saved 🤑🤑
 */
+session_start();
 require_once '../connect.php';
 
 /*
@@ -20,8 +21,24 @@ require_once '../connect.php';
     For data that is to change, only cache the prepared statement but execute it
     when the php file is requested again.
 */
-$stmt = $pdo->prepare('SELECT SubjectCode, Level, ClassGroup FROM class;');
+
+// Get the classes associated with the student/teacher
+ini_set('display_startup_errors', 1);
+ini_set('display_errors', 1);
+error_reporting(-1);
+
+$userID = $_SESSION['UserID'];
+$default = 0;
+
+$stmt = $pdo->prepare('SELECT class.ClassID AS ClassID, SubjectCode, Level, ClassGroup FROM class LEFT JOIN class_student ON class_student.ClassID = class.ClassID WHERE StudentID=? OR TeacherID=?;');
+if ($_SESSION['UserType'] == 'Student') {
+    $stmt->bindParam(1, $userID);
+    $stmt->bindParam(2, $default);
+} else if ($_SESSION['UserType'] == 'Teacher') {
+    $stmt->bindParam(1, $default);
+    $stmt->bindParam(2, $userID);
+}
 $stmt->execute();
 
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$results = $stmt->fetch(PDO::FETCH_ASSOC);
 echo json_encode($results);

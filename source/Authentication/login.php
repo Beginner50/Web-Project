@@ -14,24 +14,39 @@
 <body style="background-color: var(--duskSky);">
     <div class="container">
         <?php
-        ini_set('display_startup_errors', 1);
-        ini_set('display_errors', 1);
-        error_reporting(-1);
-
         session_start();
         require_once '../connect.php';
 
         $email = $_POST["email"];
         $password = $_POST["password"];
 
-        $sql = "SELECT * FROM user WHERE Email='$email'";
-        $result = mysqli_query($conn, $sql); //queries connection
-        $user = mysqli_fetch_array($result, MYSQLI_ASSOC); //Places result in an associative array
+        // Get user data from email if user exists
+        $stmt = $pdo->prepare('SELECT * FROM user WHERE Email=?;');
+        $stmt->bindParam(1, $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Get the user type
+        // Check if user is a student
+        $stmt = $pdo->prepare('SELECT * FROM student WHERE StudentID=?;');
+        $stmt->bindParam(1, $user['UserID']);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0)
+            $_SESSION['UserType'] = 'Student';
+
+        // Check if user is a teacher or admin only if user is not a student
+        if ($_SESSION['UserType'] != 'Student') {
+            $stmt = $pdo->prepare('SELECT * FROM teacher WHERE TeacherID=?;');
+            $stmt->bindParam(1, $user['UserID']);
+            $stmt->execute();
+            if ($stmt->rowCount() > 0)
+                $_SESSION['UserType'] = 'Teacher';
+            else
+                $_SESSION['UserType'] = 'Admin';
+        }
 
         if ($user) {
-
             if (password_verify($password, $user["Password"])) {
-
                 $_SESSION['Email'] = $user['Email'];
                 $_SESSION['Password'] = $user['Password'];
 
@@ -41,59 +56,48 @@
                 $_SESSION['LastName'] = $user['LastName'];
                 $_SESSION['Gender'] = $user['Gender'];
 
-                // query the student table using UserID  to get additional data
-                $userID = $user['UserID'];
-                $sql = "SELECT Level, ClassGroup FROM student WHERE StudentID='$userID'";
-                $result = mysqli_query($conn, $sql);
-                $student = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                // If user is a student, query the student table using UserID to get additional data.
+                if ($_SESSION['UserType'] == 'Student') {
+                    $stmt = $pdo->prepare("SELECT Level, ClassGroup FROM student WHERE StudentID=?;");
+                    $stmt->bindParam(1, $user['UserID']);
+                    $stmt->execute();
+                    $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if ($student) {  //is $student is true
-
-                    // User is a student
                     $_SESSION['Level'] = $student['Level'];
                     $_SESSION['ClassGroup'] = $student['ClassGroup'];
 
-                    //retrieving subjects taken
-
-                    $sql = "  SELECT s.SubjectName,cs.SubjectCode
+                    // Retrieve subjects taken by the student
+                    $stmt = $pdo->prepare("  SELECT s.SubjectName,cs.SubjectCode
                                     FROM class_student cs
                                     INNER JOIN subject s ON cs.SubjectCode = s.SubjectCode
-                                    WHERE cs.StudentID = $userID;  
-                                ";
-
-                    // Prepare and bind
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bind_param("i", $userID); // "i" denotes an integer parameter
-
-                    // Execute the query
+                                    WHERE cs.StudentID=?;  
+                                ");
+                    $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
-                    $result = $stmt->get_result();
-
-                    // Fetch the results
-                    if ($result->num_rows > 0) {
-
-                        //loops through $results()
-                        while ($row = $result->fetch_assoc()) {
+                    if ($stmt->rowCount() > 0)
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             echo "Subject Name: " . $row['SubjectName'] . "<br>";
                         }
-                    } else {
+                    else
                         echo "No subjects found for this student.";
-                    }
-
-                    $stmt->close();
-                } else {
-
-                    // Check if the user is a teacher (exists in 'teacher' table)
-                    $sql = "SELECT SubjectTaught, DateJoined FROM teacher WHERE TeacherID='$userID'";
-                    $result = mysqli_query($conn, $sql);
-                    $teacher = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                }
+                // Else if user is a teacher
+                else if ($_SESSION['UserType'] == 'Teacher') {
+                    $stmt = $pdo->prepare("SELECT SubjectTaught, DateJoined FROM teacher WHERE TeacherID=?;");
+                    $stmt->bindParam(1, $user['UserID']);
+                    $stmt->execute();
+                    $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     if ($teacher) {
-                        // User is a teacher
                         $_SESSION['SubjectTaught'] = $teacher['SubjectTaught'];
                         $_SESSION['DateJoined'] = $teacher['DateJoined'];
                     }
                 }
+                // Else if user is an admin
+                else if ($_SESSION['UserType'] == 'Admin') {
+                }
+
+                // Redirect to accountManagementPage
                 header("Location: ../accManagementPage.php");
                 exit();
             } else {

@@ -26,7 +26,7 @@ require 'partials/navBar.php';
 <body>
     <div class="wrapper">
         <!--  Side Navigation bar -->
-        <div class="sidebar">
+        <aside class="sidebar">
             <h2>Account management</h2>
             <ul>
                 <li><a href="#main-content"><i class="fa fa-user" aria-hidden="true"></i>UserID</a></li>
@@ -35,7 +35,7 @@ require 'partials/navBar.php';
                 <li><a href="#loginmanagement"><i class="fa fa-key" aria-hidden="true"></i>Login Management</a></li>
                 <li><a href="#logout-button"><i class="fa fa-sign-out" aria-hidden="true"></i>Log out </a></li>
             </ul>
-        </div>
+        </aside>
 
         <div id="main-content" class="main-content">
 

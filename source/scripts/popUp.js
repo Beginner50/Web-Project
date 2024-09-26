@@ -46,12 +46,12 @@ export default class PopUpManager {
         button.style.display = "none";
     }
 
-    addButton(button) {
-        this.popUpMenu.appendChild(button);
+    addMenuItem(menuItem) {
+        this.popUpMenu.appendChild(menuItem);
     }
 
-    getButton(value) {
-        return this.popUpMenu.querySelector(`button[value=${value}]`);
+    getMenuItem(value) {
+        return this.popUpMenu.querySelector(`*[value=${value}]`);
     }
 
     setElementVisibility(elem, visibility) {

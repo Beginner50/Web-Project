@@ -133,7 +133,7 @@ class SubjectManager {
           button.className = "indigoTheme popUp";
           button.value = subject.SubjectCode;
           button.innerHTML = subject.SubjectName;
-          this.popUpManager.addButton(button);
+          this.popUpManager.addMenuItem(button);
         })
       });
 
@@ -188,7 +188,7 @@ class SubjectManager {
 
   // User deselects a subject from the subject list in the form
   unselectSubject(subject) {
-    let popUpButton = this.popUpManager.getButton(subject);
+    let popUpButton = this.popUpManager.getMenuItem(subject);
     this.popUpManager.showButton(popUpButton);
 
     this.subjectsChosen = this.subjectsChosen.filter(elem => { return (elem != subject); });

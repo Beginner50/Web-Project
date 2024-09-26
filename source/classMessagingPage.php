@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,11 +21,14 @@
 require 'partials/navBar.php' ?>
 
 <body>
-    <div id="sidebar" class="sidebar">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
         <h2> Classes </h2>
         <menu id="class-menu">
         </menu>
-    </div>
+    </aside>
+
+    <!-- Main wrapper -->
     <div id="main-wrapper">
         <div id="classChat-header" class="classChat">
             <div id="left-section">
