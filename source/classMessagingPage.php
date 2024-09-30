@@ -33,7 +33,7 @@ require 'partials/navBar.php' ?>
         <div id="classChat-header" class="classChat">
             <div id="left-section">
                 <img src="icons/schedule-svgrepo-com.svg">
-                <div> Subject, Level, Group </div>
+                <div id="classChat-description"> Subject, Level, Group </div>
             </div>
             <button id="viewMembers-button" class="indigoTheme roundBorder shadow">
                 View Members
@@ -46,6 +46,9 @@ require 'partials/navBar.php' ?>
                 <textarea name="message-input" id="message-input" placeholder="Input your message here"></textarea>
                 <img id="send-button" class="shadow" src="icons/send.svg">
             </form>
+        </div>
+        <div id="classChat-cover">
+            No Class Selected
         </div>
     </div>
     <?php

@@ -25,6 +25,8 @@ class ClassListManager {
         this.menu = document.getElementById('class-menu');
         this.classChatManager = classChatManager;
 
+        this.isClassChatLoaded = false;
+
         // Get classes
         fetch("ClassMessaging/getClasses.php")
             .then(response => response.json())
@@ -41,10 +43,20 @@ class ClassListManager {
         this.menu.addEventListener("mousedown", event => {
             this.menu.childNodes.forEach(child => {
                 if (event.target == child) {
+                    let activeButton = this.menu.querySelector('active');
+                    if (activeButton != null)
+                        activeButton.classList.remove('active');
+                    child.classList.add('active');
+
+                    if (!this.isClassChatLoaded)
+                        this.classChatManager.showClassMessageTab();
+
                     this.classChatManager.setClassID(child.value);
 
                     this.classChatManager.refreshClassMessages();
                     this.classChatManager.refreshClassMembers();
+
+                    this.classChatManager.changeClassChatDescription(child.textContent);
                 }
             })
         });
@@ -55,7 +67,7 @@ class ClassListManager {
         try {
             classMap.forEach(classMap => {
                 const ul = document.createElement('ul');
-                ul.innerHTML = classMap.SubjectCode + ", Level " + classMap.Level + ", " + classMap.ClassGroup;
+                ul.innerHTML = classMap.SubjectCode + ", LEVEL " + classMap.Level + ", " + classMap.ClassGroup;
                 ul.nodeValue = classMap.ClassID;
                 this.menu.appendChild(ul);
             });
@@ -63,7 +75,7 @@ class ClassListManager {
         catch (err) {
             if (err.name == "TypeError") {
                 const ul = document.createElement('ul');
-                ul.innerHTML = classMap.SubjectCode + ", Level " + classMap.Level + ", " + classMap.ClassGroup;
+                ul.innerHTML = classMap.SubjectCode + ", LEVEL " + classMap.Level + ", " + classMap.ClassGroup;
                 ul.value = classMap.ClassID;
                 this.menu.appendChild(ul);
             }
@@ -75,9 +87,12 @@ class ChatManager {
     constructor(popUpManager) {
         this.classID = 0;
 
+        this.classChatCover = document.getElementById('classChat-cover');
         this.classChat = document.getElementById('classChat-body');
         this.classMessageElems = document.querySelectorAll(".classChat");
         this.popUpManager = popUpManager;
+
+        this.classChatDescription = document.getElementById('classChat-description');
         this.viewMembersButton = document.getElementById('viewMembers-button');
         this.sendButton = document.getElementById('send-button');
 
@@ -188,10 +203,29 @@ class ChatManager {
     }
 
     showClassMessageTab() {
-        this.classMessageElems.forEach(elem => { elem.style.display = ""; });
+        let keyframes = [
+            { opacity: "100" },
+            { opacity: "0" }
+        ];
+        let options = {
+            duration: 300,
+            easing: "ease-in-out",
+            fill: "forwards"
+        };
+
+        this.classChatCover.animate(keyframes, options);
+        setTimeout(() => {
+            this.classChatCover.style.display = "none";
+            this.classMessageElems.forEach(elem => { elem.style.display = ""; });
+        }, 300);
     }
 
     hideClassMessageTab() {
+        this.classChatCover.style.display = "";
         this.classMessageElems.forEach(elem => { elem.style.display = "none"; });
+    }
+
+    changeClassChatDescription(value) {
+        this.classChatDescription.textContent = value;
     }
 }

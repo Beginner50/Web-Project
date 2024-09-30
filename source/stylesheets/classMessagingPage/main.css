@@ -15,10 +15,26 @@ body #sidebar {
 }
 
 #sidebar ul {
+    padding-top: 1%;
     height: 20%;
 }
 
+#sidebar ul:hover {
+    background-color: hsl(256, 57%, 42%);
+    transition: background-color 0.2s;
+}
+
+#sidebar ul.active:active {
+    background-color: hsl(271, 90%, 19%);
+    transition: background-color 0.05s;
+}
+
+#sidebar ul.active {
+    background-color: hsl(256, 57%, 42%);
+}
+
 body #main-wrapper {
+    position: relative;
     width: 100%;
     margin-top: 6%;
     background: url("../../icons/cool-background.png");
@@ -48,10 +64,12 @@ body #main-wrapper {
     margin-left: 2%;
 }
 
-#classChat-header #left-section>div {
+#classChat-header #classChat-description {
     margin-top: 2.5%;
     margin-left: 1%;
-    padding-bottom: 2%;
+    padding-bottom: 2.5%;
+    font-weight: bold;
+    color: var(--blueOcean);
 }
 
 #classChat-header #viewMembers-button {
@@ -104,4 +122,17 @@ body #main-wrapper {
     margin-top: 1%;
     border-radius: 3px;
     background-color: rgba(255, 255, 255, 0.6);
+}
+
+#main-wrapper #classChat-cover {
+    background-color: white;
+    position: fixed;
+    top: 12%;
+    left: 20.9%;
+    width: 79.15%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
