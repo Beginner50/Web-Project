@@ -85,8 +85,8 @@ class ClassMessagingController {
         });
 
         this.sendMessageButton.addEventListener('mousedown', () => {
-            this.classMessagingModel.sendClassMessage(this.classMessageInput.value);
-            this.classMessagingModel.getClassMessages()
+            this.classMessagingModel.sendClassMessage(this.classMessageInput.value)
+                .then(() => this.classMessagingModel.getClassMessages())
                 .then(messages => this.classMessagingView.updateClassMessages(messages));
             this.classMessagingView.updateClassMessageInput();
         });
@@ -162,6 +162,14 @@ class ClassMessagingModel {
 
         const data = `ClassID=${this.currentClassID}&message-input=${Message}`;
         xhr.send(data);
+
+        return new Promise(resolve => {
+            // Simply meant to chain promises
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4 && xhr.status == 200)
+                    resolve();
+            }
+        });
     }
 }
 
@@ -289,12 +297,25 @@ class ClassMessagingView {
         // Delete previous message entries
         document.querySelectorAll('.message').forEach(message => message.remove());
 
+        let keyframes = [
+            { transform: "translate(-100px)", opacity: "0" },
+            { transform: "translate(0px)", opacity: "100" }
+        ];
+
+        let options = {
+            duration: 300,
+            easing: "ease-in-out",
+            fill: "forwards"
+        };
+
         classMessages.forEach(message => {
             const span = document.createElement('span');
             span.className = 'message';
             span.textContent = message['Message'];
+            span.animate(keyframes, options);
             this.classChatBody.appendChild(span);
         })
+
     }
 
     updateClassDescription(classDescription) {
