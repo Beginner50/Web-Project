@@ -50,6 +50,10 @@ export default class PopUpManager {
         this.popUpMenu.appendChild(menuItem);
     }
 
+    deleteMenuItem(menuItem) {
+        menuItem.remove();
+    }
+
     getMenuItem(value) {
         return this.popUpMenu.querySelector(`*[value=${value}]`);
     }

@@ -124,6 +124,10 @@ body #main-wrapper {
     background-color: rgba(255, 255, 255, 0.6);
 }
 
+#classChat-footer #send-button:hover {
+    background: rgba(205, 25, 100, 0.6);
+}
+
 #main-wrapper #classChat-cover {
     background-color: white;
     position: fixed;

@@ -1,208 +1,222 @@
 import PopUpManager from '../scripts/popUp.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const chatManager = new ChatManager(new PopUpManager());
-    const classListManager = new ClassListManager(chatManager);
-
-    const sendButton = document.getElementById('send-button');
-    sendButton.addEventListener('mouseenter', () => {
-        sendButton.style.background = 'rgba(205, 25, 100, 0.6)';
-    });
-    sendButton.addEventListener('mouseleave', () => {
-        sendButton.style.background = 'rgba(255,255,255,0.6)';
-    });
-    sendButton.addEventListener('mousedown', () => {
-        sendButton.style.background = 'rgba(205, 25, 100, 0.8)';
-    });
-    sendButton.addEventListener('mouseup', () => {
-        sendButton.style.background = 'rgba(205, 25, 100, 0.6)';
-    });
-
+    const classMessagingController = new ClassMessagingController();
 });
+/*
+    MVC - Controller is the intermediary between the view and the model
+          It also handles user requests and calls the view and model accordingly
+*/
+class ClassMessagingController {
+    classMessagingView;
+    classMessagingModel;
+    popUpManager;
 
-class ClassListManager {
-    constructor(classChatManager) {
-        this.menu = document.getElementById('class-menu');
-        this.classChatManager = classChatManager;
+    classListMenu;
+    classMessageInput;
+    sendMessageButton;
+    viewMembersButton;
 
-        this.isClassChatLoaded = false;
 
-        // Get classes
-        fetch("ClassMessaging/getClasses.php")
-            .then(response => response.json())
-            .then(classAttributes => {
-                if (classAttributes != false) {
-                    this.addClassesToMenu(classAttributes)
-                }
-                else {
-                    console.log("You don't have any classes yet!");
-                }
-            });
+    constructor() {
+        this.classMessagingView = new ClassMessagingView(new PopUpManager());
+        this.classMessagingModel = new ClassMessagingModel();
 
-        // Only send classID
-        this.menu.addEventListener("mousedown", event => {
-            this.menu.childNodes.forEach(child => {
+        this.initialiseClassMenu();
+
+        this.addClassMenuFunctionality();
+        this.addViewMembersFunctionality();
+        this.addSendMessageFunctionality();
+    }
+
+    /*
+        Initialise the class menu with classes from the database. 
+    */
+    initialiseClassMenu() {
+        this.classMessagingModel.getClassList()
+            .then(classListEntries =>
+                this.classMessagingView.updateClassMenu(classListEntries))
+            .catch(error => console.log(error));
+    }
+
+    addClassMenuFunctionality() {
+        this.classListMenu = document.getElementById("class-menu");
+
+        // Updates the class view
+        let updateClassView = child => {
+            this.classMessagingView.hideClassChatCover();
+            this.classMessagingView.updateActiveMenuElement(child);
+            this.classMessagingView.updateClassDescription(child.textContent);
+
+            this.classMessagingModel.getClassMessages()
+                .then(messages => this.classMessagingView.updateClassMessages(messages));
+
+            this.classMessagingModel.getClassMembers()
+                .then(members => this.classMessagingView.updateClassMembers(members));
+        }
+
+        // Finds out which menu entry is the target of the click event
+        this.classListMenu.addEventListener("mousedown", event => {
+            this.classListMenu.childNodes.forEach(child => {
                 if (event.target == child) {
-                    let activeButton = this.menu.querySelector('active');
-                    if (activeButton != null)
-                        activeButton.classList.remove('active');
-                    child.classList.add('active');
-
-                    if (!this.isClassChatLoaded)
-                        this.classChatManager.showClassMessageTab();
-
-                    this.classChatManager.setClassID(child.value);
-
-                    this.classChatManager.refreshClassMessages();
-                    this.classChatManager.refreshClassMembers();
-
-                    this.classChatManager.changeClassChatDescription(child.textContent);
+                    this.classMessagingModel.setClassID(child.value);
+                    updateClassView(child);
                 }
             })
         });
-        return;
     }
 
-    addClassesToMenu(classMap) {
-        try {
-            classMap.forEach(classMap => {
-                const ul = document.createElement('ul');
-                ul.innerHTML = classMap.SubjectCode + ", LEVEL " + classMap.Level + ", " + classMap.ClassGroup;
-                ul.nodeValue = classMap.ClassID;
-                this.menu.appendChild(ul);
-            });
-        }
-        catch (err) {
-            if (err.name == "TypeError") {
-                const ul = document.createElement('ul');
-                ul.innerHTML = classMap.SubjectCode + ", LEVEL " + classMap.Level + ", " + classMap.ClassGroup;
-                ul.value = classMap.ClassID;
-                this.menu.appendChild(ul);
-            }
-        }
+    addSendMessageFunctionality() {
+        this.classMessageInput = document.getElementById("message-input");
+        this.sendMessageButton = document.getElementById("send-button");
+
+        // Interactive Buttons
+        this.sendMessageButton.addEventListener('mouseenter', () => {
+            this.sendMessageButton.style.background = 'rgba(205, 25, 100, 0.6)';
+        });
+        this.sendMessageButton.addEventListener('mouseleave', () => {
+            this.sendMessageButton.style.background = 'rgba(255,255,255,0.6)';
+        });
+        this.sendMessageButton.addEventListener('mousedown', () => {
+            this.sendMessageButton.style.background = 'rgba(205, 25, 100, 0.8)';
+        });
+        this.sendMessageButton.addEventListener('mouseup', () => {
+            this.sendMessageButton.style.background = 'rgba(205, 25, 100, 0.6)';
+        });
+
+        this.sendMessageButton.addEventListener('mousedown', () => {
+            this.classMessagingModel.sendClassMessage(this.classMessageInput.value);
+            this.classMessagingModel.getClassMessages()
+                .then(messages => this.classMessagingView.updateClassMessages(messages));
+            this.classMessagingView.updateClassMessageInput();
+        });
+    }
+
+    addViewMembersFunctionality() {
+        this.viewMembersButton = document.getElementById("viewMembers-button");
+
+        this.viewMembersButton.addEventListener("mousedown", () => {
+            this.classMessagingView.showPopUp();
+        });
     }
 }
 
-class ChatManager {
-    constructor(popUpManager) {
-        this.classID = 0;
+/*
+    MVC - Model handles only logic related to backend data
+*/
+class ClassMessagingModel {
+    currentClassID;
+    constructor() { }
 
-        this.classChatCover = document.getElementById('classChat-cover');
-        this.classChat = document.getElementById('classChat-body');
-        this.classMessageElems = document.querySelectorAll(".classChat");
-        this.popUpManager = popUpManager;
-
-        this.classChatDescription = document.getElementById('classChat-description');
-        this.viewMembersButton = document.getElementById('viewMembers-button');
-        this.sendButton = document.getElementById('send-button');
-
-        // Assign event listener to view members button
-        this.viewMembersButton.addEventListener("mousedown", () => {
-            this.popUpManager.showPopUp();
-        });
-
-        // Assign event listener to send button
-        this.sendButton.addEventListener('mousedown', () => {
-            const xhr = new XMLHttpRequest();
-
-            xhr.open("POST", "ClassMessaging/sendMessage.php", true);
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-            let messageInput = document.getElementById('message-input');
-            let Message = messageInput.value;
-            const data = `ClassID=${this.classID}&message-input=${Message}`;
-            xhr.send(data);
-            messageInput.value = "";
-
-            this.refreshClassMessages();
-        });
-    }
-
-    setClassID(classID) {
-        this.classID = classID;
+    setClassID(currentClassID) {
+        this.currentClassID = currentClassID;
     }
 
     getClassID() {
-        return this.classID;
+        return this.currentClassID;
     }
 
-    refreshClassMembers() {
-        // Get class members
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "ClassMessaging/getClassMembers.php", true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-        const data = `ClassID=${this.classID}`;
-        xhr.send(data);
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                // Remove previous class members in the list
-                document.querySelectorAll('section.popUp').forEach(member => this.deleteMemberEntry(member));
-
-                // Get and create new members
-                try {
-                    const members = JSON.parse(xhr.response);
-                    members.forEach(member => {
-                        this.createMemberEntry(member);
-                    })
-                }
-                catch (e) {
-
-                }
-            }
-        };
+    getClassList() {
+        return fetch("ClassMessaging/getClasses.php")
+            .then(response => response.json());
     }
 
-    refreshClassMessages() {
-        // Get class messages
+    getClassMessages() {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "ClassMessaging/getClassMessages.php", true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('Cache-Control', 'no-cache');
 
-        const data = `ClassID=${this.classID}`;
+        const data = `ClassID=${this.currentClassID}`;
         xhr.send(data);
 
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                // Remove all previous messages
-                document.querySelectorAll('.message').forEach(message => message.remove());
-
-                const messages = JSON.parse(xhr.response);
-                messages.forEach(message => {
-                    const span = document.createElement('span');
-                    span.className = 'message';
-                    span.innerHTML = message['Message'];
-                    this.classChat.appendChild(span);
-                })
+        return new Promise(resolve => {
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4 && xhr.status === 200)
+                    resolve(JSON.parse(xhr.response));
             }
-        }
+        });
     }
 
-    createMemberEntry(member) {
-        const section = document.createElement('section');
-        section.classList.add('popUp');
+    getClassMembers() {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "ClassMessaging/getClassMembers.php", true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-        const name = document.createElement('span');
-        name.className = "popUp";
-        const userType = document.createElement('span');
-        userType.className = "popUp";
+        const data = `ClassID=${this.currentClassID}`;
+        xhr.send(data);
 
-        section.appendChild(name);
-        section.appendChild(userType);
-
-        name.textContent = member['FirstName'] + ' ' + member['LastName'];
-        userType.textContent = member["UserType"];
-
-        this.popUpManager.addMenuItem(section);
+        return new Promise(resolve => {
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4 && xhr.status == 200)
+                    resolve(JSON.parse(xhr.response));
+            }
+        });
     }
 
-    deleteMemberEntry(member) {
-        member.remove();
+    sendClassMessage(Message) {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("POST", "ClassMessaging/sendMessage.php", true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        const data = `ClassID=${this.currentClassID}&message-input=${Message}`;
+        xhr.send(data);
+    }
+}
+
+/*
+    MVC - View handles only UI logic
+*/
+class ClassMessagingView {
+    popUpManager;
+
+    classListMenu;
+    classChatCover;
+
+    classChatHeader;
+    classChatDescription;
+
+    classChatBody;
+
+    classChatFooter;
+    classMessageInput;
+
+    classChatAll;
+
+    constructor() {
+        this.popUpManager = new PopUpManager();
+
+        this.classListMenu = document.getElementById("class-menu");
+        this.classChatCover = document.getElementById("classChat-cover");
+
+        this.classChatHeader = document.getElementById("classChat-header");
+        this.classChatDescription = this.classChatHeader.querySelector("#classChat-description");
+
+        this.classChatBody = document.getElementById("classChat-body");
+
+        this.classChatFooter = document.getElementById("classChat-footer");
+        this.classMessageInput = document.getElementById("message-input");
+
+        this.classChatAll = document.querySelectorAll(".classChat");
+
+        this.classChatCoverVisible = true;
     }
 
-    showClassMessageTab() {
+    showClassChatCover() {
+        if (this.classChatCoverVisible)
+            return;
+        this.classChatCoverVisible = true;
+
+        this.classChatCover.style.display = "";
+        this.classChatAll.forEach(elem => { elem.style.display = "none"; });
+    }
+
+    hideClassChatCover() {
+        if (!this.classChatCoverVisible)
+            return;
+        this.classChatCoverVisible = false;
+
         let keyframes = [
             { opacity: "100" },
             { opacity: "0" }
@@ -216,16 +230,83 @@ class ChatManager {
         this.classChatCover.animate(keyframes, options);
         setTimeout(() => {
             this.classChatCover.style.display = "none";
-            this.classMessageElems.forEach(elem => { elem.style.display = ""; });
+            this.classChatAll.forEach(elem => { elem.style.display = ""; });
         }, 300);
     }
 
-    hideClassMessageTab() {
-        this.classChatCover.style.display = "";
-        this.classMessageElems.forEach(elem => { elem.style.display = "none"; });
+    updateClassMenu(classListItems) {
+        let createClassListEntry = (classListItem) => {
+            const ul = document.createElement('ul');
+            ul.innerHTML = classListItem.SubjectCode + ", LEVEL " + classListItem.Level + ", " + classListItem.ClassGroup;
+            ul.value = classListItem.ClassID;
+            this.classListMenu.appendChild(ul);
+        }
+
+        try {
+            classListItems.forEach(classListItem => createClassListEntry(classListItem));
+        }
+        catch (error) {
+            if (error.name == "TypeError")
+                createClassListEntry(classListItems);
+        }
     }
 
-    changeClassChatDescription(value) {
-        this.classChatDescription.textContent = value;
+    updateActiveMenuElement(element) {
+        // Deactivates any previously active list elements
+        let activeButton = this.classListMenu.querySelector('active');
+        if (activeButton != null)
+            activeButton.classList.remove('active');
+
+        // Activate current list element
+        element.classList.add('active');
+    }
+
+    updateClassMembers(classMembers) {
+        // Delete previous member entries
+        document.querySelectorAll('section.popUp').forEach(member => this.popUpManager.deleteMenuItem(member));
+
+        // Add new class member entry
+        classMembers.forEach(member => {
+            const section = document.createElement('section');
+            section.classList.add('popUp');
+
+            const name = document.createElement('span');
+            name.className = "popUp";
+            const userType = document.createElement('span');
+            userType.className = "popUp";
+
+            section.appendChild(name);
+            section.appendChild(userType);
+
+            name.textContent = member['FirstName'] + ' ' + member['LastName'];
+            userType.textContent = member["UserType"];
+
+            this.popUpManager.addMenuItem(section);
+        });
+    }
+
+    updateClassMessages(classMessages) {
+        // Delete previous message entries
+        document.querySelectorAll('.message').forEach(message => message.remove());
+
+        classMessages.forEach(message => {
+            const span = document.createElement('span');
+            span.className = 'message';
+            span.textContent = message['Message'];
+            this.classChatBody.appendChild(span);
+        })
+    }
+
+    updateClassDescription(classDescription) {
+        this.classChatDescription.textContent = classDescription;
+    }
+
+    updateClassMessageInput() {
+        this.classMessageInput.value = "";
+    }
+
+    showPopUp() {
+        this.popUpManager.showPopUp();
     }
 }
+
