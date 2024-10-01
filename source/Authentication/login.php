@@ -26,24 +26,36 @@
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Get the user type
-        // Check if user is a student
+        //get usertype
         $stmt = $pdo->prepare('SELECT * FROM student WHERE StudentID=?;');
         $stmt->bindParam(1, $user['UserID']);
         $stmt->execute();
-        if ($stmt->rowCount() > 0)
-            $_SESSION['UserType'] = 'Student';
 
-        // Check if user is a teacher or admin only if user is not a student
-        if ($_SESSION['UserType'] != 'Student') {
-            $stmt = $pdo->prepare('SELECT * FROM teacher WHERE TeacherID=?;');
-            $stmt->bindParam(1, $user['UserID']);
-            $stmt->execute();
-            if ($stmt->rowCount() > 0)
-                $_SESSION['UserType'] = 'Teacher';
-            else
-                $_SESSION['UserType'] = 'Admin';
+        $student = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Check if a row is returned
+        if ($student) {
+            $_SESSION['UserType'] = 'Student'; 
         }
+
+        // Check if user is a teacher or admin only if the user is not a student
+        if ($_SESSION['UserType'] != 'Student') {
+            // Prepare the statement to check if the user is a teacher
+            $stmt = $pdo->prepare('SELECT * FROM teacher WHERE TeacherID = ?');
+            $stmt->bindParam(1, $user['UserID'], PDO::PARAM_INT); // Bind as an integer
+            $stmt->execute();
+
+            // Use fetch() instead of rowCount() for reliability
+            $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($teacher) {
+                // If a teacher record is found, set the user type to Teacher
+                $_SESSION['UserType'] = 'Teacher';
+            } else {
+                // Otherwise, assume the user is an Admin
+                $_SESSION['UserType'] = 'Admin';
+            }
+        }
+
 
         if ($user) {
             if (password_verify($password, $user["Password"])) {
@@ -58,6 +70,7 @@
 
                 // If user is a student, query the student table using UserID to get additional data.
                 if ($_SESSION['UserType'] == 'Student') {
+               
                     $stmt = $pdo->prepare("SELECT Level, ClassGroup FROM student WHERE StudentID=?;");
                     $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
@@ -67,22 +80,23 @@
                     $_SESSION['ClassGroup'] = $student['ClassGroup'];
 
                     // Retrieve subjects taken by the student
-                    $stmt = $pdo->prepare("  SELECT s.SubjectName,cs.SubjectCode
-                                    FROM class_student cs
-                                    INNER JOIN subject s ON cs.SubjectCode = s.SubjectCode
-                                    WHERE cs.StudentID=?;  
-                                ");
+                    $stmt = $pdo->prepare("  SELECT s.Subjectname, s.SubjectCode FROM subject s 
+                                            INNER JOIN class c ON s.SubjectCode = c.SubjectCode
+                                            INNER JOIN class_student cs ON cs.ClassId = c.ClassID
+                                            WHERE cs.StudentID= ?;");
+
                     $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
-                    if ($stmt->rowCount() > 0)
-                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            echo "Subject Name: " . $row['SubjectName'] . "<br>";
-                        }
-                    else
-                        echo "No subjects found for this student.";
+                    $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    if(!empty($subjects)){
+                        $_SESSION['Subjects'] = $subjects;
+                    } else {echo "No subjects found for this student.";}
+         
                 }
                 // Else if user is a teacher
                 else if ($_SESSION['UserType'] == 'Teacher') {
+
                     $stmt = $pdo->prepare("SELECT SubjectTaught, DateJoined FROM teacher WHERE TeacherID=?;");
                     $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
@@ -95,6 +109,7 @@
                 }
                 // Else if user is an admin
                 else if ($_SESSION['UserType'] == 'Admin') {
+
                 }
 
                 // Redirect to accountManagementPage

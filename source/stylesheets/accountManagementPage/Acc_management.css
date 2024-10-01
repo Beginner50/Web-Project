@@ -175,7 +175,77 @@ input:not(:placeholder-shown)~label {
     left: 15px;
     font-size: 10px;
     padding: 0 2px;
+
     background: #ccbbfb;
 
 
+}
+
+.subjectstaken {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.subject-item {
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center;
+    padding: 6px 10px ;
+ 
+}
+
+.subject-code {
+    background-color: #2c166b;
+    color: white;
+
+    padding: 8px 10px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+
+    font-weight: bold;
+    width:75px;
+}
+
+.subject-name {
+    background-color: #705ba5;
+    color: white;
+    padding: 8px 10px;
+
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+
+    width:325px;
+}
+
+.error-container {
+
+    margin-top: 10px;
+    background-color: #f8d7da;
+    color: #721c24; 
+
+    padding: 12px 3px;
+    border: 2px solid #ba4e59; 
+
+    text-align: center;
+    font-weight: bolder;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.success-container {
+
+    margin-top: 10px;
+    background-color: #d7f8de;
+    color: #1c7247; 
+
+    padding: 12px 3px;
+    border: 2px solid #4eba55; 
+
+    text-align: center;
+    font-weight: bolder;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 18px;
 }

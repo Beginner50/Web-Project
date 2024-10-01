@@ -67,31 +67,27 @@ session_start();
                  GO BACK </button>";
                 } else {
                 
-                    $sqlquery="SELECT Password FROM user WHERE UserID =$UserID";
-                    $result=mysqli_query($conn,$sqlquery);
-                    $user=mysqli_fetch_array($result,MYSQLI_ASSOC);
+   
+                    // Get Password from user if userID exists
+                    $stmt = $pdo->prepare('SELECT Password FROM user WHERE UserID =?;');
+                    $stmt->bindParam(1, $UserID);
+                    $stmt->execute();
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     if (password_verify($currentpass,$user['Password'])){
 
                         $passwordhash = password_hash($newpassword, PASSWORD_DEFAULT);
 
-                        $sqlquery = "UPDATE user
-                        SET Password=?
-                        WHERE UserID =$UserID ";
-                                    
-                        $stmt = mysqli_stmt_init($conn); //initialises connection
+                        // Update password using a prepared statement
+                        $stmt = $pdo->prepare('UPDATE user SET Password = ? WHERE UserID = ?;');
+                        $stmt->bindParam(1, $passwordhash, PDO::PARAM_STR);
+                        $stmt->bindParam(2, $UserID, PDO::PARAM_INT);
 
-                        if (mysqli_stmt_prepare($stmt, $sqlquery)) {
-
-                            //binds and execute statement
-                            mysqli_stmt_bind_param($stmt, "s", $passwordhash);
-                            mysqli_stmt_execute($stmt);
-
+                        if ($stmt->execute()){
                             //displaying sucessful registraton status
                             echo "<h2 style='text-align: center; color: rgb(11, 91, 32); ;  '>Successfully Saved Changes!</h2>";
                             echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px; font-size:25px;'> Back </button>";
                         }
-                        mysqli_stmt_close($stmt);
 
                     }else{
                         echo "<h2 style='text-align: center; color: rgb(53, 12, 12);  '>Password is incorrect </h2>";

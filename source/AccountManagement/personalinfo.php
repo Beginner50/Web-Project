@@ -8,7 +8,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Info</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" ">
     <link rel="stylesheet" href="../../stylesheets/common.css">
     <link rel="stylesheet" href="../../stylesheets/authenticationPage/common.css">
 </head>
@@ -59,43 +59,51 @@ session_start();
 
             //checking for errors
             if (count($errors) > 0) {
-
-                echo "<h2 style='text-align: center; color: rgb(53, 12, 12);  '>Registration Unsuccessfull </h2>";
-
-                foreach ($errors as $errors) {
-                    echo "<div class='error-message' > $errors </div>";
-                }
-
-                echo "<a href='javascript:self.history.back()'>
-                <button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px;'> 
-                GO BACK </button>";
+                $_SESSION['errors'] = $errors; 
+                header('Location: ../accManagementPage.php#userID-content');
+                exit(); 
             }
             else{
+                 // Updating changes into User table
 
-                //MAKING CHANGES INTO USER
-
-                $sqlquery = "UPDATE user
+                 $sqlquery = "UPDATE user
                             SET DateOfBirth = ?,
-                            FirstName =?,
-                            LastName =?,
-                            Email =?,
-                            Gender =?
-                            WHERE UserId =$UserID ";
+                                FirstName = ?,
+                                LastName = ?,
+                                Email = ?,
+                                Gender = ?
+                            WHERE UserId = ?";
 
-                $stmt = mysqli_stmt_init($conn); //initialises connection
+             
+                $stmt = $pdo->prepare($sqlquery);
 
-                if (mysqli_stmt_prepare($stmt, $sqlquery)) {
+                $stmt->bindParam(1, $dateofbirth, PDO::PARAM_STR);
+                $stmt->bindParam(2, $firstname, PDO::PARAM_STR);
+                $stmt->bindParam(3, $lastname, PDO::PARAM_STR);
+                $stmt->bindParam(4, $email, PDO::PARAM_STR);
+                $stmt->bindParam(5, $gender, PDO::PARAM_STR);
+                $stmt->bindParam(6, $UserID, PDO::PARAM_INT); 
 
-                    //binds and execute statement
-                    mysqli_stmt_bind_param($stmt, "sssss", $dateofbirth, $firstname, $lastname, $email, $gender);
-                    mysqli_stmt_execute($stmt);
+                // Execute the statement
+                if ($stmt->execute()) {
+                    // Re-fetch updated user information from the database
+                    $stmt = $pdo->prepare('SELECT * FROM user WHERE UserID = ?');
+                    $stmt->execute([$_SESSION['UserID']]);
+                    $updatedUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    //displaying sucessful registraton status
-                    echo "<h2 style='text-align: center; color: rgb(11, 91, 32); ;  '>Successfully Saved Changes!</h2>";
-                    echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px; font-size:25px;'> Back </button>";
+                    // Update the session with the new information
+                    $_SESSION['FirstName'] = $updatedUser['FirstName'];
+                    $_SESSION['LastName'] = $updatedUser['LastName'];
+                    $_SESSION['Email'] = $updatedUser['Email'];
+                    $_SESSION['DateOfBirth'] = $updatedUser['DateOfBirth'];
+                    $_SESSION['Gender'] = $updatedUser['Gender'];
+
+                    // Set a success message and redirect to the account management page
+                    $_SESSION['Success'] = "Changes Successful";
+                    header('Location: ../accManagementPage.php#userID-content');
+                    exit();
                 }
-                mysqli_stmt_close($stmt);
-  
+            
             }
         }
         ?>
