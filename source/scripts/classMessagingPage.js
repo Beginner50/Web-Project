@@ -17,10 +17,10 @@ class ClassMessagingController {
     sendMessageButton;
     viewMembersButton;
 
-
     constructor() {
         this.classMessagingView = new ClassMessagingView(new PopUpManager());
         this.classMessagingModel = new ClassMessagingModel();
+        this.popUpManager = new PopUpManager();
 
         this.addClassMenuFunctionality();
         this.addViewMembersFunctionality();
@@ -85,7 +85,7 @@ class ClassMessagingController {
         this.viewMembersButton = document.getElementById("viewMembers-button");
 
         this.viewMembersButton.addEventListener("mousedown", () => {
-            this.classMessagingView.showPopUp();
+            this.popUpManager.showPopUp();
         });
     }
 }
@@ -291,10 +291,6 @@ class ClassMessagingView {
 
     updateClassMessageInput() {
         this.classMessageInput.value = "";
-    }
-
-    showPopUp() {
-        this.popUpManager.showPopUp();
     }
 }
 

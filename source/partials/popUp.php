@@ -5,8 +5,8 @@
             <span class="popUp indigoTheme" style="border: none; padding-bottom: 10px;">
                 <?php echo ($page == 'authenticationPage') ? 'Select a subject:' : 'Members:' ?>
             </span>
-            <?php if ($page == 'authenticationPage');
-            require 'Authentication/getSubjects.php';
+            <?php if ($page == 'authenticationPage')
+                require 'Authentication/getSubjects.php';
             ?>
         </div>
     </div>

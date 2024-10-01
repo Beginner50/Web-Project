@@ -182,7 +182,7 @@ require 'partials/navBar.php';
             <div class="logout-content2 second-column">
 
                 <form action="AccountManagement/logout.php">
-                    <button type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
+                    <button id="logout-button" type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
                 </form>
 
             </div>
