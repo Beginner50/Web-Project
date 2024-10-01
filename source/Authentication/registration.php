@@ -40,10 +40,11 @@
 
                 //specific attributes
                 if ($usertype == "Student") {
-                    $classgroup = $_POST["classGroup"];
+                    $classgroup = strtoupper($_POST["classGroup"]);
                     $level = $_POST["level"];
                     $subjects = $_POST["subjects"];
 
+                   
                     //Specific attribute validation
                     if ($classgroup == "") {
                         array_push($errors, "Class-group cannot be blank!");
@@ -56,6 +57,7 @@
 
                         // Convert it into an array to use for database input
                         $subjectsArray = explode(',', $subjects);
+                 
                     } else {
                         array_push($errors, "No subjects selected!");
                     }
@@ -128,124 +130,113 @@
                  <button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px;'> 
                  GO BACK </button>";
                 } else {
+                
+                    // INSERTING INTO USER
+                    $sqlquery = "INSERT INTO user (DateOfBirth, FirstName, LastName, Email, Gender, Password) VALUES (?, ?, ?, ?, ?, ?)";
+                    $stmt = $pdo->prepare($sqlquery);
+                    $stmt->execute([$dateofbirth, $firstname, $lastname, $email, $gender, $passwordhash]);
 
-                    //INSERTING INTO USER
-                    $sqlquery = "INSERT INTO user(DateOfBirth,FirstName,LastName,Email,Gender,Password) VALUES (?,?,?,?,?,?)";
-                    $stmt = mysqli_stmt_init($conn); //initialises connection
+                    // Fetch the most recently inserted UserID
+                    $sqlquery = "SELECT MAX(UserID) AS max_userid FROM user";
+                    $stmt = $pdo->query($sqlquery); 
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the result as an associative array
 
-                    if (mysqli_stmt_prepare($stmt, $sqlquery)) {
-
-                        //binds and execute statement
-                        mysqli_stmt_bind_param($stmt, "ssssss", $dateofbirth, $firstname, $lastname, $email, $gender, $passwordhash);
-                        mysqli_stmt_execute($stmt);
-
-                        //searching maximum userid- most recent insert
-                        $sqlquery = "SELECT MAX(Userid) AS max_userid FROM user";
-                        $result = mysqli_query($conn, $sqlquery);
-
-                        if ($result) {
-                            // Fetch the result as an associative array
-                            $row = mysqli_fetch_assoc($result);
-                            $max_userid = $row['max_userid'];
-                        } else {
-                            echo "Error: " . mysqli_error($conn);
-                        }
-
-
-                        //INSERTING FOR THE DIFFERENT USER TYPES
-                        mysqli_stmt_close($stmt); //must reinitialise stmt
-                        $stmt = mysqli_stmt_init($conn);
-
-                        if ($usertype == 'Student') {
-
-                            //INSERTING INTO STUDENT
-                            $sqlquery = "INSERT INTO student(StudentID,Level,ClassGroup) VALUES (?,?,?)";
-                            if (mysqli_stmt_prepare($stmt, $sqlquery)) {
-
-                                //binds and execute statement
-                                mysqli_stmt_bind_param($stmt, "iis", $max_userid, $level, $classgroup);
-                                mysqli_stmt_execute($stmt);
-
-                                //INSERTING INTO CLASS_STUDENT
-                                mysqli_stmt_close($stmt); //must reinitialise stmt
-                                $stmt = mysqli_stmt_init($conn);
-
-                                $sqlquery = "INSERT INTO class_student(Level,ClassGroup,SubjectCode,StudentID) VALUES (?,?,?,?)";
-                                if (mysqli_stmt_prepare($stmt, $sqlquery)) {
-
-                                    foreach ($subjectsArray as $subject) {
-                                        mysqli_stmt_bind_param($stmt, "issi", $level, $classgroup, $subject, $max_userid);
-                                        mysqli_stmt_execute($stmt);
-                                    }
-                                } else {
-                                    die("Something went wrong in class_student table!");
-                                }
-                            } else {
-                                die("Something went wrong in student table!");
-                            }
-                            mysqli_stmt_close($stmt); //must close stmt
-                        } else if ($usertype == 'Teacher') {
-
-                            //INSERTING INTO APPROVAL
-                            $stmt = mysqli_stmt_init($conn);
-
-                            $sqlquery = "INSERT INTO approval(AdminID,UserID,UserType,IsApproved) VALUES (?,?,?,?)";
-                            if (mysqli_stmt_prepare($stmt, $sqlquery)) {
-
-                                $AdminID=NULL;
-                                $IsApproved=0;
-                                mysqli_stmt_bind_param($stmt, "iisi",$AdminID, $max_userid,$usertype,$IsApproved);
-                                mysqli_stmt_execute($stmt);
-                            } else {
-                                die("Something went wrong in approval table!");
-                            }
-                            mysqli_stmt_close($stmt); //must close stmt
-
-                            //INSERTING INTO TEACHER
-                            $stmt = mysqli_stmt_init($conn);
-
-                            $sqlquery = "INSERT INTO teacher(TeacherID,subjectTaught,DateJoined) VALUES (?,?,?)";
-                            if (mysqli_stmt_prepare($stmt, $sqlquery)) {
-
-                                mysqli_stmt_bind_param($stmt, "iss", $max_userid, $subjecttaught, $datejoinedteacher);
-                                mysqli_stmt_execute($stmt);
-                            } else {
-                                die("Something went wrong in teacher table!");
-                            }
-                            mysqli_stmt_close($stmt); //must close stmt
-                        } else if ($usertype == 'Admin') {
-
-                            
-                            //INSERTING INTO APPROVAL
-                            $stmt = mysqli_stmt_init($conn);
-
-                            $sqlquery = "INSERT INTO approval(AdminID,UserID,UserType,IsApproved) VALUES (?,?,?,?)";
-                            if (mysqli_stmt_prepare($stmt, $sqlquery)) {
-
-                                mysqli_stmt_bind_param($stmt, "iisi",NULL, $max_userid,$usertype,0);
-                                mysqli_stmt_execute($stmt);
-                            } else {
-                                die("Something went wrong in approval table!");
-                            }
-                            mysqli_stmt_close($stmt); //must close stmt
-
-                            //INSERTING INTO ADMIN
-                            $stmt = mysqli_stmt_init($conn);
-                            $sqlquery = "INSERT INTO administrator(AdminID,DateJoined) VALUES (?,?)";
-                            if (mysqli_stmt_prepare($stmt, $sqlquery)) {
-
-                                mysqli_stmt_bind_param($stmt, "is", $max_userid, $datejoinedadmin);
-                                mysqli_stmt_execute($stmt);
-                            }
-                        }
-
-                        //displaying sucessful registraton status
-                        echo "<h2 style='text-align: center; color: rgb(11, 91, 32); ;  '>Successfully registered!</h2>";
-                        echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px; font-size:25px;'> Click to here Sign in! </button>";
-                    } else {
-                        die("Something went wrong in user table!");
+                    if ($row) {
+                        $max_userid = $row['max_userid']; // Get the maximum user ID
                     }
+
+
+                    if ($usertype == 'Student') {
+
+                        
+                        // INSERTING INTO STUDENT TABLE
+                        $stmt = $pdo->prepare('INSERT INTO student(StudentID,Level,ClassGroup) VALUES (?,?,?);');
+                        $stmt->bindParam(1, $max_userid, PDO::PARAM_INT);
+                        $stmt->bindParam(2, $level, PDO::PARAM_INT);
+                        $stmt->bindParam(3, $classgroup, PDO::PARAM_STR);
+
+                        if ($stmt->execute()){
+                            //INSERTING INTO CLASS_STUDENT TABLE
+
+                            //FETCHING THE SUBJECT CODE FOR EACH SUBJECT NAME TAKEN
+                            //this would store the corresponding amount of placeholders. Ex"?,?,?" . 1 for each element in subjectsArray
+
+                            $placeholders = implode(',', array_fill(0, count($subjectsArray), '?')); 
+                            $sqlquery = "SELECT SubjectCode FROM subject WHERE SubjectName IN ($placeholders)";
+                            $stmt = $pdo->prepare($sqlquery);
+
+                            // Passes subjectsArray as values to be bound by placeholders
+                            $stmt->execute($subjectsArray);
+                            $subjectCode = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                            //FETCHING THE CORRESPONDING CLASSID
+                            $placeholders = implode(',', array_fill(0, count($subjectCode), '?')); 
+
+                            $sqlquery = "SELECT ClassID 
+                                         FROM class 
+                                         WHERE SubjectCode IN ($placeholders) 
+                                         AND Level = ? 
+                                         AND ClassGroup = ?";
+                            
+                         
+                            $stmt = $pdo->prepare($sqlquery);
+                            $stmt->execute(array_merge($subjectCode, [$level, $classgroup]));
+                            
+                            $classIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                            // INSERTING IN CLASS_STUDENT FOR EACH CLASSID
+                            foreach ($classIds as $classId) {
+                                $sqlquery = "INSERT INTO class_student(ClassID,StudentID) VALUES (?,?);";
+                                $stmt = $pdo->prepare($sqlquery);
+                                $stmt->execute([$classId, $max_userid]);
+                            }
+                        }else{
+                            die("Something went wrong in student table!");
+                        }
+
+
+                    } else if ($usertype == 'Teacher') {
+
+                        // INSERTING INTO APPROVAL
+                        $sqlquery = "INSERT INTO approval (AdminID, UserID, UserType, IsApproved) VALUES (?, ?, ?, ?)";
+                        $stmt = $pdo->prepare($sqlquery);
+
+                        $AdminID = null; 
+                        $IsApproved = 0; 
+
+                        $stmt->execute([$AdminID, $max_userid, $usertype, $IsApproved]);
+
+                        // INSERTING INTO TEACHER
+                        $sqlquery = "INSERT INTO teacher (TeacherID, subjectTaught, DateJoined) VALUES (?, ?, ?)";
+                        $stmt = $pdo->prepare($sqlquery);
+
+                        // Execute the statement
+                        $stmt->execute([$max_userid, $subjecttaught, $datejoinedteacher]);
+
+                    } else if ($usertype == 'Admin') {
+
+                        // INSERTING INTO APPROVAL
+                        $sqlquery = "INSERT INTO approval (AdminID, UserID, UserType, IsApproved) VALUES (?, ?, ?, ?)";
+                        $stmt = $pdo->prepare($sqlquery);
+
+                        $AdminID = null; 
+                        $IsApproved = 0; 
+                        $stmt->execute([$AdminID, $max_userid, $usertype, $IsApproved]);
+
+                        
+                        // INSERTING INTO ADMIN
+                        $sqlquery = "INSERT INTO administrator (AdminID, DateJoined) VALUES (?, ?)";
+                        $stmt = $pdo->prepare($sqlquery);
+                        $stmt->execute([$max_userid, $datejoinedadmin]);
+                    }
+
+                    //displaying sucessful registraton status
+                    echo "<h2 style='text-align: center; color: rgb(11, 91, 32); ;  '>Successfully registered!</h2>";
+                    echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px; font-size:25px;'> Click to here Sign in! </button>";
+
+                
                 }
+            
             }
             ?>
         </div>

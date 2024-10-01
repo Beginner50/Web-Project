@@ -8,6 +8,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Management</title>
+
     <link rel="stylesheet" href="stylesheets/accountManagementPage/Acc_management.css">
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
@@ -33,7 +34,7 @@ require 'partials/navBar.php';
                 <li><a href="#userID-content"><i class="fa fa-address-card" aria-hidden="true"></i>Personal Information</a></li>
                 <li><a href="#personalinfo-savechanges" style="font-size:12px;"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Student/Teacher Information</a></li>
                 <li><a href="#loginmanagement"><i class="fa fa-key" aria-hidden="true"></i>Login Management</a></li>
-                <li><a href="#logout-button"><i class="fa fa-sign-out" aria-hidden="true"></i>Log out </a></li>
+                <li><a href="#logout-content"><i class="fa fa-sign-out" aria-hidden="true"></i>Log out </a></li>
             </ul>
         </aside>
 
@@ -85,7 +86,27 @@ require 'partials/navBar.php';
                     </div>
 
                     <button type="submit" id="personalinfo-savechanges" name="personalinfo-savechanges" class="indigoTheme roundBorder savebutton" form="personalinfo-form">Save Changes</button>
+            
                 </form>
+                <?php
+
+                // Check if there are any errors in the session
+                if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
+
+                    foreach ($_SESSION['errors'] as $error) {
+                        echo '<div class="error-container">' . $error . '</div>'; // Display each error
+                    }
+
+                    // Unset the errors after displaying them
+                    unset($_SESSION['errors']);
+                }
+
+                if(isset($_SESSION['Success'])){
+
+                    echo '<div class="success-container" >' . $_SESSION['Success'] . '</div>';
+                    unset($_SESSION['Success']);
+                }
+                ?>
 
             </div>
 
@@ -131,7 +152,16 @@ require 'partials/navBar.php';
 
                     <div class="information studentinfo-grid">
                         <div class="sub-information">Subjects Taken</div>
-                        <div>tobefetch</div>
+                        <div class="subjectstaken">
+                        <?php 
+                        foreach($_SESSION['Subjects'] as $Subjects){
+                            echo '<div class="subject-item">';
+                            echo '<div class="subject-code">'. $Subjects['SubjectCode'] .'</div>';
+                            echo '<div class="subject-name">'. $Subjects['Subjectname'] .'</div>';
+                            echo '</div>';
+                        }
+                        ?>
+                    </div>
                     </div>
                 </div>
             <?php endif; ?>
@@ -171,6 +201,7 @@ require 'partials/navBar.php';
                         </div>
                         <button type="submit" id="personalinfo-changepassword" name="personalinfo-changepassword" class="indigoTheme roundBorder savebutton" form="passwordchange-form" style="margin-left: 50px;">Save Changes</button>
                     </form>
+
                 </div>
             </div>
 
@@ -184,7 +215,7 @@ require 'partials/navBar.php';
                 <form action="AccountManagement/logout.php">
                     <button type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
                 </form>
-
+                        
             </div>
         </div>
     </div>
