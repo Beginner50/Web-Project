@@ -6,10 +6,10 @@
 
    Subsequent inclusion of the connect.php file by other php files will 
    not cause it to execute again. Thus, the database connection is established
-   only once, meaning bigger performance gain, meaning more money saved 🤑🤑
+   only once, meaning bigger performance gain, meaning more money saved
 */
 session_start();
-require_once '../connect.php';
+require_once 'connect.php';
 
 /*
     Again, the states of global variables are already stored in the php server 
@@ -30,7 +30,8 @@ error_reporting(-1);
 $userID = $_SESSION['UserID'];
 $default = 0;
 
-$stmt = $pdo->prepare('SELECT class.ClassID AS ClassID, SubjectCode, Level, ClassGroup FROM class LEFT JOIN class_student ON class_student.ClassID = class.ClassID WHERE StudentID=? OR TeacherID=?;');
+// Use views as they are pre-compiled and faster to execute than the corresponding sql statements
+$stmt = $pdo->prepare('SELECT class.ClassID AS ClassID, SubjectName, Level, ClassGroup FROM class LEFT JOIN class_student ON class_student.ClassID = class.ClassID INNER JOIN subject ON class.SubjectCode = subject.SubjectCode WHERE StudentID=? OR TeacherID=?;');
 if ($_SESSION['UserType'] == 'Student') {
     $stmt->bindParam(1, $userID);
     $stmt->bindParam(2, $default);
@@ -40,5 +41,4 @@ if ($_SESSION['UserType'] == 'Student') {
 }
 $stmt->execute();
 
-$results = $stmt->fetch(PDO::FETCH_ASSOC);
-echo json_encode($results);
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);

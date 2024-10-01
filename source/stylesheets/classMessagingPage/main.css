@@ -12,11 +12,14 @@ body {
 body #sidebar {
     position: relative;
     width: 22.8%;
+    overflow-y: auto;
+    gap: 2px;
 }
 
 #sidebar ul {
     padding-top: 1%;
-    height: 20%;
+    padding-bottom: 1%;
+    height: fit-content;
 }
 
 #sidebar ul:hover {

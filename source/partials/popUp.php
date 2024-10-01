@@ -1,10 +1,13 @@
 <link rel="stylesheet" href="stylesheets/partials/popUp.css">
 <aside id="popUp-window" style="display:none;">
     <div id="popUp-wrapper">
-        <table id="popUp-menu" class="shadow">
-            <th class="popUp indigoTheme" style="border: none; padding-bottom: 10px;">
+        <div id="popUp-menu" class="shadow">
+            <span class="popUp indigoTheme" style="border: none; padding-bottom: 10px;">
                 <?php echo ($page == 'authenticationPage') ? 'Select a subject:' : 'Members:' ?>
-            </th>
-        </table>
+            </span>
+            <?php if ($page == 'authenticationPage');
+            require 'Authentication/getSubjects.php';
+            ?>
+        </div>
     </div>
 </aside>

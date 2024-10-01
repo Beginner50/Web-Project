@@ -1,86 +1,248 @@
 import PopUpManager from './popUp.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-  const subjectManager = new SubjectManager(new PopUpManager());
-  const moveableWrapperManager = new MoveableWrapperManager();
-  const userTabManager = new UserTabManager();
-
-  // Add event listener to registration form
-  document.getElementById("registration-form").addEventListener("submit", () => {
-    document.getElementById("selected-subjects").value = subjectManager.subjectsChosen.toString();
-  });
-
+  const authenticationController = new AuthenticationController();
 });
 
-/* ---------------------------------------------------------------------- */
-class MoveableWrapperManager {
+/*
+  MVC - Controller acts as the intermediary between model and view components
+        More importantly, it receives the user's requests and updates the view
+        and model respectively
+*/
+class AuthenticationController {
+  authenticationModel
+  authenticationView;
+  popUpManager;
+
+  CTAButton;
+  subjectButton;
+  userTypeButtons;
+
   constructor() {
-    // Initialise values
-    this.formStatus = "login";
-    this.inTransit = false;
+    this.popUpManager = new PopUpManager();
+    this.authenticationModel = new AuthenticationModel();
+    this.authenticationView = new AuthenticationView(this.popUpManager);
 
-    this.loginForm = document.querySelector("#login-form");
-    this.registrationForm = document.querySelector("#registration-form");
-
-    this.CTAWrapper = document.querySelector("#callToAction-wrapper");
-    this.formWrapper = document.querySelector("#form-wrapper");
-
-    this.CTAH1 = this.CTAWrapper.querySelector("h1");
     this.CTAButton = document.querySelector("#callToAction-wrapper>button");
-    this.CTAButtonLink = this.CTAButton.querySelector("a");
-    this.formWrapperH1 = this.formWrapper.querySelector("h1");
-
-    this.CTAkeyframesLeft = [
-      { transform: "translateX(0%)" },
-      { transform: "translateX(-150%)" }
-    ];
-    this.CTAkeyframesRight = [
-      { transform: "translateX(-150%)" },
-      { transform: "translateX(0%)" }
+    this.subjectButton = document.querySelector("#addSubject-button");
+    this.userTypeButtons = [
+      document.getElementById("student-button"),
+      document.getElementById("teacher-button"),
+      document.getElementById("admin-button")
     ];
 
-    this.formkeyframesRight = [
-      { transform: "translate(0%)", opacity: "100" },
-      { transform: "translate(5%)", opacity: "0" },
-      { transform: "translate(55%)", opacity: "0" },
-      { transform: "translate(65%)" }
-    ];
+    this.addCTAButtonFunctionality();
+    this.addPopUpMenuFunctionality();
+    this.addUserTypeButtonFunctionality();
+    this.addSubjectButtonFunctionality();
+  }
 
-    this.formkeyframesLeft = [
-      { transform: "translate(65%)", opacity: "100" },
-      { transform: "translate(65%)", opacity: "0" },
-      { transform: "translate(10%)", opacity: "0" },
-      { transform: "translate(0%)" }
-    ];
-
-    this.options = {
-      duration: 600,
-      easing: "ease-in-out",
-      fill: "forwards"
-    };
-
-    // Adds changeForm method to CTA button
+  addCTAButtonFunctionality() {
+    /*
+      Upon clicking Sign In/Up button, changes and gets new form status from model
+      and updates the state of the form in the view
+    */
     this.CTAButton.addEventListener("mousedown", () => {
-      this.changeForm();
+      let newformStatus = this.authenticationModel.newFormStatus();
+      this.authenticationView.updateFormView(newformStatus);
     });
   }
 
-  // Change form from registration to login and vice-versa
-  changeForm() {
+  addUserTypeButtonFunctionality() {
+    /*
+      When user clicks on a userType button, get the index of the button clicked and update
+      the user specific fieldset of the registration form accordingly.
+    */
+    this.userTypeButtons.forEach(button => {
+      button.addEventListener("mousedown", () => {
+        let currentTab = this.userTypeButtons.findIndex(cmp => { return cmp === button; });
+        this.authenticationView.updateUserTab(currentTab);
+        this.authenticationView.updateUserTypeInput(button.value);
+      });
+    })
+  }
+
+  addSubjectButtonFunctionality() {
+    this.subjectButton.addEventListener("mousedown", () => {
+      if (this.authenticationModel.numSujectsChosen < 5) {
+        this.popUpManager.showPopUp();
+      }
+    });
+  }
+
+  addSubjectEntryFunctionality(subjectListEntry) {
+    let subjectListEntryIcon = subjectListEntry.querySelector("img");
+
+    // CSS applies only to elements before the DOM has been loaded.
+    // Therefore, event listeners are required here
+    subjectListEntryIcon.addEventListener("mouseenter", event => {
+      event.target.src = "icons/backspaceRed.svg";
+      event.target.parentElement.style.color = "red";
+      event.target.parentElement.style.borderColor = "red";
+    });
+    subjectListEntryIcon.addEventListener("mouseleave", event => {
+      event.target.src = "icons/backspace.svg";
+      event.target.parentElement.style.color = "var(--purpleVortex)";
+      event.target.parentElement.style.borderColor = "var(--purpleVortex)";
+    });
+    subjectListEntryIcon.addEventListener("mousedown", event => {
+      /*
+        If user clicks on icon, delete the corresponding subject entry
+        from the subject list
+      */
+      let subjectCode = subjectListEntryIcon.parentElement.textContent;
+
+      this.authenticationModel.removeSubject(subjectCode);
+      this.authenticationView.updateSubjectList(subjectCode, "DELETE");
+    });
+  }
+
+  addPopUpMenuFunctionality() {
+    // Dependency injection of an event into popUp since popUp does not need to be aware of the caller
+    this.popUpManager.buttonEvent((button) => {
+      let subjectCode = button.value;
+      this.authenticationModel.addSubject(subjectCode);
+
+      let subjectListEntry = this.authenticationView.updateSubjectList(subjectCode, "CREATE");
+      this.authenticationView.updateSubjectsChosenInput(this.authenticationModel.subjectsChosen);
+
+      this.addSubjectEntryFunctionality(subjectListEntry);
+    });
+  }
+}
+
+class AuthenticationView {
+  popUpManager;
+
+  CTAWrapper;
+  formWrapper;
+
+  inTransit = false;
+  CTAkeyframesLeft = [
+    { transform: "translateX(0%)" },
+    { transform: "translateX(-150%)" }
+  ];
+  CTAkeyframesRight = [
+    { transform: "translateX(-150%)" },
+    { transform: "translateX(0%)" }
+  ];
+  formkeyframesRight = [
+    { transform: "translate(0%)", opacity: "100" },
+    { transform: "translate(5%)", opacity: "0" },
+    { transform: "translate(55%)", opacity: "0" },
+    { transform: "translate(65%)" }
+  ];
+  formkeyframesLeft = [
+    { transform: "translate(65%)", opacity: "100" },
+    { transform: "translate(65%)", opacity: "0" },
+    { transform: "translate(10%)", opacity: "0" },
+    { transform: "translate(0%)" }
+  ];
+  options = {
+    duration: 600,
+    easing: "ease-in-out",
+    fill: "forwards"
+  };
+
+  constructor(popUpManager) {
+    this.popUpManager = popUpManager;
+
+    this.CTAWrapper = document.querySelector("#callToAction-wrapper");
+    this.CTAH1 = this.CTAWrapper.querySelector("h1");
+    this.CTAButton = document.querySelector("#callToAction-wrapper>button");
+    this.CTAButtonLink = this.CTAButton.querySelector("a");
+
+    this.formWrapper = document.querySelector("#form-wrapper");
+    this.formWrapperH1 = this.formWrapper.querySelector("h1");
+
+    // Login form
+    this.loginForm = document.querySelector("#login-form");
+
+    // Registration Form
+    this.registrationForm = document.querySelector("#registration-form");
+    this.formSubjectList = document.getElementById("subjectList");
+    this.addSubjectButton = document.getElementById("addSubject-button");
+    this.subjectsChosenInput = document.getElementById("selected-subjects");
+
+    this.userButtons = [
+      document.getElementById("student-button"),
+      document.getElementById("teacher-button"),
+      document.getElementById("admin-button")
+    ];
+    this.userFieldsets = [
+      document.querySelector("#specificAttr-fieldset-student"),
+      document.querySelector("#specificAttr-fieldset-teacher"),
+      document.querySelector("#specificAttr-fieldset-admin")
+    ];
+  }
+
+  updateFormView(newFormStatus) {
     if (this.inTransit)
       return;
 
     this.inTransit = true;
     this.formWrapper.scrollIntoView();
 
-    if (this.formStatus === "login")
-      this.showRegistrationForm();
-    else if (this.formStatus === "registration")
-      this.showLoginForm();
-
+    if (newFormStatus === "login")
+      this.#showLoginForm();
+    else if (newFormStatus === "registration")
+      this.#showRegistrationForm();
   }
 
-  showLoginForm() {
+  updateSubjectList(subjectCode, action) {
+    if (action === "DELETE") {
+      // Deletes subjectEntry from subjectList with given subjectCode
+      this.formSubjectList.children.forEach(child => {
+        if (child.textContent == subjectCode)
+          this.#deleteSubjectListEntry(child);
+      });
+
+      // Shows corresponding popUp button
+      let popUpButton = this.popUpManager.getMenuItem(subjectCode);
+      this.popUpManager.showButton(popUpButton);
+    }
+    else if (action === "CREATE") {
+      // Creates subject entry
+      let subjectListEntry = this.#createSubjectListEntry(subjectCode);
+
+      // Re-arranges order of the add button (Always place it ahead of subject entries)
+      this.addSubjectButton = this.formSubjectList.removeChild(this.formSubjectList.querySelector("button"));
+      this.formSubjectList.appendChild(subjectListEntry);
+      this.formSubjectList.appendChild(this.addSubjectButton);
+
+      return subjectListEntry;
+    }
+    return null;
+  }
+
+  updateSubjectsChosenInput(subjectsChosen) {
+    this.subjectsChosenInput.value = "";
+    this.subjectsChosenInput.value = subjectsChosen;
+  }
+
+  updateUserTypeInput(userType) {
+    document.getElementById("user-type").value = userType;
+  }
+
+  updateUserTab(currentTab) {
+    if (this.inTransit)
+      return;
+    this.inTransit = true;
+
+    this.userButtons[currentTab].classList.add("active");
+    this.userButtons[(currentTab + 1) % 3].classList.remove("active");
+    this.userButtons[(currentTab + 2) % 3].classList.remove("active");
+
+    setTimeout(() => {
+      this.userFieldsets[currentTab].style.display = ""; this.userFieldsets[currentTab].disabled = false;
+    }, 200)
+    this.userFieldsets[(currentTab + 1) % 3].style.display = "none"; this.userFieldsets[(currentTab + 1) % 3].disabled = true;
+    this.userFieldsets[(currentTab + 2) % 3].style.display = "none"; this.userFieldsets[(currentTab + 2) % 3].disabled = true;
+
+    this.inTransit = false;
+  }
+
+  #showLoginForm() {
     setTimeout(() => {
       this.loginForm.style.display = "";
       this.registrationForm.style.display = "none";
@@ -92,11 +254,9 @@ class MoveableWrapperManager {
     this.CTAH1.textContent = "New to Education Portal?";
     this.CTAButtonLink.textContent = "Sign Up";
     this.formWrapperH1.textContent = "Sign In";
-
-    this.formStatus = "login";
   }
 
-  showRegistrationForm() {
+  #showRegistrationForm() {
     setTimeout(() => {
       this.loginForm.style.display = "none";
       this.registrationForm.style.display = "";
@@ -108,140 +268,48 @@ class MoveableWrapperManager {
     this.CTAH1.textContent = "Already Registered?";
     this.CTAButtonLink.textContent = "Sign In";
     this.formWrapperH1.textContent = "Sign Up";
-
-    this.formStatus = "registration";
-  }
-}
-
-/* ------------------------------------------------------------------------------------------- */
-
-class SubjectManager {
-  constructor(popUpManager) {
-    this.numSubjectsChosen = 0;
-    this.subjectsChosen = [];
-
-    this.popUpManager = popUpManager;
-    this.formSubjectList = document.getElementById("subjectList");
-    this.addSubjectButton = document.getElementById("addSubject-button");
-
-    // Fetches subjects asynchronously
-    fetch("Authentication/getSubjects.php")
-      .then(response => response.json())
-      .then(subjects => {
-        subjects.forEach(subject => {
-          const button = document.createElement("button");
-          button.className = "indigoTheme popUp";
-          button.value = subject.SubjectCode;
-          button.innerHTML = subject.SubjectName;
-          this.popUpManager.addMenuItem(button);
-        })
-      });
-
-    // Assign event listener to the addSubject-button
-    // When user clicks on add subject button, show the popup.
-    this.addSubjectButton.addEventListener("mousedown", () => {
-      if (this.numSubjectsChosen < 5) {
-        this.popUpManager.showPopUp();
-      }
-    });
-
-    // Dependency injection of an event into popUp since popUp does
-    // not need to be aware of the caller
-    this.popUpManager.buttonEvent((button) => {
-      this.selectSubject(button);
-    });
   }
 
-  // User selects a subject from popUp menu
-  selectSubject(subjectButton) {
+  #createSubjectListEntry(subjectCode) {
     const subjectListEntry = document.createElement("div");
     subjectListEntry.className = "subject";
-    const subjectEntryIcon = document.createElement("img");
-    subjectEntryIcon.src = "icons/backspace.svg"
-    subjectListEntry.innerHTML = subjectButton.value;
-    subjectListEntry.appendChild(subjectEntryIcon);
+    const subjectListEntryIcon = document.createElement("img");
+    subjectListEntryIcon.src = "icons/backspace.svg"
+    subjectListEntry.textContent = subjectCode;
+    subjectListEntry.appendChild(subjectListEntryIcon);
 
-    // Event delegation to handle click and hover events on subject close icon
-    subjectEntryIcon.addEventListener("mouseenter", event => {
-      event.target.src = "icons/backspaceRed.svg";
-      event.target.parentElement.style.color = "red";
-      event.target.parentElement.style.borderColor = "red";
-    });
-    subjectEntryIcon.addEventListener("mouseleave", event => {
-      event.target.src = "icons/backspace.svg";
-      event.target.parentElement.style.color = "var(--purpleVortex)";
-      event.target.parentElement.style.borderColor = "var(--purpleVortex)";
-    });
-    subjectEntryIcon.addEventListener("mousedown", event => {
-      this.unselectSubject(subjectEntryIcon.parentElement.textContent);
-      subjectEntryIcon.parentElement.remove();
-    });
-
-
-    this.addSubjectButton = this.formSubjectList.removeChild(this.formSubjectList.querySelector("button"));
-    this.formSubjectList.appendChild(subjectListEntry);
-    this.formSubjectList.appendChild(this.addSubjectButton);
-
-    this.subjectsChosen.push(subjectButton.textContent);
-    this.numSubjectsChosen++;
+    return subjectListEntry;
   }
 
-  // User deselects a subject from the subject list in the form
-  unselectSubject(subject) {
-    let popUpButton = this.popUpManager.getMenuItem(subject);
-    this.popUpManager.showButton(popUpButton);
-
-    this.subjectsChosen = this.subjectsChosen.filter(elem => { return (elem != subject); });
-    this.numSubjectsChosen--;
+  #deleteSubjectListEntry(subjectListEntry) {
+    subjectListEntry.remove();
   }
 }
 
-/* ---------------------------------------------------------------------------- */
-class UserTabManager {
-  constructor() {
-    this.userButtons = [
-      document.getElementById("student-button"),
-      document.getElementById("teacher-button"),
-      document.getElementById("admin-button")
-    ];
-    this.userFieldsets = [
-      document.querySelector("#specificAttr-fieldset-student"),
-      document.querySelector("#specificAttr-fieldset-teacher"),
-      document.querySelector("#specificAttr-fieldset-admin")
-    ];
-    this.userTypes = ["Student", "Teacher", "Admin"];
+class AuthenticationModel {
+  formStatus = "login";
+  subjectsChosen = [];
+  numSujectsChosen = 0;
 
-    this.userTypeInput = document.getElementById("user-type");
-    this.userTypeInput.value = this.userTypes[0];
-    this.inTransit = false;
+  newFormStatus() {
+    if (this.formStatus == "login")
+      this.formStatus = "registration";
+    else if (this.formStatus == "registration")
+      this.formStatus = "login"
 
-    this.userButtons.forEach(button => {
-      button.addEventListener("mousedown", () => {
-        if (this.inTransit)
-          return;
-        this.inTransit = true;
-
-        let i = this.userButtons.findIndex(cmp => { return cmp === button; });
-        this.showTab(i);
-
-        this.inTransit = false;
-      });
-    })
-
-    this.showTab(0);
+    return this.formStatus;
   }
 
-  showTab(i) {
-    this.userButtons[i].classList.add("active");
-    this.userButtons[(i + 1) % 3].classList.remove("active");
-    this.userButtons[(i + 2) % 3].classList.remove("active");
-
-    setTimeout(() => {
-      this.userFieldsets[i].style.display = ""; this.userFieldsets[i].disabled = false;
-    }, 200)
-    this.userFieldsets[(i + 1) % 3].style.display = "none"; this.userFieldsets[(i + 1) % 3].disabled = true;
-    this.userFieldsets[(i + 2) % 3].style.display = "none"; this.userFieldsets[(i + 2) % 3].disabled = true;
-
-    this.userTypeInput.value = this.userTypes[i];
+  addSubject(subject) {
+    this.subjectsChosen.push(subject);
+    this.numSujectsChosen++;
   }
+
+  removeSubject(subject) {
+    this.subjectsChosen = this.subjectsChosen.filter(elem => {
+      return elem != subject
+    });
+    this.numSujectsChosen--;
+  }
+
 }

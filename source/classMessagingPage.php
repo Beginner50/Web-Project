@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 session_start();
 ?>
 <!DOCTYPE html>
@@ -18,13 +19,25 @@ session_start();
 
 <!-- Navigation Bar -->
 <?php $page = 'classTab';
-require 'partials/navBar.php' ?>
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+require 'partials/navBar.php';
+?>
 
 <body>
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar">
         <h2> Classes </h2>
         <menu id="class-menu">
+            <?php
+            include 'ClassMessaging/getClasses.php';
+            foreach ($results as $result)
+                echo '<ul data-classID="' . $result['ClassID'] . '">'
+                    . $result['SubjectName'] . ', LEVEL '
+                    . $result['Level'] . ', '
+                    . $result['ClassGroup'] .
+                    '</ul>';
+            ?>
         </menu>
     </aside>
 

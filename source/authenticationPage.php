@@ -21,7 +21,9 @@
 
 <body>
     <!-- Navigation Bar -->
-    <?php $page = 'authenticationPage';
+    <?php
+
+    $page = 'authenticationPage';
     require 'partials/navBar.php' ?>
 
     <!-- Main Wrapper -->
@@ -165,10 +167,8 @@
     </div>
 
     <!-- Popup window (Default: off) -->
-    <?php require 'partials/popUp.php'; ?>
-
+    <?php include 'partials/popUp.php'; ?>
     <script src="scripts/authenticationPage.js" type="module"></script>
-
 </body>
 
 </html>
