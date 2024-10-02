@@ -1,41 +1,73 @@
 #registration-form #specificAttr-fieldset {
-    display: inline;
-    height: 35%;
-    width: 87%;
+    height: 32vh;
+    width: 31vw;
     margin-left: 7%;
-    margin-right: auto;
+    margin-right: 0%;
     margin-top: 25px;
     border-radius: 5px;
     border: 1px var(--blueOcean) solid;
     padding: 0px;
 }
 
-#specificAttr-fieldset-student>div:nth-child(1) {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+#specificAttr-fieldset-student #top-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 190px));
 }
 
-#specificAttr-fieldset-teacher {
+#top-section.input-group {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-left: 10%;
+    margin-right: 20%;
+    width: 100px;
 }
 
-#specificAttr-fieldset-teacher>div:nth-child(1)>input {
+#top-section .input-group:nth-child(2) {
+    margin-left: 20%;
+}
+
+@media (width < 800px) {
+    #registration-form #specificAttr-fieldset {
+        margin-left: 11%;
+        height: 400px;
+    }
+
+    #specificAttr-fieldset-student #top-section .input-group {
+        margin-left: 15%;
+        width: 100px;
+    }
+
+    #specificAttr-fieldset-student #top-section .input-group:nth-child(2) {
+        margin-left: 15%;
+    }
+}
+
+#specificAttr-fieldset-student #bottom-section {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    height: 100%;
+    padding-bottom: 3%;
+}
+
+#bottom-section #subjectList-header {
+    color: black;
+    margin-left: 4%;
+}
+
+#bottom-section #subjectList {
+    display: grid;
     width: 100%;
+    grid-template-columns: repeat(auto-fill, max(68px, 28%));
+    gap: 7%;
 }
 
-#specificAttr-fieldset-admin {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.subject {
+#subjectList .subject {
     width: 60px;
     height: 19px;
-    margin-left: 10px;
+    margin-left: 2%;
+    margin-bottom: 2%;
     font-size: 12px;
     padding: 5px;
     border: 1px var(--purpleVortex) solid;
@@ -47,7 +79,7 @@
     position: relative;
 }
 
-.subject img {
+#subjectList .subject img {
     position: absolute;
     left: 70%;
     cursor: pointer;
@@ -56,30 +88,49 @@
     height: 16px;
 }
 
-#subjectWrapper {
-    height: 50%;
-    margin: 10px;
-    margin-top: 20px;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    row-gap: 5px;
-}
-
-#subjectList {
-    display: grid;
-    width: 100%;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 5px;
-}
-
-#addSubject-button {
+#subjectList #addSubject-button {
     margin-left: 10px;
     width: 30px;
     height: 30px;
     border-radius: 5px;
     grid-column: auto;
     grid-row: auto;
+}
+
+#specificAttr-fieldset #specificAttr-fieldset-teacher {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 190px));
+
+}
+
+#specificAttr-fieldset-teacher .input-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-left: 0px;
+    width: 150px;
+}
+
+#specificAttr-fieldset-teacher .input-group:nth-child(2) {
+    margin-left: 20%;
+}
+
+@media (width < 800px) {
+    #specificAttr-fieldset-teacher .input-group {
+        margin-left: 0%;
+    }
+
+    #specificAttr-fieldset-teacher .input-group:nth-child(2) {
+        margin-left: 0%;
+    }
+}
+
+#specificAttr-fieldset #specificAttr-fieldset-admin {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 150px);
+}
+
+#specificAttr-fieldset-admin .input-group {
+    width: 150px;
+    margin-left: 0px;
 }

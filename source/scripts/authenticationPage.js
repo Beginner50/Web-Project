@@ -111,6 +111,9 @@ class AuthenticationController {
   }
 }
 
+/*
+  MVC - View handles only the UI logic
+*/
 class AuthenticationView {
   popUpManager;
 
@@ -181,8 +184,6 @@ class AuthenticationView {
       return;
 
     this.inTransit = true;
-    this.formWrapper.scrollIntoView();
-
     if (newFormStatus === "login")
       this.#showLoginForm();
     else if (newFormStatus === "registration")
@@ -192,7 +193,7 @@ class AuthenticationView {
   updateSubjectList(subjectCode, action) {
     if (action === "DELETE") {
       // Deletes subjectEntry from subjectList with given subjectCode
-      this.formSubjectList.children.forEach(child => {
+      this.formSubjectList.childNodes.forEach(child => {
         if (child.textContent == subjectCode)
           this.#deleteSubjectListEntry(child);
       });
@@ -286,6 +287,9 @@ class AuthenticationView {
   }
 }
 
+/*
+  MVC - Model hanldes only the state logic of the page
+*/
 class AuthenticationModel {
   formStatus = "login";
   subjectsChosen = [];

@@ -1,3 +1,2 @@
 <?php
-// To add session stuff here
-header("Location: authenticationPage.php");
+header('Location: source/authenticationPage.php');
