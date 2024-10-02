@@ -12,22 +12,22 @@ body {
 .wrapper {
     display: flex;
     position: relative;
+    height: 100vh;
+    padding-top: 11.3vh;
+    scroll-behavior: smooth;
 }
 
-
-
 .wrapper .main-content {
-
     width: 100%;
-    margin-left: 325px;
+    margin-left: 5%;
     margin-right: 50px;
-
+    height: 100vh;
+    overflow-y: auto;
 
     display: grid;
     grid-template-columns: 1fr 1.5fr;
     grid-row-gap: 15px;
-    padding-top: 130px;
-    padding-bottom: 160px;
+    scroll-behavior: smooth;
 }
 
 .wrapper .main-content .first-column {
@@ -184,15 +184,15 @@ input:not(:placeholder-shown)~label {
 .subjectstaken {
     display: flex;
     flex-direction: column;
-    
+
 }
 
 .subject-item {
     display: flex;
-    justify-content: flex-start; 
+    justify-content: flex-start;
     align-items: center;
-    padding: 6px 10px ;
- 
+    padding: 6px 10px;
+
 }
 
 .subject-code {
@@ -204,7 +204,7 @@ input:not(:placeholder-shown)~label {
     border-bottom-left-radius: 10px;
 
     font-weight: bold;
-    width:75px;
+    width: 75px;
 }
 
 .subject-name {
@@ -215,17 +215,17 @@ input:not(:placeholder-shown)~label {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 
-    width:325px;
+    width: 325px;
 }
 
 .error-container {
 
     margin-top: 10px;
     background-color: #f8d7da;
-    color: #721c24; 
+    color: #721c24;
 
     padding: 12px 3px;
-    border: 2px solid #ba4e59; 
+    border: 2px solid #ba4e59;
 
     text-align: center;
     font-weight: bolder;
@@ -238,10 +238,10 @@ input:not(:placeholder-shown)~label {
 
     margin-top: 10px;
     background-color: #d7f8de;
-    color: #1c7247; 
+    color: #1c7247;
 
     padding: 12px 3px;
-    border: 2px solid #4eba55; 
+    border: 2px solid #4eba55;
 
     text-align: center;
     font-weight: bolder;

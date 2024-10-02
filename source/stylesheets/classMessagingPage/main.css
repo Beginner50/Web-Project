@@ -1,7 +1,7 @@
 body {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 101vh;
     overflow-y: hidden;
     margin-top: 20%;
     margin: auto;
@@ -9,43 +9,17 @@ body {
     flex-direction: row;
 }
 
-body #sidebar {
-    position: relative;
-    width: 22.8%;
-    overflow-y: auto;
-    gap: 2px;
-}
-
-#sidebar ul {
-    padding-top: 1%;
-    padding-bottom: 1%;
-    height: fit-content;
-}
-
-#sidebar ul:hover {
-    background-color: hsl(256, 57%, 42%);
-    transition: background-color 0.2s;
-}
-
-#sidebar ul.active:active {
-    background-color: hsl(271, 90%, 19%);
-    transition: background-color 0.05s;
-}
-
-#sidebar ul.active {
-    background-color: hsl(256, 57%, 42%);
-}
-
 body #main-wrapper {
     position: relative;
-    width: 100%;
-    margin-top: 6%;
+    width: 80%;
+    margin-top: 11.1vh;
     background: url("../../icons/cool-background.png");
+    background-size: cover;
 }
 
 #main-wrapper #classChat-header {
     width: 100%;
-    height: 10%;
+    height: 12vh;
     display: flex;
     justify-content: space-between;
     border-bottom: 0px;
@@ -61,6 +35,18 @@ body #main-wrapper {
     align-items: center;
     align-content: center;
     gap: 10px;
+}
+
+@media (width < 1000px) {
+    #left-section #classChat-description {
+        font-size: 55%;
+        text-wrap: wrap;
+        width: 20vw;
+    }
+
+    #viewMembers-button {
+        font-size: 55%;
+    }
 }
 
 #classChat-header #left-section>img {
@@ -85,7 +71,7 @@ body #main-wrapper {
 #main-wrapper #classChat-body {
     position: relative;
     width: 100%;
-    height: 75%;
+    height: 65vh;
     overflow-y: scroll;
     overflow-wrap: break-word;
     display: flex;
@@ -101,15 +87,18 @@ body #main-wrapper {
 }
 
 #main-wrapper #classChat-footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     width: 100%;
-    height: 14.7%;
+    height: 15vh;
     background-color: rgba(222, 222, 255, 0.6);
 }
 
+
 #classChat-footer #message-input {
-    width: 88.5%;
+    width: 90%;
     padding: 5px;
-    text-wrap: stable;
     margin-top: 1.4%;
     margin-bottom: 1.5%;
     margin-left: 1%;
@@ -127,17 +116,30 @@ body #main-wrapper {
     background-color: rgba(255, 255, 255, 0.6);
 }
 
+@media (width < 1000px) {
+    #main-wrapper #classChat-footer {
+        flex-direction: row;
+    }
+
+    #classChat-footer #message-input {
+        width: 70%;
+        height: 60%;
+    }
+
+    #classChat-footer #send-button {
+        margin-bottom: 15px;
+        margin-left: 15px;
+    }
+}
+
 #classChat-footer #send-button:hover {
     background: rgba(205, 25, 100, 0.6);
 }
 
 #main-wrapper #classChat-cover {
     background-color: white;
-    position: fixed;
-    top: 12%;
-    left: 20.9%;
-    width: 79.15%;
-    height: 90%;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;

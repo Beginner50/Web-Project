@@ -19,8 +19,6 @@ session_start();
 
 <!-- Navigation Bar -->
 <?php $page = 'classTab';
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
 require 'partials/navBar.php';
 ?>
 
@@ -43,7 +41,7 @@ require 'partials/navBar.php';
 
     <!-- Main wrapper -->
     <div id="main-wrapper">
-        <div id="classChat-header" class="classChat">
+        <div id="classChat-header" class="classChat" style="display: none;">
             <div id="left-section">
                 <img src="icons/schedule-svgrepo-com.svg">
                 <div id="classChat-description"> Subject, Level, Group </div>
@@ -52,9 +50,9 @@ require 'partials/navBar.php';
                 View Members
             </button>
         </div>
-        <div id="classChat-body" class="classChat">
+        <div id="classChat-body" class="classChat" style="display: none;">
         </div>
-        <div id="classChat-footer" class="classChat">
+        <div id="classChat-footer" class="classChat" style="display: none;">
             <form id="message-form" method="post" action="ClassMessaging/sendMessage.php">
                 <textarea name="message-input" id="message-input" placeholder="Input your message here"></textarea>
                 <img id="send-button" class="shadow" src="icons/send.svg">
