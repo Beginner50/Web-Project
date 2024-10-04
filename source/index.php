@@ -1,2 +1,2 @@
 <?php
-header('Location: source/authenticationPage.php');
+header('Location: authenticationPage.php');

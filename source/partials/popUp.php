@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="stylesheets/partials/popUp.css">
 <aside id="popUp-window" style="display:none;">
     <div id="popUp-wrapper">
         <div id="popUp-menu" class="shadow">
@@ -6,7 +5,7 @@
                 <?php echo ($page == 'authenticationPage') ? 'Select a subject:' : 'Members:' ?>
             </span>
             <?php if ($page == 'authenticationPage')
-                require 'Authentication/getSubjects.php';
+                include 'Authentication/getSubjects.php';
             ?>
         </div>
     </div>
