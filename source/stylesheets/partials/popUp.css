@@ -27,6 +27,11 @@
     justify-content: start;
     overflow-y: scroll;
     overflow-x: hidden;
+    scrollbar-width: 0px;
+}
+
+#popUp-wrapper #popUp-menu::-webkit-scrollbar {
+    display: none;
 }
 
 #popUp-menu .popUp {

@@ -34,7 +34,7 @@
         $student = $stmt->fetch(PDO::FETCH_ASSOC);
         // Check if a row is returned
         if ($student) {
-            $_SESSION['UserType'] = 'Student'; 
+            $_SESSION['UserType'] = 'Student';
         }
 
         // Check if user is a teacher or admin only if the user is not a student
@@ -70,7 +70,7 @@
 
                 // If user is a student, query the student table using UserID to get additional data.
                 if ($_SESSION['UserType'] == 'Student') {
-               
+
                     $stmt = $pdo->prepare("SELECT Level, ClassGroup FROM student WHERE StudentID=?;");
                     $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
@@ -89,10 +89,11 @@
                     $stmt->execute();
                     $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    if(!empty($subjects)){
+                    if (!empty($subjects)) {
                         $_SESSION['Subjects'] = $subjects;
-                    } else {echo "No subjects found for this student.";}
-         
+                    } else {
+                        echo "No subjects found for this student.";
+                    }
                 }
                 // Else if user is a teacher
                 else if ($_SESSION['UserType'] == 'Teacher') {
@@ -109,13 +110,13 @@
                 }
                 // Else if user is an admin
                 else if ($_SESSION['UserType'] == 'Admin') {
-                    
-                    $stmt= $pdo -> prepare("SELECT DateJoined FROM administrator WHERE AdminID=?;");
+
+                    $stmt = $pdo->prepare("SELECT DateJoined FROM administrator WHERE AdminID=?;");
                     $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
                     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    if($admin){
+                    if ($admin) {
                         $_SESSION['DateJoined'] = $admin['DateJoined'];
                     }
                 }

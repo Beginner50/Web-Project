@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="School Website for ABC Academy">
     <link rel="stylesheet" href="stylesheets/common.css">
-    <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
+    <link rel="stylesheet" href="stylesheets/authenticationPage/main.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormSpecific.css">
     <link rel="stylesheet" href="stylesheets/partials/popUp.css">
@@ -138,7 +138,7 @@
                         </div>
                     </fieldset>
                     <!-- Teacher specific attributes -->
-                    <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;">
+                    <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;" disabled>
                         <div class="teacher input-group">
                             Subject Taught: <input class="input-box hover transparent-placeholder " name="subjectTaught"
                                 type="text" required>
@@ -148,7 +148,7 @@
                                 type="date" required>
                         </div>
                     </fieldset>
-                    <fieldset id="specificAttr-fieldset-admin" class="no-border" style="display:none;">
+                    <fieldset id="specificAttr-fieldset-admin" class="no-border" style="display:none;" disabled>
                         <div class="admin input-group">
                             Date Joined <input class="input-box hover transparent-placeholder " name="adminDateJoined"
                                 type="date" required>
