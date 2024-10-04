@@ -11,7 +11,7 @@
 
 #specificAttr-fieldset-student #top-section {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 190px));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 100px));
 }
 
 #top-section.input-group {

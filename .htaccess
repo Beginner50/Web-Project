@@ -1,0 +1,4 @@
+<Files source/AdminPage>
+	Deny from all
+	Allow from 127.0.0.1
+</Files>

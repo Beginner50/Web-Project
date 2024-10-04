@@ -23,7 +23,7 @@
       $_SESSION['PassChange'] = 'Something went wrong';
     }
 
-    header('Location: ../adminPage.php');
+    header('Location: adminPage.php');
     exit();
 
     

@@ -73,7 +73,7 @@
         }
     }
 
-    header("Location: ../adminPage.php");
+    header("Location: adminPage.php");
     exit();
 ?>
 </body>
