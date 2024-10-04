@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormSpecific.css">
+    <link rel="stylesheet" href="stylesheets/partials/popUp.css">
     <title>School Website</title>
 
     <script>
@@ -32,7 +33,7 @@
             <h1 class="callToAction">
                 New to Education
                 Portal?</h1>
-            <button class="callToAction" href="#form-wrapper"> <a>Sign Up</a></button>
+            <button class="callToAction" href="#callToAction-wrapper"> <a>Sign Up</a></button>
         </div>
         <!-- Form Wrapper -->
         <div id="form-wrapper">
@@ -44,11 +45,8 @@
                 <div class="input-group"> Email: <input class="input-box" type="email" name="email" required
                         autocomplete="email">
                 </div>
-           
-                <div class="input-group"> Password: <input class="input-box" type="password" name="password" id="login-password"required>
+                <div class="input-group"> Password: <input class="input-box" type="password" name="password" id="login-password" required>
                 </div>
-
-            
                 <button id="loginSubmit-button" type="submit" class="indigoTheme roundBorder" form="login-form">
                     Submit
                 </button>
