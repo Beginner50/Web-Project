@@ -15,7 +15,7 @@
     $_SESSION['verifyAccStatus']='Something went wrong while verifying account';
   }
 
-  header('Location: ../adminPage.php');
+  header('Location: adminPage.php');
   exit();
   
 ?>

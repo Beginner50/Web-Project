@@ -30,8 +30,13 @@ session_start();
             $email = $_POST["email"];
             $gender = $_POST["gender"];
             $dateofbirth = $_POST["dateofbirth"];
-     
-            $UserID=$_SESSION['UserID'];
+            
+            if(isset($_POST["personalinfo-savechanges-admin"])){
+                $UserID=$_SESSION['UserID-Clicked'];
+            }else{
+                $UserID=$_SESSION['UserID'];
+            }
+         
             $errors = array(); //array to store errors
 
 
@@ -110,7 +115,7 @@ session_start();
                         header('Location: ../accManagementPage.php#userID-content');
                         exit();
                     }else if(isset($_POST["personalinfo-savechanges-admin"]) ) {
-                        header('Location: ../adminPage.php');
+                        header('Location: ../AdminPage/adminPage.php');
                         exit();
                     }
             
