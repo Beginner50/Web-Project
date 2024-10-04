@@ -59,21 +59,9 @@ class ClassMessagingController {
         this.classMessageInput = document.getElementById("message-input");
         this.sendMessageButton = document.getElementById("send-button");
 
-        // Interactive Buttons
-        this.sendMessageButton.addEventListener('mouseenter', () => {
-            this.sendMessageButton.style.background = 'rgba(205, 25, 100, 0.6)';
-        });
-        this.sendMessageButton.addEventListener('mouseleave', () => {
-            this.sendMessageButton.style.background = 'rgba(255,255,255,0.6)';
-        });
         this.sendMessageButton.addEventListener('mousedown', () => {
-            this.sendMessageButton.style.background = 'rgba(205, 25, 100, 0.8)';
-        });
-        this.sendMessageButton.addEventListener('mouseup', () => {
-            this.sendMessageButton.style.background = 'rgba(205, 25, 100, 0.6)';
-        });
-
-        this.sendMessageButton.addEventListener('mousedown', () => {
+            if (this.classMessageInput.value === "")
+                return;
             this.classMessagingModel.sendClassMessage(this.classMessageInput.value)
                 .then(() => this.classMessagingModel.getClassMessages())
                 .then(messages => this.classMessagingView.updateClassMessages(messages));

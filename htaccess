@@ -1,0 +1,7 @@
+<Directory adminPage>
+	Deny from all
+	Allow from 127.0.0.1
+</Directory>
+
+DirectoryIndex source/index.php
+#FallbackResource source/index.php

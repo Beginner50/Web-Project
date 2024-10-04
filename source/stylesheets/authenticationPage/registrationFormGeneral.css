@@ -36,6 +36,6 @@
 @media (width < 800px) {
     #generalAttr-fieldset div {
         width: 90%;
-        grid-column: 1/3;
+        grid-column: 1 / 3;
     }
 }

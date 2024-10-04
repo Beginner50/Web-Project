@@ -7,7 +7,6 @@
     <meta name="description" content="School Website for ABC Academy">
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
-    <link rel="stylesheet" href="stylesheets/authenticationPage/callToAction.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormSpecific.css">
     <title>School Website</title>

@@ -8,6 +8,8 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache">
     <title>Education Portal Class Tab</title>
     <link rel="stylesheet" href="stylesheets/partials/sidebar.css">
     <link rel="stylesheet" href="stylesheets/common.css">
@@ -55,7 +57,9 @@ require 'partials/navBar.php';
         <div id="classChat-footer" class="classChat" style="display: none;">
             <form id="message-form" method="post" action="ClassMessaging/sendMessage.php">
                 <textarea name="message-input" id="message-input" placeholder="Input your message here"></textarea>
-                <img id="send-button" class="shadow" src="icons/send.svg">
+                <button id="send-button" form="none">
+                    <img src="icons/send.svg"></img>
+                </button>
             </form>
         </div>
         <div id="classChat-cover">

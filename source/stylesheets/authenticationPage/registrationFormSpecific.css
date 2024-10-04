@@ -27,22 +27,6 @@
     margin-left: 20%;
 }
 
-@media (width < 800px) {
-    #registration-form #specificAttr-fieldset {
-        margin-left: 11%;
-        height: 400px;
-    }
-
-    #specificAttr-fieldset-student #top-section .input-group {
-        margin-left: 15%;
-        width: 100px;
-    }
-
-    #specificAttr-fieldset-student #top-section .input-group:nth-child(2) {
-        margin-left: 15%;
-    }
-}
-
 #specificAttr-fieldset-student #bottom-section {
     display: flex;
     flex-direction: column;
@@ -115,16 +99,6 @@
     margin-left: 20%;
 }
 
-@media (width < 800px) {
-    #specificAttr-fieldset-teacher .input-group {
-        margin-left: 0%;
-    }
-
-    #specificAttr-fieldset-teacher .input-group:nth-child(2) {
-        margin-left: 0%;
-    }
-}
-
 #specificAttr-fieldset #specificAttr-fieldset-admin {
     display: grid;
     grid-template-columns: repeat(auto-fill, 150px);
@@ -133,4 +107,28 @@
 #specificAttr-fieldset-admin .input-group {
     width: 150px;
     margin-left: 0px;
+}
+
+@media (width < 800px) {
+    #registration-form #specificAttr-fieldset {
+        margin-left: 11%;
+        height: 400px;
+    }
+
+    #specificAttr-fieldset-student #top-section .input-group {
+        margin-left: 15%;
+        width: 100px;
+    }
+
+    #specificAttr-fieldset-student #top-section .input-group:nth-child(2) {
+        margin-left: 15%;
+    }
+
+    #specificAttr-fieldset-teacher .input-group {
+        margin-left: 0%;
+    }
+
+    #specificAttr-fieldset-teacher .input-group:nth-child(2) {
+        margin-left: 0%;
+    }
 }
