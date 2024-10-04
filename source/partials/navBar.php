@@ -4,7 +4,7 @@
   <div id="left-section">
     <div id="logo-wrapper">
       <img src="icons/research-svgrepo-com.svg">
-      <h1>EduPortal</h1>
+      <h1 id="logo-title">EduPortal</h1>
     </div>
     <?php
     if ($page != 'authenticationPage') {
@@ -37,7 +37,7 @@
     ?>
   </div>
   <div id="right-section">
-    <button class=" indigoTheme roundBorder shadow"> Contact Us</button>
-    <button class=" indigoTheme roundBorder shadow"> Terms & Conditions</button>
+    <button id="contact-button" class=" indigoTheme roundBorder shadow"> Contact Us</button>
+    <button id="TOC-button" class=" indigoTheme roundBorder shadow"> Terms & Conditions</button>
   </div>
 </nav>

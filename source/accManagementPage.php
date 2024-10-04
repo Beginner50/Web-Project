@@ -9,12 +9,12 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Management</title>
 
-    <link rel="stylesheet" href="stylesheets/accountManagementPage/Acc_management.css">
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="stylesheets/partials/navBar.css">
     <link rel="stylesheet" href="stylesheets/partials/sidebar.css">
+    <link rel="stylesheet" href="stylesheets/accountManagementPage/Acc_management.css">
     <script>
         0
     </script>
@@ -30,7 +30,7 @@ require 'partials/navBar.php';
         <aside class="sidebar">
             <h2>Account management</h2>
             <ul>
-                <li><a href="#main-content"><i class="fa fa-user" aria-hidden="true"></i>UserID</a></li>
+                <li><a href="#hidden-navigation"><i class="fa fa-user" aria-hidden="true"></i>UserID</a></li>
                 <li><a href="#userID-content"><i class="fa fa-address-card" aria-hidden="true"></i>Personal Information</a></li>
                 <li><a href="#personalinfo-savechanges" style="font-size:12px;"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Student/Teacher Information</a></li>
                 <li><a href="#loginmanagement"><i class="fa fa-key" aria-hidden="true"></i>Login Management</a></li>
@@ -41,6 +41,7 @@ require 'partials/navBar.php';
         <div id="main-content" class="main-content">
 
             <!--USERID information  -->
+            <span id="hidden-navigation" style="grid-column: 1/3;"></span>
             <div class="userID-content first-column">
                 <h3>UserID:</h3>
                 <div id="userID-content" class="information description">Your UserID is used to uniquely identify yourself within the database. </div>
@@ -86,7 +87,7 @@ require 'partials/navBar.php';
                     </div>
 
                     <button type="submit" id="personalinfo-savechanges" name="personalinfo-savechanges" class="indigoTheme roundBorder savebutton" form="personalinfo-form">Save Changes</button>
-            
+
                 </form>
                 <?php
 
@@ -101,7 +102,7 @@ require 'partials/navBar.php';
                     unset($_SESSION['errors']);
                 }
 
-                if(isset($_SESSION['Success'])){
+                if (isset($_SESSION['Success'])) {
 
                     echo '<div class="success-container" >' . $_SESSION['Success'] . '</div>';
                     unset($_SESSION['Success']);
@@ -153,15 +154,15 @@ require 'partials/navBar.php';
                     <div class="information studentinfo-grid">
                         <div class="sub-information">Subjects Taken</div>
                         <div class="subjectstaken">
-                        <?php 
-                        foreach($_SESSION['Subjects'] as $Subjects){
-                            echo '<div class="subject-item">';
-                            echo '<div class="subject-code">'. $Subjects['SubjectCode'] .'</div>';
-                            echo '<div class="subject-name">'. $Subjects['Subjectname'] .'</div>';
-                            echo '</div>';
-                        }
-                        ?>
-                    </div>
+                            <?php
+                            foreach ($_SESSION['Subjects'] as $Subjects) {
+                                echo '<div class="subject-item">';
+                                echo '<div class="subject-code">' . $Subjects['SubjectCode'] . '</div>';
+                                echo '<div class="subject-name">' . $Subjects['Subjectname'] . '</div>';
+                                echo '</div>';
+                            }
+                            ?>
+                        </div>
                     </div>
                 </div>
             <?php endif; ?>
@@ -213,9 +214,9 @@ require 'partials/navBar.php';
             <div class="logout-content2 second-column">
 
                 <form action="AccountManagement/logout.php">
-                    <button type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
+                    <button id="logout-button" type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
                 </form>
-                        
+
             </div>
         </div>
     </div>

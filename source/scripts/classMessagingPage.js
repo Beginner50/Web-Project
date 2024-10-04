@@ -17,27 +17,16 @@ class ClassMessagingController {
     sendMessageButton;
     viewMembersButton;
 
-
     constructor() {
         this.classMessagingView = new ClassMessagingView(new PopUpManager());
         this.classMessagingModel = new ClassMessagingModel();
-
-        this.initialiseClassMenu();
+        this.popUpManager = new PopUpManager();
 
         this.addClassMenuFunctionality();
         this.addViewMembersFunctionality();
         this.addSendMessageFunctionality();
     }
 
-    /*
-        Initialise the class menu with classes from the database. 
-    */
-    initialiseClassMenu() {
-        this.classMessagingModel.getClassList()
-            .then(classListEntries =>
-                this.classMessagingView.updateClassMenu(classListEntries))
-            .catch(error => console.log(error));
-    }
 
     addClassMenuFunctionality() {
         this.classListMenu = document.getElementById("class-menu");
@@ -59,7 +48,7 @@ class ClassMessagingController {
         this.classListMenu.addEventListener("mousedown", event => {
             this.classListMenu.childNodes.forEach(child => {
                 if (event.target == child) {
-                    this.classMessagingModel.setClassID(child.value);
+                    this.classMessagingModel.setClassID(child.getAttribute("data-classID"));
                     updateClassView(child);
                 }
             })
@@ -70,23 +59,11 @@ class ClassMessagingController {
         this.classMessageInput = document.getElementById("message-input");
         this.sendMessageButton = document.getElementById("send-button");
 
-        // Interactive Buttons
-        this.sendMessageButton.addEventListener('mouseenter', () => {
-            this.sendMessageButton.style.background = 'rgba(205, 25, 100, 0.6)';
-        });
-        this.sendMessageButton.addEventListener('mouseleave', () => {
-            this.sendMessageButton.style.background = 'rgba(255,255,255,0.6)';
-        });
         this.sendMessageButton.addEventListener('mousedown', () => {
-            this.sendMessageButton.style.background = 'rgba(205, 25, 100, 0.8)';
-        });
-        this.sendMessageButton.addEventListener('mouseup', () => {
-            this.sendMessageButton.style.background = 'rgba(205, 25, 100, 0.6)';
-        });
-
-        this.sendMessageButton.addEventListener('mousedown', () => {
-            this.classMessagingModel.sendClassMessage(this.classMessageInput.value);
-            this.classMessagingModel.getClassMessages()
+            if (this.classMessageInput.value === "")
+                return;
+            this.classMessagingModel.sendClassMessage(this.classMessageInput.value)
+                .then(() => this.classMessagingModel.getClassMessages())
                 .then(messages => this.classMessagingView.updateClassMessages(messages));
             this.classMessagingView.updateClassMessageInput();
         });
@@ -96,7 +73,7 @@ class ClassMessagingController {
         this.viewMembersButton = document.getElementById("viewMembers-button");
 
         this.viewMembersButton.addEventListener("mousedown", () => {
-            this.classMessagingView.showPopUp();
+            this.popUpManager.showPopUp();
         });
     }
 }
@@ -109,16 +86,11 @@ class ClassMessagingModel {
     constructor() { }
 
     setClassID(currentClassID) {
-        this.currentClassID = currentClassID;
+        this.currentClassID = Number(currentClassID);
     }
 
     getClassID() {
         return this.currentClassID;
-    }
-
-    getClassList() {
-        return fetch("ClassMessaging/getClasses.php")
-            .then(response => response.json());
     }
 
     getClassMessages() {
@@ -162,6 +134,14 @@ class ClassMessagingModel {
 
         const data = `ClassID=${this.currentClassID}&message-input=${Message}`;
         xhr.send(data);
+
+        return new Promise(resolve => {
+            // Simply meant to chain promises
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4 && xhr.status == 200)
+                    resolve();
+            }
+        });
     }
 }
 
@@ -234,26 +214,9 @@ class ClassMessagingView {
         }, 300);
     }
 
-    updateClassMenu(classListItems) {
-        let createClassListEntry = (classListItem) => {
-            const ul = document.createElement('ul');
-            ul.innerHTML = classListItem.SubjectCode + ", LEVEL " + classListItem.Level + ", " + classListItem.ClassGroup;
-            ul.value = classListItem.ClassID;
-            this.classListMenu.appendChild(ul);
-        }
-
-        try {
-            classListItems.forEach(classListItem => createClassListEntry(classListItem));
-        }
-        catch (error) {
-            if (error.name == "TypeError")
-                createClassListEntry(classListItems);
-        }
-    }
-
     updateActiveMenuElement(element) {
         // Deactivates any previously active list elements
-        let activeButton = this.classListMenu.querySelector('active');
+        let activeButton = this.classListMenu.querySelector('.active');
         if (activeButton != null)
             activeButton.classList.remove('active');
 
@@ -289,12 +252,25 @@ class ClassMessagingView {
         // Delete previous message entries
         document.querySelectorAll('.message').forEach(message => message.remove());
 
+        let keyframes = [
+            { transform: "translate(-100px)", opacity: "0" },
+            { transform: "translate(0px)", opacity: "100" }
+        ];
+
+        let options = {
+            duration: 300,
+            easing: "ease-in-out",
+            fill: "forwards"
+        };
+
         classMessages.forEach(message => {
             const span = document.createElement('span');
             span.className = 'message';
             span.textContent = message['Message'];
+            span.animate(keyframes, options);
             this.classChatBody.appendChild(span);
         })
+
     }
 
     updateClassDescription(classDescription) {
@@ -303,10 +279,6 @@ class ClassMessagingView {
 
     updateClassMessageInput() {
         this.classMessageInput.value = "";
-    }
-
-    showPopUp() {
-        this.popUpManager.showPopUp();
     }
 }
 

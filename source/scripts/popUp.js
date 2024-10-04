@@ -30,7 +30,7 @@ export default class PopUpManager {
     buttonEvent(eventFunction) {
         this.popUp.addEventListener("mousedown", event => {
             this.popUpMenu.childNodes.forEach(button => {
-                if (event.target == button) {
+                if (event.target == button && button.nodeName != "SPAN") {
                     eventFunction(button);
                     this.hideButton(button);
                 }

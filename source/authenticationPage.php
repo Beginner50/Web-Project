@@ -7,7 +7,6 @@
     <meta name="description" content="School Website for ABC Academy">
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
-    <link rel="stylesheet" href="stylesheets/authenticationPage/callToAction.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormSpecific.css">
     <title>School Website</title>
@@ -21,7 +20,9 @@
 
 <body>
     <!-- Navigation Bar -->
-    <?php $page = 'authenticationPage';
+    <?php
+
+    $page = 'authenticationPage';
     require 'partials/navBar.php' ?>
 
     <!-- Main Wrapper -->
@@ -31,7 +32,7 @@
             <h1 class="callToAction">
                 New to Education
                 Portal?</h1>
-            <button class="callToAction"> <a>Sign Up</a></button>
+            <button class="callToAction" href="#form-wrapper"> <a>Sign Up</a></button>
         </div>
         <!-- Form Wrapper -->
         <div id="form-wrapper">
@@ -111,15 +112,17 @@
                 <fieldset id="specificAttr-fieldset">
                     <!-- Student specific attributes -->
                     <fieldset id="specificAttr-fieldset-student" class="no-border student">
-                        <div>
-                            <div class="input-group student"> Class Group:
+                        <div id="top-section">
+                            <div class="input-group student">
+                                <span> Class Group: </span>
                                 <select class="input-box transparent-placeholder hover student" name="classGroup" required>
                                     <option> </option>
                                     <option> Red </option>
                                     <option> Blue </option>
                                 </select>
                             </div>
-                            <div class="input-group student"> Level :
+                            <div class="input-group student">
+                                <span> Level:</span>
                                 <select class="input-box transparent-placeholder hover " style="padding-left:1px;"
                                     name="level" required>
                                     <option> </option>
@@ -129,8 +132,8 @@
                                 </select>
                             </div>
                         </div>
-                        <div id="subjectWrapper" class="student" name="subjects">
-                            <h5> Subjects: </h5>
+                        <div id="bottom-section">
+                            <h5 id="subjectList-header"> Subjects: </h5>
                             <div id="subjectList">
                                 <button id="addSubject-button" class="indigoTheme " form="none">+</button>
                             </div>
@@ -159,7 +162,7 @@
                 <input type="hidden" id="selected-subjects" name="subjects" value="">
 
                 <!-- Error Message -->
-                <span id="errorOutput"> </span>
+                <span id="errorOutput" class="error-message"> </span>
                 <!-- Register button -->
                 <button type="submit" name="registrationSubmit-buttonCheck" id="registrationSubmit-button"
                     class="indigoTheme roundBorder" form="registration-form"> Submit</button>
@@ -168,10 +171,8 @@
     </div>
 
     <!-- Popup window (Default: off) -->
-    <?php require 'partials/popUp.php'; ?>
-
+    <?php include 'partials/popUp.php'; ?>
     <script src="scripts/authenticationPage.js" type="module"></script>
-
 </body>
 
 </html>

@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 session_start();
 ?>
 <!DOCTYPE html>
@@ -7,6 +8,8 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache">
     <title>Education Portal Class Tab</title>
     <link rel="stylesheet" href="stylesheets/partials/sidebar.css">
     <link rel="stylesheet" href="stylesheets/common.css">
@@ -18,19 +21,29 @@ session_start();
 
 <!-- Navigation Bar -->
 <?php $page = 'classTab';
-require 'partials/navBar.php' ?>
+require 'partials/navBar.php';
+?>
 
 <body>
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar">
         <h2> Classes </h2>
         <menu id="class-menu">
+            <?php
+            include 'ClassMessaging/getClasses.php';
+            foreach ($results as $result)
+                echo '<ul data-classID="' . $result['ClassID'] . '">'
+                    . $result['SubjectName'] . ', LEVEL '
+                    . $result['Level'] . ', '
+                    . $result['ClassGroup'] .
+                    '</ul>';
+            ?>
         </menu>
     </aside>
 
     <!-- Main wrapper -->
     <div id="main-wrapper">
-        <div id="classChat-header" class="classChat">
+        <div id="classChat-header" class="classChat" style="display: none;">
             <div id="left-section">
                 <img src="icons/schedule-svgrepo-com.svg">
                 <div id="classChat-description"> Subject, Level, Group </div>
@@ -39,12 +52,14 @@ require 'partials/navBar.php' ?>
                 View Members
             </button>
         </div>
-        <div id="classChat-body" class="classChat">
+        <div id="classChat-body" class="classChat" style="display: none;">
         </div>
-        <div id="classChat-footer" class="classChat">
+        <div id="classChat-footer" class="classChat" style="display: none;">
             <form id="message-form" method="post" action="ClassMessaging/sendMessage.php">
                 <textarea name="message-input" id="message-input" placeholder="Input your message here"></textarea>
-                <img id="send-button" class="shadow" src="icons/send.svg">
+                <button id="send-button" form="none">
+                    <img src="icons/send.svg"></img>
+                </button>
             </form>
         </div>
         <div id="classChat-cover">

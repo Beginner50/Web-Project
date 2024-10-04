@@ -9,8 +9,8 @@ nav {
 
 #main-wrapper {
     position: relative;
-    width: min(95%, 800px);
-    height: 650px;
+    width: min(100%, 800px);
+    height: 640px;
     margin-top: 100px;
     margin-bottom: 100px;
     margin-left: auto;
@@ -18,8 +18,6 @@ nav {
     background-color: var(--orchid);
 }
 
-/* Call To Action(CTA) */
-/* View callToAction.css*/
 #main-wrapper #callToAction-wrapper {
     position: absolute;
     border-radius: 15px;
@@ -33,9 +31,48 @@ nav {
     background: linear-gradient(to top right, hsl(218, 51%, 75%), hsl(276, 97%, 36%));
 }
 
+#callToAction-wrapper button.callToAction {
+    height: 40px;
+    width: 90px;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#callToAction-wrapper button.callToAction:hover {
+    color: var(--blueOcean);
+    background-color: white;
+    transition: background-color 0.3s;
+}
+
+#callToAction-wrapper button.callToAction>a {
+    text-decoration: none;
+    color: white;
+}
+
+#callToAction-wrapper button.callToAction:hover>a {
+    text-decoration: none;
+    color: var(--purpleVortex);
+}
+
+#callToAction-wrapper h1.callToAction {
+    font-size: min(140%);
+    font-weight: bolder;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    text-align: center;
+    margin-bottom: 10%;
+}
+
 #main-wrapper #form-wrapper {
     position: relative;
-    height: inherit;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -62,7 +99,7 @@ nav {
 
     display: flex;
     flex-direction: column;
-    width: 120%;
+    width: min(53vw, 120%);
 }
 
 #login-form .input-box {
@@ -93,9 +130,8 @@ nav {
 #form-wrapper #registration-form {
     display: flex;
     flex-direction: column;
-    height: 492px;
     width: 100%;
-    /* border: 1px solid red; */
+    height: 100%;
 }
 
 #registration-form .input-group {
@@ -106,9 +142,7 @@ nav {
     margin-right: 2.5rem;
     display: flex;
     flex-direction: column;
-
     padding: 0px;
-    width: min(85%, 190px);
 }
 
 #registration-form .input-box {
@@ -125,25 +159,42 @@ nav {
 }
 
 #registration-form #registrationSubmit-button {
-    position: fixed;
-    top: 90%;
     font-weight: 600;
     width: 100px;
     height: 40px;
     border-width: 2px;
     margin-left: 41%;
     margin-right: auto;
+    margin-bottom: 10%;
 }
 
 .error-message {
     color: red;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-
+    margin-left: 9.5%;
     max-width: 400px;
     padding: 5px;
     margin-top: 10px;
+    margin-bottom: 10px;
     border-radius: 5px;
     font-size: 14px;
     font-weight: bold;
+    text-align: center;
+}
+
+@media (width < 800px) {
+    #main-wrapper {
+        height: 65vh;
+    }
+
+    #main-wrapper #form-wrapper {
+        margin-top: 5%;
+        margin-bottom: 5%;
+        height: 65vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    #registration-form #registrationSubmit-button {
+        margin-left: 31%;
+    }
 }
