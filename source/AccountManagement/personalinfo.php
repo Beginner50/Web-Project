@@ -22,7 +22,7 @@ session_start();
 
         include '../connect.php';
 
-        if (isset($_POST["personalinfo-savechanges"])){
+        if (isset($_POST["personalinfo-savechanges"]) OR isset($_POST["personalinfo-savechanges-admin"])){
             
             //general attributes
             $firstname = $_POST["firstname"];
@@ -60,8 +60,13 @@ session_start();
             //checking for errors
             if (count($errors) > 0) {
                 $_SESSION['errors'] = $errors; 
-                header('Location: ../accManagementPage.php#userID-content');
-                exit(); 
+                if(isset($_POST["personalinfo-savechanges"]) ){
+                    header('Location: ../accManagementPage.php#userID-content');
+                    exit();
+                }else if(isset($_POST["personalinfo-savechanges-admin"]) ) {
+                    header('Location: ../adminPage.php');
+                    exit();
+                }
             }
             else{
                  // Updating changes into User table
@@ -100,8 +105,15 @@ session_start();
 
                     // Set a success message and redirect to the account management page
                     $_SESSION['Success'] = "Changes Successful";
-                    header('Location: ../accManagementPage.php#userID-content');
-                    exit();
+
+                    if(isset($_POST["personalinfo-savechanges"]) ){
+                        header('Location: ../accManagementPage.php#userID-content');
+                        exit();
+                    }else if(isset($_POST["personalinfo-savechanges-admin"]) ) {
+                        header('Location: ../adminPage.php');
+                        exit();
+                    }
+            
                 }
             
             }

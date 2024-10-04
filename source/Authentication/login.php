@@ -109,7 +109,15 @@
                 }
                 // Else if user is an admin
                 else if ($_SESSION['UserType'] == 'Admin') {
+                    
+                    $stmt= $pdo -> prepare("SELECT DateJoined FROM administrator WHERE AdminID=?;");
+                    $stmt->bindParam(1, $user['UserID']);
+                    $stmt->execute();
+                    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
+                    if($admin){
+                        $_SESSION['DateJoined'] = $admin['DateJoined'];
+                    }
                 }
 
                 // Redirect to accountManagementPage

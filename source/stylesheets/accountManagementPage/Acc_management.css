@@ -44,8 +44,8 @@ body {
     background-color: #ccbbfb;
 }
 
-.wrapper .main-content .information {
-    color: rgb(28, 28, 28);
+.information {
+   color: rgb(28, 28, 28);
     font-size: 12px;
     font-weight: bold;
     margin-top: 15px;
@@ -64,7 +64,7 @@ body {
     color: rgb(44, 44, 44)
 }
 
-.wrapper .main-content .information-input {
+.information-input {
     all: unset;
     border: none;
     background-color: transparent;
@@ -98,7 +98,7 @@ body {
 
 }
 
-.wrapper .main-content .sub-information {
+.sub-information {
 
     color: var(--purpleVortex);
     padding-bottom: 10px;
