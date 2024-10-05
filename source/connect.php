@@ -6,9 +6,7 @@ error_reporting(-1);
 $host = "localhost";
 $user = "root";
 $db = "web_project";
-// $pass = "";
-$pass = "";
-// $pass="umair1108";
+$pass = " ";
 $conn = new mysqli($host, $user, $pass, $db);
 
 if ($conn->connect_error) {
@@ -21,8 +19,12 @@ try {
     $pdo = new PDO(
         'mysql:host=' . $host . ';' . 'dbname=' . $db,
         $user,
-        $pass
+        ""
     );
 } catch (PDOException $e) {
-    die($e);
+    $pdo = new PDO(
+        'mysql:host=' . $host . ';' . 'dbname=' . $db,
+        $user,
+        " "
+    );
 }

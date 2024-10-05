@@ -168,19 +168,6 @@ nav {
     margin-bottom: 10%;
 }
 
-.error-message {
-    color: red;
-    margin-left: 9.5%;
-    max-width: 400px;
-    padding: 5px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-}
-
 @media (width < 800px) {
     #main-wrapper {
         height: 65vh;

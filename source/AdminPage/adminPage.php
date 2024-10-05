@@ -3,6 +3,7 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,62 +15,61 @@ session_start();
   <link rel="stylesheet" href="../stylesheets/accountManagementPage/Acc_management.css">
   <title>Admin Page</title>
 </head>
+
 <body>
   <div class="main-content">
     <div class="school-stats">
       <?php
 
-        require_once '../connect.php';
-        $stmt = $pdo -> prepare('SELECT COUNT(StudentID) from student');
-        $stmt -> execute();
-        $_SESSION['StudentCount'] = $stmt -> fetch(PDO::FETCH_NUM)[0];
+      require_once '../connect.php';
+      $stmt = $pdo->prepare('SELECT COUNT(StudentID) from student');
+      $stmt->execute();
+      $_SESSION['StudentCount'] = $stmt->fetch(PDO::FETCH_NUM)[0];
 
-        $stmt = $pdo -> prepare('SELECT COUNT(TeacherID) from teacher');
-        $stmt -> execute();
-        $_SESSION['TeacherCount'] = $stmt -> fetch(PDO::FETCH_NUM)[0];
+      $stmt = $pdo->prepare('SELECT COUNT(TeacherID) from teacher');
+      $stmt->execute();
+      $_SESSION['TeacherCount'] = $stmt->fetch(PDO::FETCH_NUM)[0];
 
-        $stmt = $pdo -> prepare('SELECT COUNT(UserID) FROM approval WHERE IsApproved=0');
-        $stmt -> execute();
-        $_SESSION['UnapprovedCount'] = $stmt -> fetch(PDO::FETCH_NUM)[0];
+      $stmt = $pdo->prepare('SELECT COUNT(UserID) FROM approval WHERE IsApproved=0');
+      $stmt->execute();
+      $_SESSION['UnapprovedCount'] = $stmt->fetch(PDO::FETCH_NUM)[0];
 
-        $stmt = $pdo -> prepare('SELECT COUNT(UserID) from user');
-        $stmt -> execute();
-        $_SESSION['UserCount'] = $stmt -> fetch(PDO::FETCH_NUM)[0];
-
-
+      $stmt = $pdo->prepare('SELECT COUNT(UserID) from user');
+      $stmt->execute();
+      $_SESSION['UserCount'] = $stmt->fetch(PDO::FETCH_NUM)[0];
       ?>
 
       <div class="stats-container total-unapproved">
         <i class="fa-regular fa-circle-xmark fa-2xl" style="color:#f25356;"></i>
-          <div>
-            <div><?php echo $_SESSION['UnapprovedCount'] ?></div>
-            <div class="stats-information" style="font-size:18px;">Total Unapproved Users</div>
-          </div>
+        <div>
+          <div><?php echo $_SESSION['UnapprovedCount'] ?></div>
+          <div class="stats-information" style="font-size:18px;">Total Unapproved Users</div>
+        </div>
       </div>
 
       <div class="stats-container total-students">
-        <i class="fa-solid fa-graduation-cap fa-2xl" style="color:#7bc7ed;"></i> 
+        <i class="fa-solid fa-graduation-cap fa-2xl" style="color:#7bc7ed;"></i>
         <div>
           <div><?php echo $_SESSION['StudentCount'] ?></div>
           <div class="stats-information" style="font-size:20px;">Total Students</div>
         </div>
-    
+
       </div>
 
       <div class="stats-container total-teachers">
-       <i class="fa-solid fa-chalkboard-user fa-2xl" style="color:#ecdd70;"></i>
-          <div>
-            <div><?php echo $_SESSION['TeacherCount'] ?></div>
-            <div class="stats-information" style="font-size:20px;">Total Teachers</div>
-          </div>
+        <i class="fa-solid fa-chalkboard-user fa-2xl" style="color:#ecdd70;"></i>
+        <div>
+          <div><?php echo $_SESSION['TeacherCount'] ?></div>
+          <div class="stats-information" style="font-size:20px;">Total Teachers</div>
+        </div>
       </div>
 
-      <div class="stats-container total-staffs" >
+      <div class="stats-container total-staffs">
         <i class="fa-regular fa-user fa-2xl" style="color:#70ecb2;"></i>
-          <div>
-            <div><?php echo $_SESSION['UserCount'] ?></div>
-            <div class="stats-information" style="font-size:20px;">Total Users</div>
-          </div>
+        <div>
+          <div><?php echo $_SESSION['UserCount'] ?></div>
+          <div class="stats-information" style="font-size:20px;">Total Users</div>
+        </div>
       </div>
 
     </div>
@@ -78,11 +78,11 @@ session_start();
       <div class="search-box"></div>
       <div class="user-list">
 
-        <button class="backButton indigoTheme roundBorder " > Back</button>
+        <button class="backButton indigoTheme roundBorder "> Back</button>
 
         <div class="userinfo-container alter-account">
 
-          <button class="userinfo-button resetPass indigoTheme roundBorder" onclick="redirectToresetPass()" >Reset Password</button>
+          <button class="userinfo-button resetPass indigoTheme roundBorder" onclick="redirectToresetPass()">Reset Password</button>
           <button class="userinfo-button verifyAcc indigoTheme roundBorder" onclick="redirectToverifyAcc()">Verify Account</button>
           <button class="userinfo-button deleteAcc indigoTheme roundBorder">Delete Account</button>
 
@@ -104,21 +104,21 @@ session_start();
 
           <?php
 
-            if(isset($_SESSION['PassChange'])){
+          if (isset($_SESSION['PassChange'])) {
 
-              echo '<div class="success-container" >' . $_SESSION['PassChange'] . '</div>';
-              unset ($_SESSION['PassChange']);
-            }
+            echo '<div class="success-container" >' . $_SESSION['PassChange'] . '</div>';
+            unset($_SESSION['PassChange']);
+          }
 
 
-            if(isset($_SESSION['verifyAccStatus'])){
+          if (isset($_SESSION['verifyAccStatus'])) {
 
-              echo '<div class="success-container" >' . $_SESSION['verifyAccStatus'] . '</div>';
-              unset ($_SESSION['verifyAccStatus']);
-            }
-        
+            echo '<div class="success-container" >' . $_SESSION['verifyAccStatus'] . '</div>';
+            unset($_SESSION['verifyAccStatus']);
+          }
+
           ?>
-              
+
         </div>
 
         <div class="userinfo-container ">
@@ -137,20 +137,20 @@ session_start();
               <div class="sub-information">Subjects Taken</div>
               <div class="subjectstaken">
 
- 
-              <?php 
-              foreach($_SESSION['Subjects'] as $Subjects){
-                echo '<div class="subject-item">';
-                
-                echo '<input class="subject-code" type="text" name="subjectcode[' . $Subjects['SubjectCode'] . ']" id="subjectcode_' . $Subjects['SubjectCode'] . '" value="' . $Subjects['SubjectCode'] . '">';
-                echo '<input class="subject-name" type="text" name="subjectname[' . $Subjects['Subjectname'] . ']" id="subjectname_' . $Subjects['Subjectname'] . '" value="' . $Subjects['Subjectname'] . '">';
-                echo '</div>';
-              }
-              ?>
+
+                <?php
+                foreach ($_SESSION['Subjects'] as $Subjects) {
+                  echo '<div class="subject-item">';
+
+                  echo '<input class="subject-code" type="text" name="subjectcode[' . $Subjects['SubjectCode'] . ']" id="subjectcode_' . $Subjects['SubjectCode'] . '" value="' . $Subjects['SubjectCode'] . '">';
+                  echo '<input class="subject-name" type="text" name="subjectname[' . $Subjects['Subjectname'] . ']" id="subjectname_' . $Subjects['Subjectname'] . '" value="' . $Subjects['Subjectname'] . '">';
+                  echo '</div>';
+                }
+                ?>
               </div>
 
             </div>
-          </form>    
+          </form>
         </div>
 
         <div class="userinfo-container">
@@ -165,12 +165,12 @@ session_start();
               <label class="sub-information">First Name: </label>
               <input class="information-input" type="text" id="firstname" name="firstname" value="<?php echo $_SESSION['FirstName']; ?>">
             </div>
-              
+
             <div class="information">
               <label class="sub-information" for="lastname">Last Name: </label>
               <input class="information-input" type="text" id="lastname" name="lastname" value="<?php echo $_SESSION['LastName']; ?>">
             </div>
-              
+
             <div class="information">
               <label class="sub-information" for="gender">Gender: </label>
               <input class="information-input" type="text" id="gender" name="gender" value="<?php echo $_SESSION['Gender']; ?>"> <!-- must do a dropdown menu like in register -->
@@ -190,29 +190,29 @@ session_start();
 
 
             <button type="submit" id="personalinfo-savechanges-admin" name="personalinfo-savechanges-admin" form="admin-update-personalinfo" class="indigoTheme roundBorder" style="width:150px; height:50px; margin:10px;border-width:2px;"> Save</button>
-      
 
-            </form>
-            <?php
 
-            // Check if there are any errors in the session
-            if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
+          </form>
+          <?php
 
-              foreach ($_SESSION['errors'] as $error) {
-                echo '<div class="error-container">' . $error . '</div>'; // Display each error
-              }
+          // Check if there are any errors in the session
+          if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
 
-              // Unset the errors after displaying them
-              unset($_SESSION['errors']);
+            foreach ($_SESSION['errors'] as $error) {
+              echo '<div class="error-container">' . $error . '</div>'; // Display each error
             }
 
-            if(isset($_SESSION['Success'])){
+            // Unset the errors after displaying them
+            unset($_SESSION['errors']);
+          }
 
-              echo '<div class="success-container" >' . $_SESSION['Success'] . '</div>';
-              unset($_SESSION['Success']);
-            }
-            ?>
-        </div>  
+          if (isset($_SESSION['Success'])) {
+
+            echo '<div class="success-container" >' . $_SESSION['Success'] . '</div>';
+            unset($_SESSION['Success']);
+          }
+          ?>
+        </div>
       </div>
     </div>
 
@@ -220,4 +220,5 @@ session_start();
 
   <script src="../scripts/adminPage.js"></script>
 </body>
+
 </html>

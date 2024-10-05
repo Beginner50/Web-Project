@@ -1,6 +1,5 @@
 body {
     position: relative;
-    width: 100%;
     height: 101vh;
     overflow-y: hidden;
     margin-top: 20%;
@@ -11,7 +10,7 @@ body {
 
 body #main-wrapper {
     position: relative;
-    width: 80%;
+    width: clamp(600px, 80%, 3000px);
     margin-top: 11.1vh;
     background: url("../../icons/cool-background.png");
     background-size: cover;
@@ -37,22 +36,9 @@ body #main-wrapper {
     gap: 10px;
 }
 
-@media (width < 1000px) {
-    #left-section #classChat-description {
-        font-size: 75%;
-        text-wrap: wrap;
-        width: 20vw;
-    }
-
-    @media (width < 500px) {
-        #left-section #classChat-description {
-            font-size: 55%;
-        }
-    }
-
-    #viewMembers-button {
-        font-size: 55%;
-    }
+#left-section #classChat-description {
+    font-size: clamp(0.7rem, 1.4vw + 0.1rem, 5rem);
+    width: 20vw;
 }
 
 #classChat-header #left-section>img {
@@ -72,6 +58,7 @@ body #main-wrapper {
     margin: auto;
     width: 20%;
     margin-right: 1%;
+    font-size: clamp(0.5rem, 0.8vw + 0.4rem, 5rem);
 }
 
 #main-wrapper #classChat-body {
@@ -94,7 +81,7 @@ body #main-wrapper {
 
 #main-wrapper #classChat-footer {
     width: 100%;
-    height: 10%;
+    height: 10svh;
     background-color: rgba(222, 222, 255, 0.6);
     padding-top: 5px;
     padding-bottom: 5px;
@@ -102,42 +89,44 @@ body #main-wrapper {
 
 
 #classChat-footer #message-input {
-    height: 45%;
-    width: 90%;
+    height: 65%;
+    width: 68svw;
     padding: 5px;
     margin-left: 1%;
-    font-size: 15px;
+    font-size: clamp(0.2rem, 1vw + 0.1rem, 5rem);
     border-radius: 5px;
 }
 
 #classChat-footer #send-button {
+    position: relative;
+    width: 4svw;
+    margin-left: clamp(10px, 0.2svw, 500px);
+    height: 8.5svh;
     cursor: pointer;
     border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.6);
-    padding-right: 1.5%;
+    padding-right: 0.3vw;
 }
 
 #send-button>img {
-    width: 130%;
+    position: absolute;
+    top: 25%;
+    left: 0.9vw;
+    width: 24px;
+    height: 24px;
 }
 
-@media (width < 1000px) {
+
+
+@media(width < 400px) {
+
     #classChat-footer #message-input {
-        width: 85%;
+        width: 60svw;
     }
 
-    @media (width < 800px) {
-        #classChat-footer #message-input {
-            width: 70%;
-        }
-
-        #classChat-footer #send-button {
-            padding-right: 5%;
-        }
-
-        #send-button>img {
-            width: 125%;
-        }
+    #send-button>img {
+        width: 3vw;
+        height: 4vh;
     }
 }
 

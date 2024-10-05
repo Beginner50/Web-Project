@@ -20,12 +20,14 @@
         $email = $_POST["email"];
         $password = $_POST["password"];
 
+        // Authentication should be carried out before the rest of the code
         // Get user data from email if user exists
         $stmt = $pdo->prepare('SELECT * FROM user WHERE Email=?;');
         $stmt->bindParam(1, $email);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // Seperate this part into a function that finds the type of user
         //get usertype
         $stmt = $pdo->prepare('SELECT * FROM student WHERE StudentID=?;');
         $stmt->bindParam(1, $user['UserID']);
@@ -33,9 +35,8 @@
 
         $student = $stmt->fetch(PDO::FETCH_ASSOC);
         // Check if a row is returned
-        if ($student) {
+        if ($student)
             $_SESSION['UserType'] = 'Student';
-        }
 
         // Check if user is a teacher or admin only if the user is not a student
         if ($_SESSION['UserType'] != 'Student') {
@@ -47,17 +48,16 @@
             // Use fetch() instead of rowCount() for reliability
             $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($teacher) {
+            if ($teacher)
                 // If a teacher record is found, set the user type to Teacher
                 $_SESSION['UserType'] = 'Teacher';
-            } else {
+            else
                 // Otherwise, assume the user is an Admin
                 $_SESSION['UserType'] = 'Admin';
-            }
         }
 
-
         if ($user) {
+            // Seperate this part into a function that 
             if (password_verify($password, $user["Password"])) {
                 $_SESSION['Email'] = $user['Email'];
                 $_SESSION['Password'] = $user['Password'];
@@ -84,7 +84,6 @@
                                             INNER JOIN class c ON s.SubjectCode = c.SubjectCode
                                             INNER JOIN class_student cs ON cs.ClassId = c.ClassID
                                             WHERE cs.StudentID= ?;");
-
                     $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
                     $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -97,7 +96,6 @@
                 }
                 // Else if user is a teacher
                 else if ($_SESSION['UserType'] == 'Teacher') {
-
                     $stmt = $pdo->prepare("SELECT SubjectTaught, DateJoined FROM teacher WHERE TeacherID=?;");
                     $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
@@ -110,7 +108,6 @@
                 }
                 // Else if user is an admin
                 else if ($_SESSION['UserType'] == 'Admin') {
-
                     $stmt = $pdo->prepare("SELECT DateJoined FROM administrator WHERE AdminID=?;");
                     $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
@@ -119,6 +116,8 @@
                     if ($admin) {
                         $_SESSION['DateJoined'] = $admin['DateJoined'];
                     }
+                    header("Location: ../AdminPage/adminPage.php");
+                    exit();
                 }
 
                 // Redirect to accountManagementPage

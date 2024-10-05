@@ -12,16 +12,17 @@ body {
 .wrapper {
     display: flex;
     position: relative;
-    height: 100vh;
     padding-top: 11.3vh;
     scroll-behavior: smooth;
+    height: 88.7svh;
+    overflow-y: hidden;
 }
 
 .wrapper .main-content {
     width: 100%;
     margin-left: 5%;
     margin-right: 50px;
-    height: 100vh;
+    height: 88.7svh;
     overflow-y: auto;
 
     display: grid;
@@ -45,7 +46,7 @@ body {
 }
 
 .information {
-   color: rgb(28, 28, 28);
+    color: rgb(28, 28, 28);
     font-size: 12px;
     font-weight: bold;
     margin-top: 15px;
@@ -94,8 +95,6 @@ body {
     border-width: 2px;
     padding: 5px 13px;
     font-weight: bold;
-
-
 }
 
 .sub-information {

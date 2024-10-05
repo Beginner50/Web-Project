@@ -97,12 +97,13 @@
                     </div>
                     <!-- Password -->
                     <div class="input-group">
-                        <lable>Password </lable><input class="input-box hover transparent-placeholder" type="password"
-                            required name="password">
+                        <label>Password </label><input class="input-box hover transparent-placeholder" type="password"
+                            required name="password" pattern="(?=.*[A-Z])(?=.*\d).{5,}" minlength="5">
                     </div>
                     <!-- Re-enter Password -->
                     <div class="input-group"> <label>Re-enter Password </label><input
-                            class="input-box hover transparent-placeholder" type="password" required name="repassword">
+                            class="input-box hover transparent-placeholder" type="password" required name="repassword"
+                            pattern="(?=.*[A-Z])(?=.*\d).{5,}" minlength="5">
                     </div>
                 </fieldset>
 
@@ -159,10 +160,8 @@
                 <!-- Hidden input to store selected subjects -->
                 <input type="hidden" id="selected-subjects" name="subjects" value="">
 
-                <!-- Error Message -->
-                <span id="errorOutput" class="error-message"> </span>
                 <!-- Register button -->
-                <button type="submit" name="registrationSubmit-buttonCheck" id="registrationSubmit-button"
+                <button type="submit" id="registrationSubmit-button"
                     class="indigoTheme roundBorder" form="registration-form"> Submit</button>
             </form>
         </div>

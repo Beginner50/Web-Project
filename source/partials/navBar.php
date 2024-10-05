@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="stylesheets/partials/navBar.css">
 <nav class="indigoTheme <?php if ($page == 'authenticationPage') echo ' relative';
-                        else echo ' fixed'; ?>">
+                        else echo ' absolute'; ?>">
   <div id="left-section">
     <div id="logo-wrapper">
       <img src="icons/research-svgrepo-com.svg">
@@ -16,7 +16,11 @@
                       }
 
                       function switchAccountManagement() {
-                        window.location.replace("accManagementPage.php")
+                        window.location.replace("accManagementPage.php");
+                      }
+
+                      function switchDashboard(){
+                        window.location.replace();
                       }
                       </script>';
 
@@ -33,7 +37,7 @@
       } else if ($page == "accountManagementTab" && $_SESSION['UserType'] == 'Admin') {
         echo '<div id="button-wrapper">
                       <button id="accountManagement-button" class="indigoTheme shadow active">                         Account Management                       </button>
-                      <button id="dashboard-button" class="indigoTheme shadow" onclick="switchClass()"> Dashboard </button>
+                      <button id="dashboard-button" class="indigoTheme shadow" onclick="switchDashboard()"> Dashboard </button>
               </div>';
       }
     }
