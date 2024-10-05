@@ -7,7 +7,7 @@
     <title>Document</title>
 
     <link rel="stylesheet" href="../stylesheets/common.css">
-    <link rel="stylesheet" href="../stylesheets/authenticationPage/common.css">
+    <link rel="stylesheet" href="../stylesheets/authenticationPage/main.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
@@ -70,7 +70,6 @@
 
                 // If user is a student, query the student table using UserID to get additional data.
                 if ($_SESSION['UserType'] == 'Student') {
-
                     $stmt = $pdo->prepare("SELECT Level, ClassGroup FROM student WHERE StudentID=?;");
                     $stmt->bindParam(1, $user['UserID']);
                     $stmt->execute();
