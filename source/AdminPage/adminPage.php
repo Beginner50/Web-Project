@@ -4,6 +4,7 @@ session_start();
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -140,36 +141,40 @@ session_start();
               <div class="sub-information">Subjects Taken</div>
 
               <div class="subjectstaken">
-
                 <?php
                 foreach ($_SESSION['Subjects'] as $Subjects) {
                   echo '<div class="subject-item">';
 
+
                   echo '<input class="subject-code" type="text" name= "' . $Subjects['SubjectCode'] . '" id="' . $Subjects['SubjectCode'] . '" value="' . $Subjects['SubjectCode'] . '">';
                   echo '<input class="subject-name" type="text" name="' . $Subjects['Subjectname'] . '" id="' . $Subjects['Subjectname'] . '" value="' . $Subjects['Subjectname'] . '">';
-                }
                 ?>
-                <form id="subjectDeleteForm" action="subjectDelete.php" method="POST">
+                  <form id="subjectDeleteForm" action="subjectDelete.php" method="POST">
 
-                  <input type="hidden" name="delete-subjectCode" value="<?php echo $Subjects['SubjectCode']; ?>">
-                  <div><?php echo $Subjects['SubjectCode']; ?></div>
-                  <button type="submit" name="deleteButton" class="remove-subject indigoTheme roundBorder" form="subjectDeleteForm"> Delete </button>
+                    <input type="hidden" name="delete-subjectCode" value="<?php echo $Subjects['SubjectCode']; ?>">
+                    <div><?php echo $Subjects['SubjectCode']; ?></div>
+                    <button type="submit" name="deleteButton" class="remove-subject indigoTheme roundBorder" form="subjectDeleteForm"> Delete </button>
 
-                </form>
+                  </form>
 
                 <?php
                 echo '</div>';
 
 
                 if (isset($_SESSION['subjectDeletStatus'])) {
+                if (isset($_SESSION['subjectDeletStatus'])) {
 
+                  echo '<div class="">' . $_SESSION['subjectDeletStatus'] . ' </div>';
                   echo '<div class="">' . $_SESSION['subjectDeletStatus'] . ' </div>';
                   unset($_SESSION['subjectDeletStatus']);
                 }
                 ?>
+
+
               </div>
 
             </div>
+          </form>
           </form>
         </div>
         <!-- DISPLAYING GENERAL INFORMATION-->
