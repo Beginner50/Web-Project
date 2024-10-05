@@ -71,30 +71,47 @@
                     if (empty($datejoinedadmin))
                         array_push($errors, "Please input the date you have joined!");
                 }
+                
+                function GeneralValidation($firstname,$lastname,$email,$gender,&$errors,$conn){
+                    //general validation
+                    if (empty($firstname) or empty($lastname) or empty($email) or empty($gender)) {
 
-                //general validation
-                if (empty($firstname) or empty($lastname) or empty($email) or empty($gender) or empty($password) or empty($repeatpassword))
-                    array_push($errors, "All fields are required!");
+                        array_push($errors, "All fields are required!");
+                    }
 
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-                    array_push($errors, "Email address is NOT valid");
-                else {
-                    $verifyemail = mysqli_query($conn, "SELECT Email FROM user WHERE Email='$email' ");
+                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        array_push($errors, "Email address is NOT valid");
+                    } else {
 
-                    //checks if query  returns anything
-                    if (mysqli_num_rows($verifyemail) != 0) {
-                        array_push($errors, "Email already exist! Use another email");
+                        $verifyemail = mysqli_query($conn, "SELECT Email FROM user WHERE Email='$email' ");
+
+                        //checks if query  returns anything
+                        if (mysqli_num_rows($verifyemail) != 0) {
+                            array_push($errors, "Email already exist! Use another email");
+                        }
                     }
                 }
+                
+                function PasswordCheck($password,&$errors){
+                    if (strlen($password) < 5) {
+                        array_push($errors, "Password length must be minimum 5 characters long.");
+                    }
+                    if (!preg_match('/[A-Z]/', $password)) {
+    
+                        array_push($errors, "Password should contain at least 1 Uppercase ");
+                    }
+                    if (!preg_match('/[0-9]/', $password)) {
+    
+                        array_push($errors, "Password should contain at least 1 Number ");
+                    }
+                }
+                GeneralValidation($firstname,$lastname,$email,$gender,$errors,$conn);
+                PasswordCheck($password,$errors);
+     
 
-                // Password Validation
-                if (strlen($password) < 5)
-                    array_push($errors, "Password length must be minimum 5 characters long.");
-                if (!preg_match('/[A-Z]/', $password))
-                    array_push($errors, "Password should contain at least 1 Uppercase ");
-                if (!preg_match('/[0-9]/', $password))
-                    array_push($errors, "Password should contain at least 1 Number ");
-                if ($password != $repeatpassword)
+
+
+                if ($password != $repeatpassword) {
                     array_push($errors, "Password does NOT match!");
 
 
