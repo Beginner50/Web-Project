@@ -63,7 +63,7 @@ nav {
 }
 
 #callToAction-wrapper h1.callToAction {
-    font-size: min(140%);
+    font-size: clamp(1rem, 1vw + 1rem, 5rem);
     font-weight: bolder;
     font-family: Arial, Helvetica, sans-serif;
     color: white;
@@ -136,13 +136,13 @@ nav {
 
 #registration-form .input-group {
     position: relative;
-    font-size: 0.8rem;
-    color: rgb(0, 0, 0);
+    font-size: clamp(1rem, 0.1vw + 0.1rem, 5rem);
+    color: rgb(82, 79, 79);
     margin-left: 0.8rem;
     margin-right: 2.5rem;
     display: flex;
     flex-direction: column;
-    padding: 0px;
+    padding: 0px4
 }
 
 #registration-form .input-box {
@@ -166,19 +166,6 @@ nav {
     margin-left: 41%;
     margin-right: auto;
     margin-bottom: 10%;
-}
-
-.error-message {
-    color: red;
-    margin-left: 9.5%;
-    max-width: 400px;
-    padding: 5px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
 }
 
 @media (width < 800px) {

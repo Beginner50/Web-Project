@@ -49,6 +49,8 @@ aside.sidebar {
 
 /* Class menu - for classMessagingPage.php */
 .sidebar #class-menu {
+    display: flex;
+    align-content: start;
     overflow-y: scroll;
     overflow-x: hidden;
     display: grid;
@@ -64,12 +66,13 @@ aside.sidebar {
     background-color: rgba(0, 0, 0, 0.1);
     color: white;
     border-radius: 5px;
-    padding-left: 5%;
+    padding-left: 1%;
     padding-top: 2%;
     padding-bottom: 2%;
     height: fit-content;
-    width: 13.8vw;
+    width: 14.0vw;
     text-wrap: wrap;
+    font-size: clamp(1rem, 0.3vw + 0.5rem, 3rem);
 }
 
 

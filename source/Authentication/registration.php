@@ -21,7 +21,12 @@
 
             include '../connect.php';
 
-            if (isset($_POST["registrationSubmit-buttonCheck"])) {
+            function validateAndSanitizeGeneralAttributes() {}
+
+            function validateAndSanitizeSpecificAttributes() {}
+
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $errors = array(); //array to store errors
 
                 //general attributes
                 $firstname = $_POST["fname"];
@@ -32,9 +37,7 @@
                 $password = $_POST["password"];
                 $repeatpassword = $_POST["repassword"];
 
-
                 $passwordhash = password_hash($password, PASSWORD_DEFAULT); //Hashing of password
-                $errors = array(); //array to store errors
                 $usertype = $_POST["user-type"];
                 $authtype = 'student'; //default authentication type in student table
 
@@ -44,41 +47,29 @@
                     $level = $_POST["level"];
                     $subjects = $_POST["subjects"];
 
-                   
                     //Specific attribute validation
-                    if ($classgroup == "") {
+                    if ($classgroup == "")
                         array_push($errors, "Class-group cannot be blank!");
-                    }
-                    if ($level == "") {
+                    if ($level == "")
                         array_push($errors, "Please select your level!");
-                    }
 
-                    if (!empty($_POST['subjects'])) {
-
-                        // Convert it into an array to use for database input
+                    // Convert it into an array to use for database input
+                    if (!empty($_POST['subjects']))
                         $subjectsArray = explode(',', $subjects);
-                 
-                    } else {
+                    else
                         array_push($errors, "No subjects selected!");
-                    }
                 } elseif ($usertype == "Teacher") {
-
                     $subjecttaught = $_POST["subjectTaught"];
                     $datejoinedteacher = $_POST["teacherDateJoined"];
 
-                    if (empty($subjecttaught)) {
+                    if (empty($subjecttaught))
                         array_push($errors, "Subject taught cannot be empty!");
-                    }
-                    if (empty($datejoinedteacher)) {
+                    if (empty($datejoinedteacher))
                         array_push($errors, "Please input the date you have joined!");
-                    }
                 } elseif ($usertype == "Admin") {
-
                     $datejoinedadmin = $_POST["adminDateJoined"];
-
-                    if (empty($datejoinedadmin)) {
+                    if (empty($datejoinedadmin))
                         array_push($errors, "Please input the date you have joined!");
-                    }
                 }
                 
                 function GeneralValidation($firstname,$lastname,$email,$gender,&$errors,$conn){
@@ -122,128 +113,114 @@
 
                 if ($password != $repeatpassword) {
                     array_push($errors, "Password does NOT match!");
-                }
 
-                //checking for errors
-                if (count($errors) > 0) {
 
-                    echo "<h2 style='text-align: center; color: rgb(53, 12, 12);  '>Registration Unsuccessfull </h2>";
+                    //checking for errors
+                    if (count($errors) > 0) {
+                        echo "<h2 style='text-align: center; color: rgb(53, 12, 12);  '>Registration Unsuccessfull </h2>";
 
-                    foreach ($errors as $errors) {
-                        echo "<div class='error-message' > $errors </div>";
-                    }
+                        foreach ($errors as $errors) {
+                            echo "<div class='error-message' > $errors </div>";
+                        }
 
-                    echo "<a href='javascript:self.history.back()'>
+                        echo "<a href='javascript:self.history.back()'>
                  <button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px;'> 
                  GO BACK </button>";
-                } else {
-                
-                    // INSERTING INTO USER
-                    $sqlquery = "INSERT INTO user (DateOfBirth, FirstName, LastName, Email, Gender, Password) VALUES (?, ?, ?, ?, ?, ?)";
-                    $stmt = $pdo->prepare($sqlquery);
-                    $stmt->execute([$dateofbirth, $firstname, $lastname, $email, $gender, $passwordhash]);
+                    } else {
+                        // INSERTING INTO USER
+                        $sqlquery = "INSERT INTO user (DateOfBirth, FirstName, LastName, Email, Gender, Password) VALUES (?, ?, ?, ?, ?, ?)";
+                        $stmt = $pdo->prepare($sqlquery);
+                        $stmt->execute([$dateofbirth, $firstname, $lastname, $email, $gender, $passwordhash]);
 
-                    // Fetch the most recently inserted UserID
-                    $sqlquery = "SELECT MAX(UserID) AS max_userid FROM user";
-                    $stmt = $pdo->query($sqlquery); 
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the result as an associative array
+                        // Fetch the most recently inserted UserID
+                        $sqlquery = "SELECT MAX(UserID) AS max_userid FROM user";
+                        $stmt = $pdo->query($sqlquery);
+                        $row = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the result as an associative array
 
-                    if ($row) {
-                        $max_userid = $row['max_userid']; // Get the maximum user ID
-                    }
+                        if ($row)
+                            $max_userid = $row['max_userid']; // Get the maximum user ID
 
+                        if ($usertype == 'Student') {
+                            // INSERTING INTO STUDENT TABLE
+                            $stmt = $pdo->prepare('INSERT INTO student(StudentID,Level,ClassGroup) VALUES (?,?,?);');
+                            $stmt->bindParam(1, $max_userid, PDO::PARAM_INT);
+                            $stmt->bindParam(2, $level, PDO::PARAM_INT);
+                            $stmt->bindParam(3, $classgroup, PDO::PARAM_STR);
 
-                    if ($usertype == 'Student') {
+                            if ($stmt->execute()) {
+                                //INSERTING INTO CLASS_STUDENT TABLE
 
-                        
-                        // INSERTING INTO STUDENT TABLE
-                        $stmt = $pdo->prepare('INSERT INTO student(StudentID,Level,ClassGroup) VALUES (?,?,?);');
-                        $stmt->bindParam(1, $max_userid, PDO::PARAM_INT);
-                        $stmt->bindParam(2, $level, PDO::PARAM_INT);
-                        $stmt->bindParam(3, $classgroup, PDO::PARAM_STR);
+                                //FETCHING THE SUBJECT CODE FOR EACH SUBJECT NAME TAKEN
+                                $placeholders = implode(',', array_fill(0, count($subjectsArray), '?'));
+                                $sqlquery = "SELECT SubjectCode FROM subject WHERE SubjectName IN ($placeholders)";
+                                $stmt = $pdo->prepare($sqlquery);
 
-                        if ($stmt->execute()){
-                            //INSERTING INTO CLASS_STUDENT TABLE
+                                // Passes subjectsArray as values to be bound by placeholders
+                                $stmt->execute($subjectsArray);
+                                $subjectCode = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-                            //FETCHING THE SUBJECT CODE FOR EACH SUBJECT NAME TAKEN
-                            //this would store the corresponding amount of placeholders. Ex"?,?,?" . 1 for each element in subjectsArray
+                                //FETCHING THE CORRESPONDING CLASSID
+                                $placeholders = implode(',', array_fill(0, count($subjectCode), '?'));
 
-                            $placeholders = implode(',', array_fill(0, count($subjectsArray), '?')); 
-                            $sqlquery = "SELECT SubjectCode FROM subject WHERE SubjectName IN ($placeholders)";
-                            $stmt = $pdo->prepare($sqlquery);
-
-                            // Passes subjectsArray as values to be bound by placeholders
-                            $stmt->execute($subjectsArray);
-                            $subjectCode = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-                            //FETCHING THE CORRESPONDING CLASSID
-                            $placeholders = implode(',', array_fill(0, count($subjectCode), '?')); 
-
-                            $sqlquery = "SELECT ClassID 
+                                $sqlquery = "SELECT ClassID 
                                          FROM class 
                                          WHERE SubjectCode IN ($placeholders) 
                                          AND Level = ? 
                                          AND ClassGroup = ?";
-                            
-                         
-                            $stmt = $pdo->prepare($sqlquery);
-                            $stmt->execute(array_merge($subjectCode, [$level, $classgroup]));
-                            
-                            $classIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-                            // INSERTING IN CLASS_STUDENT FOR EACH CLASSID
-                            foreach ($classIds as $classId) {
-                                $sqlquery = "INSERT INTO class_student(ClassID,StudentID) VALUES (?,?);";
+
                                 $stmt = $pdo->prepare($sqlquery);
-                                $stmt->execute([$classId, $max_userid]);
+                                $stmt->execute(array_merge($subjectCode, [$level, $classgroup]));
+
+                                $classIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                                // INSERTING IN CLASS_STUDENT FOR EACH CLASSID
+                                foreach ($classIds as $classId) {
+                                    $sqlquery = "INSERT INTO class_student(ClassID,StudentID) VALUES (?,?);";
+                                    $stmt = $pdo->prepare($sqlquery);
+                                    $stmt->execute([$classId, $max_userid]);
+                                }
+                            } else {
+                                die("Something went wrong in student table!");
                             }
-                        }else{
-                            die("Something went wrong in student table!");
+                        } else if ($usertype == 'Teacher') {
+
+                            // INSERTING INTO APPROVAL
+                            $sqlquery = "INSERT INTO approval (AdminID, UserID, UserType, IsApproved) VALUES (?, ?, ?, ?)";
+                            $stmt = $pdo->prepare($sqlquery);
+
+                            $AdminID = null;
+                            $IsApproved = 0;
+
+                            $stmt->execute([$AdminID, $max_userid, $usertype, $IsApproved]);
+
+                            // INSERTING INTO TEACHER
+                            $sqlquery = "INSERT INTO teacher (TeacherID, subjectTaught, DateJoined) VALUES (?, ?, ?)";
+                            $stmt = $pdo->prepare($sqlquery);
+
+                            // Execute the statement
+                            $stmt->execute([$max_userid, $subjecttaught, $datejoinedteacher]);
+                        } else if ($usertype == 'Admin') {
+                            // INSERTING INTO APPROVAL
+                            $sqlquery = "INSERT INTO approval (AdminID, UserID, UserType, IsApproved) VALUES (?, ?, ?, ?)";
+                            $stmt = $pdo->prepare($sqlquery);
+
+                            // For testing purposes only (Make proper ammends to variables)
+                            $AdminID = null;
+                            $IsApproved = 1;
+                            $stmt->execute([$AdminID, $max_userid, $usertype, $IsApproved]);
+
+                            // INSERTING INTO ADMIN
+                            $sqlquery = "INSERT INTO administrator (AdminID, DateJoined) VALUES (?, ?)";
+                            $stmt = $pdo->prepare($sqlquery);
+                            $stmt->execute([$max_userid, $datejoinedadmin]);
                         }
 
-
-                    } else if ($usertype == 'Teacher') {
-
-                        // INSERTING INTO APPROVAL
-                        $sqlquery = "INSERT INTO approval (AdminID, UserID, UserType, IsApproved) VALUES (?, ?, ?, ?)";
-                        $stmt = $pdo->prepare($sqlquery);
-
-                        $AdminID = null; 
-                        $IsApproved = 0; 
-
-                        $stmt->execute([$AdminID, $max_userid, $usertype, $IsApproved]);
-
-                        // INSERTING INTO TEACHER
-                        $sqlquery = "INSERT INTO teacher (TeacherID, subjectTaught, DateJoined) VALUES (?, ?, ?)";
-                        $stmt = $pdo->prepare($sqlquery);
-
-                        // Execute the statement
-                        $stmt->execute([$max_userid, $subjecttaught, $datejoinedteacher]);
-
-                    } else if ($usertype == 'Admin') {
-
-                        // INSERTING INTO APPROVAL
-                        $sqlquery = "INSERT INTO approval (AdminID, UserID, UserType, IsApproved) VALUES (?, ?, ?, ?)";
-                        $stmt = $pdo->prepare($sqlquery);
-
-                        $AdminID = null; 
-                        $IsApproved = 0; 
-                        $stmt->execute([$AdminID, $max_userid, $usertype, $IsApproved]);
-
-                        
-                        // INSERTING INTO ADMIN
-                        $sqlquery = "INSERT INTO administrator (AdminID, DateJoined) VALUES (?, ?)";
-                        $stmt = $pdo->prepare($sqlquery);
-                        $stmt->execute([$max_userid, $datejoinedadmin]);
+                        //displaying sucessful registraton status
+                        echo "<h2 style='text-align: center; color: rgb(11, 91, 32); ;  '>Successfully registered!</h2>";
+                        echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px; font-size:25px;'> Click to here Sign in! </button>";
                     }
-
-                    //displaying sucessful registraton status
-                    echo "<h2 style='text-align: center; color: rgb(11, 91, 32); ;  '>Successfully registered!</h2>";
-                    echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px; font-size:25px;'> Click to here Sign in! </button>";
-
-                
                 }
-            
             }
             ?>
         </div>

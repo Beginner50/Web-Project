@@ -94,53 +94,36 @@ class ClassMessagingModel {
     }
 
     getClassMessages() {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "ClassMessaging/getClassMessages.php", true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('Cache-Control', 'no-cache');
-
         const data = `ClassID=${this.currentClassID}`;
-        xhr.send(data);
-
-        return new Promise(resolve => {
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState === 4 && xhr.status === 200)
-                    resolve(JSON.parse(xhr.response));
-            }
-        });
+        return fetch("ClassMessaging/getClassMessages.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Cache-control": "no-cache"
+            },
+            body: new URLSearchParams(data)
+        }).then(response => response.json());
     }
 
     getClassMembers() {
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "ClassMessaging/getClassMembers.php", true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
         const data = `ClassID=${this.currentClassID}`;
-        xhr.send(data);
-
-        return new Promise(resolve => {
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState == 4 && xhr.status == 200)
-                    resolve(JSON.parse(xhr.response));
-            }
-        });
+        return fetch("ClassMessaging/getClassMembers.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams(data)
+        }).then(response => response.json());
     }
 
     sendClassMessage(Message) {
-        const xhr = new XMLHttpRequest();
-
-        xhr.open("POST", "ClassMessaging/sendMessage.php", true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
         const data = `ClassID=${this.currentClassID}&message-input=${Message}`;
-        xhr.send(data);
-
-        return new Promise(resolve => {
-            // Simply meant to chain promises
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState == 4 && xhr.status == 200)
-                    resolve();
-            }
+        return fetch("ClassMessaging/sendMessage.php", {
+            method: "POST",
+            header: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams(data)
         });
     }
 }
@@ -228,8 +211,7 @@ class ClassMessagingView {
         // Delete previous member entries
         document.querySelectorAll('section.popUp').forEach(member => this.popUpManager.deleteMenuItem(member));
 
-        // Add new class member entry
-        classMembers.forEach(member => {
+        let createMember = member => {
             const section = document.createElement('section');
             section.classList.add('popUp');
 
@@ -245,7 +227,17 @@ class ClassMessagingView {
             userType.textContent = member["UserType"];
 
             this.popUpManager.addMenuItem(section);
-        });
+        }
+
+        // Add new class member entry
+        try {
+            classMembers.forEach(member => {
+                createMember(member);
+            });
+        } catch (e) {
+            if (e.name == TypeError)
+                createMember(classMembers);
+        }
     }
 
     updateClassMessages(classMessages) {
@@ -263,14 +255,24 @@ class ClassMessagingView {
             fill: "forwards"
         };
 
-        classMessages.forEach(message => {
+        let createMessage = message => {
             const span = document.createElement('span');
             span.className = 'message';
             span.textContent = message['Message'];
             span.animate(keyframes, options);
             this.classChatBody.appendChild(span);
-        })
+        }
 
+
+        try {
+            classMessages.forEach(message => {
+                createMessage(message)
+            })
+        }
+        catch (e) {
+            if (e.name == TypeError)
+                createMessage(classMessages);
+        }
     }
 
     updateClassDescription(classDescription) {

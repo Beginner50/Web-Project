@@ -1,19 +1,14 @@
-
 /*
 Changes to ERD:
 - Removed UnauthorisedUser table since unauthorised users can be represented in
 User table with new attribute AuthorisationType. approval table is only meant
 to log which administrator approved a certain user.
-
 Explanation to database structure:
 - Classes cannot be created by any of the users. They are only created when a subject
 is inserted into the Subject table. Therefore, it is important to create trigger
 tg_createClasses to simplify insert statements.
-
 - For the database to be valid, its initial state must consist of an admin.
-
 - Subjects need to be inserted into the database before students and teachers are added.
-
 - A student does not need to be authenticated by admin, but teachers and other admins do.
 */
 
@@ -23,7 +18,6 @@ CREATE TABLE subject (
     PRIMARY KEY (SubjectCode)
 );
 
-
 CREATE TABLE user (
     UserID INTEGER NOT NULL AUTO_INCREMENT,
     DateOfBirth DATE NOT NULL,
@@ -32,8 +26,6 @@ CREATE TABLE user (
     Email VARCHAR(64) UNIQUE,
     Gender CHAR,
     Password VARCHAR(125),
- 
- 
     CHECK (Gender IN ('M', 'F')),
     CHECK (Email like('%@%.%')),
     PRIMARY KEY (UserID)
@@ -67,6 +59,7 @@ CREATE TABLE class (
     SubjectCode VARCHAR(5),
     TeacherID INTEGER,
 
+
     PRIMARY KEY (
         ClassID
     ),
@@ -83,12 +76,10 @@ CREATE TABLE class_student (
     ClassID INTEGER,
     StudentID INTEGER,
 
-    PRIMARY KEY (
-        ClassID,
-        StudentID
-    ),
-    FOREIGN KEY (ClassID) REFERENCES class (ClassID) ON DELETE CASCADE,
-    FOREIGN KEY (StudentID) REFERENCES student (StudentID) ON DELETE CASCADE
+
+PRIMARY KEY (ClassID, StudentID),
+FOREIGN KEY (ClassID) REFERENCES class (ClassID) ON DELETE CASCADE,
+FOREIGN KEY (StudentID) REFERENCES student (StudentID) ON DELETE CASCADE
 
 );
 
@@ -98,14 +89,11 @@ CREATE TABLE class_message (
     DateSent DATETIME,
     Message VARCHAR(256),
 
-    PRIMARY KEY (
-        UserID,
-        ClassID,
-        DateSent
-    ),
 
-    FOREIGN KEY (ClassID) REFERENCES class (ClassID) ON DELETE CASCADE,
-    FOREIGN KEY (UserID) REFERENCES user (UserID) ON DELETE CASCADE
+PRIMARY KEY (UserID, ClassID, DateSent),
+
+FOREIGN KEY (ClassID) REFERENCES class (ClassID) ON DELETE CASCADE,
+FOREIGN KEY (UserID) REFERENCES user (UserID) ON DELETE CASCADE
 
 );
 
@@ -122,6 +110,7 @@ CREATE TABLE approval (
     UserType VARCHAR(15),
     IsApproved BOOLEAN DEFAULT FALSE,
 
+
 	 CHECK (
 		UserType IN (
 			'teacher',
@@ -134,7 +123,8 @@ CREATE TABLE approval (
 );
 
 -- Trigger to create all classes for a subject
-delimiter //
+delimiter / /
+
 CREATE TRIGGER tg_createClass
 AFTER INSERT ON subject
 FOR EACH ROW
@@ -147,8 +137,10 @@ BEGIN
 		SET lvl = lvl + 1;
     END WHILE;
 END;
-//
-delimiter ;
+
+/ /
+
+delimiter;
 
 -- Initialisation Data
 -- Insert the first user as an admin (root)
@@ -171,13 +163,17 @@ VALUES (
     );
 
 INSERT INTO
-     administrator (AdminID, DateJoined) SELECT UserID, CURDATE()
-      FROM user WHERE Email = 'root@email.com';
+    administrator (AdminID, DateJoined)
+SELECT UserID, CURDATE()
+FROM user
+WHERE
+    Email = 'root@email.com';
 
 -- Insert some subjects
-INSERT INTO subject(SubjectCode, SubjectName)VALUES 
-              ('MATH1', 'Mathematics 1'),
-              ('ENG1', 'English 1');
+INSERT INTO
+    subject (SubjectCode, SubjectName)
+VALUES ('MATH1', 'Mathematics 1'),
+    ('ENG1', 'English 1');
 
 -- Insert students
 INSERT INTO
@@ -236,7 +232,7 @@ VALUES (
         'Mark',
         'Twain',
         'mark.twain@email.com',
-        'M' ,
+        'M',
         'teacherPass123'
     );
 
@@ -288,10 +284,7 @@ WHERE
     Email = 'michael.bron@email.com';
 
 INSERT INTO
-    class_student (
-        ClassId,
-        StudentID
-    )
+    class_student (ClassId, StudentID)
 VALUES (
         1,
         (
@@ -307,7 +300,7 @@ VALUES (
         )
     ),
     (
-        2,  -- Assuming ClassID 2 is appropriate for Jane Smith
+        2, -- Assuming ClassID 2 is appropriate for Jane Smith
         (
             SELECT StudentID
             FROM student
@@ -327,18 +320,20 @@ SET
     teacherID = (
         SELECT TeacherID
         FROM teacher
-        WHERE TeacherID=6
+        WHERE
+            TeacherID = 6
     )
 WHERE
-    Level = 1 AND ClassGroup = 'RED' AND SubjectCode = 'ENG1';
-    
+    Level = 1
+    AND ClassGroup = 'RED'
+    AND SubjectCode = 'ENG1';
 -- Admin approves the unauthorised teacher: Mark Twain
 INSERT INTO
     approval (AdminID, UserID)
 VALUES (
         (
             SELECT AdminID
-            FROM  administrator
+            FROM administrator
             WHERE
                 AdminID = (
                     SELECT UserID
@@ -355,13 +350,12 @@ VALUES (
         )
     );
 
-
 UPDATE approval
 SET
-    UserType = 'Teacher',
-    IsApproved=true
+    UserType = 'teacher',
+    IsApproved = true
 WHERE
-    UserID=4;
+    UserID = 4;
 
 -- Add a message to the class
 INSERT INTO
@@ -373,24 +367,43 @@ INSERT INTO
     )
 VALUES (
         1, -- Assuming ClassID 1 is the correct class
-        (SELECT UserID FROM user WHERE Email = 'michael.bron@email.com'), -- Teacher's UserID
+        (
+            SELECT UserID
+            FROM user
+            WHERE
+                Email = 'michael.bron@email.com'
+        ), -- Teacher's UserID
         NOW(),
         'Welcome to the class'
     );
 
 -- INSERTING ALL SUBJECTS
-INSERT INTO subject (SubjectCode, SubjectName)
-VALUES 
-    ('CS101', 'Introduction to Computer Science'),
+INSERT INTO
+    subject (SubjectCode, SubjectName)
+VALUES (
+        'CS101',
+        'Introduction to Computer Science'
+    ),
     ('MA102', 'Calculus I'),
-    ('PH103', 'Physics for Engineers'),
+    (
+        'PH103',
+        'Physics for Engineers'
+    ),
     ('CS201', 'Data Structures'),
     ('CS202', 'Database Systems'),
     ('MA203', 'Linear Algebra'),
     ('PH204', 'Electromagnetism'),
     ('CS301', 'Operating Systems'),
-    ('CS302', 'Software Engineering'),
-    ('MA304', 'Discrete Mathematics'),
+    (
+        'CS302',
+        'Software Engineering'
+    ),
+    (
+        'MA304',
+        'Discrete Mathematics'
+    ),
     ('CS305', 'Computer Networks'),
-    ('CS306', 'Artificial Intelligence');
-
+    (
+        'CS306',
+        'Artificial Intelligence'
+    );

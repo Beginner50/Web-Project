@@ -14,6 +14,7 @@ session_start();
     <link rel="stylesheet" href="stylesheets/partials/sidebar.css">
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/classMessagingPage/main.css">
+    <link rel="stylesheet" href="stylesheets/partials/popUp.css">
     <script>
         0
     </script>

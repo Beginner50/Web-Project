@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="School Website for ABC Academy">
     <link rel="stylesheet" href="stylesheets/common.css">
-    <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
+    <link rel="stylesheet" href="stylesheets/authenticationPage/main.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormSpecific.css">
     <link rel="stylesheet" href="stylesheets/partials/popUp.css">
@@ -97,12 +97,13 @@
                     </div>
                     <!-- Password -->
                     <div class="input-group">
-                        <lable>Password </lable><input class="input-box hover transparent-placeholder" type="password"
-                            required name="password">
+                        <label>Password </label><input class="input-box hover transparent-placeholder" type="password"
+                            required name="password" pattern="(?=.*[A-Z])(?=.*\d).{5,}" minlength="5">
                     </div>
                     <!-- Re-enter Password -->
                     <div class="input-group"> <label>Re-enter Password </label><input
-                            class="input-box hover transparent-placeholder" type="password" required name="repassword">
+                            class="input-box hover transparent-placeholder" type="password" required name="repassword"
+                            pattern="(?=.*[A-Z])(?=.*\d).{5,}" minlength="5">
                     </div>
                 </fieldset>
 
@@ -138,7 +139,7 @@
                         </div>
                     </fieldset>
                     <!-- Teacher specific attributes -->
-                    <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;">
+                    <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;" disabled>
                         <div class="teacher input-group">
                             Subject Taught: <input class="input-box hover transparent-placeholder " name="subjectTaught"
                                 type="text" required>
@@ -148,7 +149,7 @@
                                 type="date" required>
                         </div>
                     </fieldset>
-                    <fieldset id="specificAttr-fieldset-admin" class="no-border" style="display:none;">
+                    <fieldset id="specificAttr-fieldset-admin" class="no-border" style="display:none;" disabled>
                         <div class="admin input-group">
                             Date Joined <input class="input-box hover transparent-placeholder " name="adminDateJoined"
                                 type="date" required>
@@ -159,10 +160,8 @@
                 <!-- Hidden input to store selected subjects -->
                 <input type="hidden" id="selected-subjects" name="subjects" value="">
 
-                <!-- Error Message -->
-                <span id="errorOutput" class="error-message"> </span>
                 <!-- Register button -->
-                <button type="submit" name="registrationSubmit-buttonCheck" id="registrationSubmit-button"
+                <button type="submit" id="registrationSubmit-button"
                     class="indigoTheme roundBorder" form="registration-form"> Submit</button>
             </form>
         </div>
