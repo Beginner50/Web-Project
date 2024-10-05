@@ -1,36 +1,52 @@
-<link rel="stylesheet" href="stylesheets/partials/navBar.css">
 <nav class="indigoTheme <?php if ($page == 'authenticationPage') echo ' relative';
                         else echo ' absolute'; ?>">
   <div id="left-section">
     <div id="logo-wrapper">
-      <img src="icons/research-svgrepo-com.svg">
+      <img src="<?php echo !isset($_SESSION['UserType']) || $_SESSION['UserType'] != 'Admin' ? 'icons/research-svgrepo-com.svg' : '../icons/research-svgrepo-com.svg'; ?>">
       <h1 id="logo-title">EduPortal</h1>
     </div>
     <?php
+    ini_set('display_startup_errors', 1);
+    ini_set('display_errors', 1);
+    error_reporting(-1);
+
     if ($page != 'authenticationPage') {
       echo '<script>
                       function switchClass() {
                         window.location.replace("classMessagingPage.php");
                       }
 
-                      function switchAccountManagement() {
-                        window.location.replace("accManagementPage.php");
+                      function switchAccountManagement(currentTab) {
+                        if(currentTab == "dashboardTab")
+                          window.location.replace("../accManagementPage.php");
+                        else if(currentTab == "classTab")
+                          window.location.replace("accManagementPage.php");
                       }
 
                       function switchDashboard(){
-                        window.location.replace();
+                        window.location.replace("AdminPage/adminPage.php");
                       }
                       </script>';
 
       if ($page == 'classTab') {
         echo '<div id="button-wrapper">
-                      <button id="accountManagement-button" class="indigoTheme shadow" onclick="switchAccountManagement()">                         Account Management</button>
+                      <button id="accountManagement-button" class="indigoTheme shadow" onclick=switchAccountManagement("classTab")>                         Account Management</button>
                       <button id="classes-button" class="indigoTheme shadow active"> Classes </button>
               </div>';
-      } else if ($page == "accountManagementTab") {
+      } else if ($page == "accountManagementTab" && $_SESSION['UserType'] != 'Admin') {
         echo '<div id="button-wrapper">
                       <button id="accountManagement-button" class="indigoTheme shadow active">                         Account Management                       </button>
                       <button id="classes-button" class="indigoTheme shadow" onclick="switchClass()">Classes</button>
+                      </div>';
+      } else if ($page == "accountManagementTab" && $_SESSION['UserType'] == 'Admin') {
+        echo '<div id="button-wrapper">
+                      <button id="accountManagement-button" class="indigoTheme shadow active">                         Account Management                       </button>
+                      <button id="dashboard-button" class="indigoTheme shadow" onclick="switchDashboard()">Dashboard</button>
+                      </div>';
+      } else if ($page == "dashboardTab" && $_SESSION['UserType'] == 'Admin') {
+        echo '<div id="button-wrapper">
+                      <button id="accountManagement-button" class="indigoTheme shadow" onclick=' . 'switchAccountManagement("dashboardTab")' . '>                         Account Management                       </button>
+                      <button id="dashboard-button" class="indigoTheme shadow active"> Dashboard</button>
                       </div>';
       }
     }

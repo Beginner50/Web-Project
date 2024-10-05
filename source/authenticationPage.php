@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="stylesheets/authenticationPage/main.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormSpecific.css">
+    <link rel="stylesheet" href="stylesheets/partials/navBar.css">
     <link rel="stylesheet" href="stylesheets/partials/popUp.css">
     <title>School Website</title>
 
@@ -22,7 +23,6 @@
 <body>
     <!-- Navigation Bar -->
     <?php
-
     $page = 'authenticationPage';
     require 'partials/navBar.php' ?>
 

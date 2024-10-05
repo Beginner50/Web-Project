@@ -9,165 +9,193 @@ body {
     font-family: "Josefin Sans", sans-serif;
 }
 
-.main-content{
-    display:grid;
-    margin-top:100px;
+.main-content {
+    display: grid;
+    margin-top: 100px;
     grid-template-columns: 1fr 2.5fr;
 }
 
 
-.stats-container{
-    display:grid;
+.stats-container {
+    display: grid;
 
     grid-template-columns: 150px 180px;
-    height:72px;
-    margin-bottom:20px;
-    padding-top:30px;
- 
+    height: 72px;
+    margin-bottom: 20px;
+    padding-top: 30px;
+
 }
 
-.school-stats{
-    display:grid;
+.school-stats {
+    display: grid;
 
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
     color: rgb(0, 0, 0);
     background-color: transparent;
 
-    
-    margin-left:40px;
 
-    font-size:30px;
+    margin-left: 40px;
+
+    font-size: 30px;
     font-family: "Josefin Sans", sans-serif;
     text-align: center;
-    height:max-content;
+    height: max-content;
 
 }
 
-.main-content .school-stats i{
-    margin:20px 20px;
-    font-size:80px;
+.main-content .school-stats i {
+    margin: 20px 20px;
+    font-size: 80px;
     color: rgb(55, 61, 61);
-    margin-right:50px;
+    margin-right: 50px;
 }
-.main-content .school-stats .total-students{
+
+.main-content .school-stats .total-students {
 
     background-color: #c5f5fd;
 }
-.main-content .school-stats .total-teachers{
+
+.main-content .school-stats .total-teachers {
 
     background-color: #f1f7c3;
 }
-.main-content .school-stats .total-unapproved{
+
+.main-content .school-stats .total-unapproved {
 
     background-color: #fcb6cd;
 }
-.main-content .school-stats .total-staffs{
+
+.main-content .school-stats .total-staffs {
 
     background-color: #bdffe5;
 }
 
-.user-information{
-    display:grid;
-  
+.user-information {
+    display: grid;
+
     grid-template-rows: 3fr 20fr;
 
     background-color: rgb(225, 225, 225);
-    margin-left:80px;
-    margin-right:20px;
+    margin-left: 80px;
+    margin-right: 20px;
     max-height: 80vh;
 }
 
-.search-box{
+.search-box {
     background-color: rgb(156, 156, 180);
 
 }
 
-.user-list {
+.user-list-container {
     display: grid;
-    grid-template-rows: repeat(3, min-content); /* Adjusts the row height */
+    grid-template-rows: repeat(3, min-content);
+    /* Adjusts the row height */
     background-color: #987cde;
     overflow-y: auto;
 }
 
+.user-list {
+    border-collapse: collapse;
+    text-align: center;
+    border: 1px solid var(--purpleVortex);
+    height: 65vh;
+}
+
+.user-list th {
+    padding-top: 0.2%;
+    padding-bottom: 0.2%;
+    background-color: var(--purpleVortex);
+    color: white;
+}
+
+.user-list tr:has(td):hover {
+    background-color: green;
+    cursor: pointer;
+}
+
 .userinfo-container {
     background-color: #ccbbfb;
-    margin: 20px; 
-    padding:20px;
-    min-height: 250px; 
+    margin: 20px;
+    padding: 20px;
+    min-height: 250px;
 }
 
-.update-personalinfo{
+.update-personalinfo {
 
     display: grid;
-    grid-template-columns: repeat(4, minmax(50px, 180px)); /* 4 columns */
-    grid-template-rows: repeat(2, minmax(50px, 80px));    /* 2 rows */
-    gap: 15px; /* Keep the gap between the grid items */
-
-
+    grid-template-columns: repeat(4, minmax(50px, 180px));
+    /* 4 columns */
+    grid-template-rows: repeat(2, minmax(50px, 80px));
+    /* 2 rows */
+    gap: 15px;
+    /* Keep the gap between the grid items */
 }
 
-.update-subjects{
+.update-subjects {
 
     display: grid;
-    grid-template-columns: repeat(2, minmax(50px, 250px)); /* 4 columns */
-    grid-template-rows: 80px 1fr;    /* 2 rows */
-    gap: 15px; /* Keep the gap between the grid items */
+    grid-template-columns: repeat(2, minmax(50px, 250px));
+    /* 4 columns */
+    grid-template-rows: 80px 1fr;
+    /* 2 rows */
+    gap: 15px;
+    /* Keep the gap between the grid items */
 
 
 }
 
-button.backButton{
+button.backButton {
 
-    width:150px; 
-    margin-top:20px; 
-    margin-left:20px;
-    border-width:2px;
-    padding:7px 20px;
+    width: 150px;
+    margin-top: 20px;
+    margin-left: 20px;
+    border-width: 2px;
+    padding: 7px 20px;
 
     border-color: var(--orchid);
-    color:var(--orchid);
+    color: var(--orchid);
     background-color: var(--purpleVortex);
 }
 
 button.userinfo-button {
 
     border-width: 2px;
-    margin:20px 30px;
-    padding:10px 27px;
-    font-weight:500;
+    margin: 20px 30px;
+    padding: 10px 27px;
+    font-weight: 500;
 }
 
-button.verifyAcc{
+button.verifyAcc {
     border-color: green;
     color: green;
 }
 
-button.verifyAcc:hover{
+button.verifyAcc:hover {
     background-color: green;
 }
 
-button.deleteAcc{
+button.deleteAcc {
     border-color: red;
     color: red;
 }
 
-button.deleteAcc:hover{
+button.deleteAcc:hover {
     background-color: red;
 }
 
-.main-content .user-information .buttoninfo{
+.main-content .user-information .buttoninfo {
 
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr;
 
-    gap:20px;
+    gap: 20px;
 
 }
 
-button.remove-subject{
+button.remove-subject {
 
     margin-left: 5px;
-    
+
 }
