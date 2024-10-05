@@ -10,7 +10,7 @@ session_start();
     <title>Account Management</title>
 
     <link rel="stylesheet" href="stylesheets/common.css">
-    <link rel="stylesheet" href="stylesheets/authenticationPage/common.css">
+    <link rel="stylesheet" href="stylesheets/authenticationPage/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="stylesheets/partials/navBar.css">
     <link rel="stylesheet" href="stylesheets/partials/sidebar.css">

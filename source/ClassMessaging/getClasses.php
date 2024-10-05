@@ -8,7 +8,6 @@
    not cause it to execute again. Thus, the database connection is established
    only once, meaning bigger performance gain, meaning more money saved
 */
-session_start();
 require_once 'connect.php';
 
 /*

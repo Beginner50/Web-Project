@@ -7,7 +7,11 @@ $host = "localhost";
 $user = "root";
 $db = "web_project";
 $pass = "";
-$conn = new mysqli($host, $user, $pass, $db);
+try {
+    $conn = new mysqli($host, $user, $pass, $db);
+} catch (error) {
+    $conn = new mysqli($host, $user, " ", $db);
+}
 
 if ($conn->connect_error) {
     echo "Failed to connect to database" . $conn->connect_error;

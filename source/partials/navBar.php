@@ -7,8 +7,6 @@
       <h1 id="logo-title">EduPortal</h1>
     </div>
     <?php
-    session_start();
-
     if ($page != 'authenticationPage') {
       echo '<script>
                       function switchClass() {
@@ -29,16 +27,11 @@
                       <button id="accountManagement-button" class="indigoTheme shadow" onclick="switchAccountManagement()">                         Account Management</button>
                       <button id="classes-button" class="indigoTheme shadow active"> Classes </button>
               </div>';
-      } else if ($page == "accountManagementTab" && $_SESSION['UserType'] != 'Admin') {
+      } else if ($page == "accountManagementTab") {
         echo '<div id="button-wrapper">
                       <button id="accountManagement-button" class="indigoTheme shadow active">                         Account Management                       </button>
                       <button id="classes-button" class="indigoTheme shadow" onclick="switchClass()">Classes</button>
                       </div>';
-      } else if ($page == "accountManagementTab" && $_SESSION['UserType'] == 'Admin') {
-        echo '<div id="button-wrapper">
-                      <button id="accountManagement-button" class="indigoTheme shadow active">                         Account Management                       </button>
-                      <button id="dashboard-button" class="indigoTheme shadow" onclick="switchDashboard()"> Dashboard </button>
-              </div>';
       }
     }
     ?>

@@ -29,6 +29,11 @@ body {
     grid-template-columns: 1fr 1.5fr;
     grid-row-gap: 15px;
     scroll-behavior: smooth;
+    scrollbar-width: 0px;
+}
+
+.wrapper .main-content::-webkit-scrollbar {
+    display: none;
 }
 
 .wrapper .main-content .first-column {
