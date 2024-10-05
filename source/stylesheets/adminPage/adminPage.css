@@ -165,3 +165,9 @@ button.deleteAcc:hover{
     gap:20px;
 
 }
+
+button.remove-subject{
+
+    margin-left: 5px;
+    
+}

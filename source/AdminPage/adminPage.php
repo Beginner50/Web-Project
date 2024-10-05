@@ -16,6 +16,8 @@ session_start();
 </head>
 <body>
   <div class="main-content">
+
+    <!-- DISPLAYING STATISTICS -->
     <div class="school-stats">
       <?php
 
@@ -73,8 +75,9 @@ session_start();
       </div>
 
     </div>
-
+    <!-- DISPLAYING USER CLICKED INFORMATION -->
     <div class="user-information">
+
       <div class="search-box"></div>
       <div class="user-list">
 
@@ -120,7 +123,7 @@ session_start();
           ?>
               
         </div>
-
+        <!-- DISPLAYING USER SUBJECTS -->
         <div class="userinfo-container ">
           <form class="update-subjects" id="subjectchange-admin" action="AdminPage/subjectChange.php" method="POST">
             <div class="information">
@@ -135,30 +138,51 @@ session_start();
 
             <div class="information studentinfo-grid">
               <div class="sub-information">Subjects Taken</div>
-              <div class="subjectstaken">
 
- 
-              <?php 
-              foreach($_SESSION['Subjects'] as $Subjects){
-                echo '<div class="subject-item">';
-                
-                echo '<input class="subject-code" type="text" name="subjectcode[' . $Subjects['SubjectCode'] . ']" id="subjectcode_' . $Subjects['SubjectCode'] . '" value="' . $Subjects['SubjectCode'] . '">';
-                echo '<input class="subject-name" type="text" name="subjectname[' . $Subjects['Subjectname'] . ']" id="subjectname_' . $Subjects['Subjectname'] . '" value="' . $Subjects['Subjectname'] . '">';
-                echo '</div>';
-              }
-              ?>
-              </div>
+                <div class="subjectstaken">
+
+                <?php 
+                foreach($_SESSION['Subjects'] as $Subjects){
+                  echo '<div class="subject-item">';
+                  
+                  echo '<input class="subject-code" type="text" name= "' . $Subjects['SubjectCode'] . '" id="' . $Subjects['SubjectCode'] . '" value="' . $Subjects['SubjectCode'] . '">';
+                  echo '<input class="subject-name" type="text" name="' . $Subjects['Subjectname'] . '" id="' . $Subjects['Subjectname'] . '" value="' . $Subjects['Subjectname'] . '">';
+                  ?>
+                  <form id="subjectDeleteForm" action="subjectDelete.php" method="POST">
+
+                    <input type="hidden" name="delete-subjectCode" value="<?php echo $Subjects['SubjectCode']; ?>">
+                    <div><?php echo $Subjects['SubjectCode']; ?></div>
+                    <button type="submit" name="deleteButton" class="remove-subject indigoTheme roundBorder" form="subjectDeleteForm"> Delete </button>
+     
+                  </form>
+
+                <?php
+                  echo '</div>';
+                }
+
+                if(isset( $_SESSION['subjectDeletStatus'])){
+
+                  echo '<div class="">'. $_SESSION['subjectDeletStatus'] .' </div>';
+                  unset($_SESSION['subjectDeletStatus']);
+
+                }
+                ?>
+
+              
+                </div>
 
             </div>
+
+            
           </form>    
         </div>
-
+        <!-- DISPLAYING GENERAL INFORMATION-->
         <div class="userinfo-container">
           <form id="admin-update-personalinfo" class="update-personalinfo" method="POST" action="../AccountManagement/personalinfo.php">
 
             <div class="information">
               <div class="sub-information">UserID</div>
-              <div class="information-input"> <?php echo $_SESSION['UserID']; ?> </div>
+              <div class="information-input"> <?php echo $_SESSION['UserID-Clicked']; ?> </div>
             </div>
 
             <div class="information">
