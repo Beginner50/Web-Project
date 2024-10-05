@@ -12,9 +12,9 @@
     require_once '../connect.php';
     session_start();
 
-    $_SESSION['UserID']=33; //TO REMOVE THIS LINE , HARD CODED ADMIN ID FOR TESTING
+    $_SESSION['UserID']=1; //TO REMOVE THIS LINE , HARD CODED ADMIN ID FOR TESTING
 
-    $_SESSION['UserID-Clicked']= 32;
+    $_SESSION['UserID-Clicked']= 3;
     $_SESSION['UserType']= 'Student';
     $_SESSION['Name']= 'abc Deez';
     $_SESSION['FirstName']= 'abc';

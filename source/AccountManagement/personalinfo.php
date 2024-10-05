@@ -31,7 +31,7 @@ session_start();
             $gender = $_POST["gender"];
             $dateofbirth = $_POST["dateofbirth"];
             
-            if(isset($_POST["personalinfo-savechanges-admin"])){
+            if(isset($_POST["personalinfo-savechanges-admin"]) AND !isset($_POST["personalinfo-savechanges"]) ){
                 $UserID=$_SESSION['UserID-Clicked'];
             }else{
                 $UserID=$_SESSION['UserID'];
@@ -98,7 +98,7 @@ session_start();
                 if ($stmt->execute()) {
                     // Re-fetch updated user information from the database
                     $stmt = $pdo->prepare('SELECT * FROM user WHERE UserID = ?');
-                    $stmt->execute([$_SESSION['UserID']]);
+                    $stmt->execute([$UserID]);
                     $updatedUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     // Update the session with the new information
