@@ -148,25 +148,26 @@ session_start();
 
                   echo '<input class="subject-code" type="text" name= "' . $Subjects['SubjectCode'] . '" id="' . $Subjects['SubjectCode'] . '" value="' . $Subjects['SubjectCode'] . '">';
                   echo '<input class="subject-name" type="text" name="' . $Subjects['Subjectname'] . '" id="' . $Subjects['Subjectname'] . '" value="' . $Subjects['Subjectname'] . '">';
+                }
                 ?>
-                  <form id="subjectDeleteForm" action="subjectDelete.php" method="POST">
+                <form id="subjectDeleteForm" action="subjectDelete.php" method="POST">
 
-                    <input type="hidden" name="delete-subjectCode" value="<?php echo $Subjects['SubjectCode']; ?>">
-                    <div><?php echo $Subjects['SubjectCode']; ?></div>
-                    <button type="submit" name="deleteButton" class="remove-subject indigoTheme roundBorder" form="subjectDeleteForm"> Delete </button>
+                  <input type="hidden" name="delete-subjectCode" value="<?php echo $Subjects['SubjectCode']; ?>">
+                  <div><?php echo $Subjects['SubjectCode']; ?></div>
+                  <button type="submit" name="deleteButton" class="remove-subject indigoTheme roundBorder" form="subjectDeleteForm"> Delete </button>
 
-                  </form>
-
+                </form>
                 <?php
                 echo '</div>';
 
 
                 if (isset($_SESSION['subjectDeletStatus'])) {
-                if (isset($_SESSION['subjectDeletStatus'])) {
+                  if (isset($_SESSION['subjectDeletStatus'])) {
 
-                  echo '<div class="">' . $_SESSION['subjectDeletStatus'] . ' </div>';
-                  echo '<div class="">' . $_SESSION['subjectDeletStatus'] . ' </div>';
-                  unset($_SESSION['subjectDeletStatus']);
+                    echo '<div class="">' . $_SESSION['subjectDeletStatus'] . ' </div>';
+                    echo '<div class="">' . $_SESSION['subjectDeletStatus'] . ' </div>';
+                    unset($_SESSION['subjectDeletStatus']);
+                  }
                 }
                 ?>
 
