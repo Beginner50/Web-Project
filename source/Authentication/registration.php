@@ -113,7 +113,7 @@
                         pushErrorIfEmpty($datejoinedteacher, $errors, "Date Joined cannot be empty!");
                         break;
                     case "Admin":
-                        $datejoinedadmin = $_POST["adminDateJoined"];
+                        $datejoinedadmin = sanitizeInput($_POST["adminDateJoined"]);
 
                         pushErrorIfEmpty($datejoinedadmin, $errors, "Date Joined cannot be blank!");
                         break;

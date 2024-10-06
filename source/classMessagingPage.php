@@ -45,6 +45,7 @@ require 'partials/navBar.php';
 
     <!-- Main wrapper -->
     <div id="main-wrapper">
+        <!-- Class Chat Header -->
         <div id="classChat-header" class="classChat" style="display: none;">
             <div id="left-section">
                 <img src="icons/schedule-svgrepo-com.svg">
@@ -54,8 +55,10 @@ require 'partials/navBar.php';
                 View Members
             </button>
         </div>
+        <!-- Class Chat Body -->
         <div id="classChat-body" class="classChat" style="display: none;">
         </div>
+        <!-- Class Chat Footer -->
         <div id="classChat-footer" class="classChat" style="display: none;">
             <form id="message-form" method="post" action="ClassMessaging/sendMessage.php">
                 <textarea name="message-input" id="message-input" placeholder="Input your message here"></textarea>
@@ -64,6 +67,7 @@ require 'partials/navBar.php';
                 </button>
             </form>
         </div>
+        <!-- Class Chat Cover -->
         <div id="classChat-cover">
             No Class Selected
         </div>
