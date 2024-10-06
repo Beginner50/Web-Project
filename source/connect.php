@@ -19,3 +19,4 @@ $pdo = new PDO(
     $user,
     $pass
 );
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

@@ -10,7 +10,8 @@ nav {
 #main-wrapper {
     position: relative;
     width: min(100%, 800px);
-    height: 640px;
+    min-height: 640px;
+    height: 95%;
     margin-top: 100px;
     margin-bottom: 100px;
     margin-left: auto;
@@ -136,13 +137,13 @@ nav {
 
 #registration-form .input-group {
     position: relative;
-    font-size: clamp(1rem, 0.1vw + 0.1rem, 5rem);
+    font-size: clamp(0.9rem, 0.4vw + 0.1rem, 5rem);
     color: rgb(82, 79, 79);
     margin-left: 0.8rem;
     margin-right: 2.5rem;
     display: flex;
     flex-direction: column;
-    padding: 0px4
+    padding: 0px;
 }
 
 #registration-form .input-box {

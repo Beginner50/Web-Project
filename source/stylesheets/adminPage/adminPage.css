@@ -110,7 +110,7 @@ body {
 }
 
 .user-list tr:has(td):hover {
-    background-color: green;
+    background-color: var(--orchid);
     cursor: pointer;
 }
 

@@ -13,11 +13,10 @@
     <link rel="stylesheet" href="stylesheets/partials/popUp.css">
     <title>School Website</title>
 
+    <!-- Ensure all stylesheets are loaded -->
     <script>
-        /*to prevent Firefox FOUC, this must be here*/
         let FF_FOUC_FIX;
     </script>
-
 </head>
 
 <body>
@@ -33,7 +32,7 @@
             <h1 class="callToAction">
                 New to Education
                 Portal?</h1>
-            <button class="callToAction" href="#callToAction-wrapper"> <a>Sign Up</a></button>
+            <button class="callToAction" href="#main-wrapper"> <a>Sign Up</a></button>
         </div>
         <!-- Form Wrapper -->
         <div id="form-wrapper">

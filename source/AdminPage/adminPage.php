@@ -25,9 +25,6 @@ include '../partials/navBar.php';
 
 <body>
   <div class="main-content">
-
-    <!-- DISPLAYING STATISTICS -->
-
     <!-- DISPLAYING STATISTICS -->
     <div class="school-stats">
       <?php
