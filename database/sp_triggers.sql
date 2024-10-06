@@ -1,5 +1,5 @@
--- Active: 1727685265847@@127.0.0.1@3306@web_project
-DELIMITER / /
+-- Active: 1728149104725@@127.0.0.1@3306@web_project
+-- DELIMITER //
 
 CREATE PROCEDURE sp_addMessage(
     clsID INT,
@@ -13,8 +13,8 @@ BEGIN
         NOW(),
         Message
     );
-END
+END;
 
-//
+-- //
 
-DELIMITER
+-- DELIMITER
