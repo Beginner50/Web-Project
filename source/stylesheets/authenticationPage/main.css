@@ -10,8 +10,8 @@ nav {
 #main-wrapper {
     position: relative;
     width: min(100%, 800px);
-    height: min(95%,640px);
     min-height: 640px;
+    height: 95%;
     margin-top: 100px;
     margin-bottom: 100px;
     margin-left: auto;

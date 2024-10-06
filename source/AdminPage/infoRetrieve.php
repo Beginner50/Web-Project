@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
 
-<?php
+    <?php
 
     require_once '../connect.php';
     session_start();
 
-    $_SESSION['UserID']=1; //TO REMOVE THIS LINE , HARD CODED ADMIN ID FOR TESTING
+    $_SESSION['UserID-Clicked'] = 3;
+    $_SESSION['UserType'] = 'Student';
+    $_SESSION['Name'] = 'abc Deez';
+    $_SESSION['FirstName'] = 'abc';
+    $_SESSION['LastName'] = 'Deez';
 
-    $_SESSION['UserID-Clicked']= 3;
-    $_SESSION['UserType']= 'Student';
-    $_SESSION['Name']= 'abc Deez';
-    $_SESSION['FirstName']= 'abc';
-    $_SESSION['LastName']= 'Deez';
-
-    $_SESSION['DateJoined']= NULL;
-    $_SESSION['Authorisation']= NULL;
+    $_SESSION['DateJoined'] = NULL;
+    $_SESSION['Authorisation'] = NULL;
 
 
     $stmt = $pdo->prepare('SELECT * FROM user WHERE UserID = ?');
     $stmt->execute([$_SESSION['UserID-Clicked']]);
     $User = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $_SESSION['Gender']=$User['Gender'];
-    $_SESSION['DateOfBirth']=$User['DateOfBirth'];
-    $_SESSION['Email']=$User['Email'];
+    $_SESSION['Gender'] = $User['Gender'];
+    $_SESSION['DateOfBirth'] = $User['DateOfBirth'];
+    $_SESSION['Email'] = $User['Email'];
 
 
     // If user is a student, query the student table using UserID to get additional data.
@@ -50,14 +50,15 @@
                                 INNER JOIN class_student cs ON cs.ClassId = c.ClassID
                                 WHERE cs.StudentID= ?;");
 
-        $stmt->bindParam(1,$_SESSION['UserID-Clicked'] );
+        $stmt->bindParam(1, $_SESSION['UserID-Clicked']);
         $stmt->execute();
         $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if(!empty($subjects)){
+        if (!empty($subjects)) {
             $_SESSION['Subjects'] = $subjects;
-        } else {echo "No subjects found for this student.";}
-
+        } else {
+            echo "No subjects found for this student.";
+        }
     }
     // Else if user is a teacher
     else if ($_SESSION['UserType'] == 'Teacher') {
@@ -75,6 +76,7 @@
 
     header("Location: adminPage.php");
     exit();
-?>
+    ?>
 </body>
+
 </html>

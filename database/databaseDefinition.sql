@@ -105,40 +105,17 @@ CREATE TABLE administrator (
 );
 
 CREATE TABLE approval (
-    AdminID  INTEGER DEFAULT NULL,
+    AdminID INTEGER DEFAULT NULL,
     UserID INTEGER,
     UserType VARCHAR(15),
     IsApproved BOOLEAN DEFAULT FALSE,
-
-
-	 CHECK (
-		UserType IN (
-			'teacher',
-			'admin'
-		)
-	),
+    CHECK (
+        UserType IN ('Teacher', 'Admin')
+    ),
     PRIMARY KEY (UserID),
     FOREIGN KEY (AdminID) REFERENCES administrator (AdminID) ON DELETE CASCADE,
     FOREIGN KEY (UserID) REFERENCES user (UserID) ON DELETE CASCADE
 );
-
--- Trigger to create all classes for a subject
-delimiter / /
-
-CREATE TRIGGER tg_createClass
-AFTER INSERT ON subject
-FOR EACH ROW
-BEGIN
-	DECLARE lvl INT;
-    SET lvl = 1;
-	WHILE lvl < 4 DO
-		INSERT INTO class(Level,ClassGroup,SubjectCode,TeacherID) VALUES(lvl, 'RED', NEW.subjectCode,NULL);
-        INSERT INTO class(Level,ClassGroup,SubjectCode,TeacherID) VALUES(lvl, 'BLUE', NEW.subjectCode, NULL);
-		SET lvl = lvl + 1;
-    END WHILE;
-END;
-
-/ /
 
 delimiter;
 

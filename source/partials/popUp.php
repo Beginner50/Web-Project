@@ -1,3 +1,4 @@
+<!-- POPUP MARKUP -->
 <aside id="popUp-window" style="display:none;">
     <div id="popUp-wrapper">
         <div id="popUp-menu" class="shadow">

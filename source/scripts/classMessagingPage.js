@@ -245,8 +245,9 @@ class ClassMessagingView {
         document.querySelectorAll('.message').forEach(message => message.remove());
 
         let keyframes = [
-            { transform: "translate(-100px)", opacity: "0" },
-            { transform: "translate(0px)", opacity: "100" }
+            { transform: "translate(-100px)", opacity: "0%" },
+            { transform: "translate(0px)", opacity: "100%" },
+            { transform: "translate(0px)", opacity: "100%" }
         ];
 
         let options = {

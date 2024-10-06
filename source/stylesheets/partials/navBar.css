@@ -67,15 +67,7 @@ nav.indigoTheme #left-section {
     width: 100%;
 }
 
-#button-wrapper #accountManagement-button {
-    height: 60%;
-    width: 100%;
-    margin-top: auto;
-    margin-bottom: auto;
-    font-size: clamp(0.3rem, 1.0vw + 0.15rem, 5rem);
-}
-
-#button-wrapper #classes-button {
+#button-wrapper>button {
     width: 100%;
     height: 60%;
     margin-top: auto;
