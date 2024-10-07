@@ -14,10 +14,6 @@
 
         <div class="container">
             <?php
-            ini_set('display_startup_errors', 1);
-            ini_set('display_errors', 1);
-            error_reporting(-1);
-
             include '../connect.php';
 
             function pushErrorIfEmpty($variable, $errorsArray, $errorMessage)
@@ -26,39 +22,32 @@
                     array_push($errorsArray, $errorMessage);
             }
 
-            function sanitizeInput($input)
-            {
-                if (isset($input)) {
-                    // Remove leading and trailing spaces
-                    $input = trim($input);
-                    // Strip all slashes to prevent cross script attacks
-                    $input = stripslashes($input);
-                    // Invalidates html tags to prevent cross script attacks
-                    $input = htmlspecialchars($input);
-                }
-                return $input;
-            }
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $usertype = htmlspecialchars($_POST["user-type"]);
+                $errors = array(); //array to store errors
 
-            function validateEmail($email, $errors)
-            {
+                // Get and sanitize all general attributes from POST request
+                $firstname = htmlspecialchars($_POST["fname"]);
+                $lastname = htmlspecialchars($_POST["lname"]);
+                $email = htmlspecialchars($_POST["email"]);
+                $gender = htmlspecialchars($_POST["gender"]);
+                $dateofbirth = htmlspecialchars($_POST["dob"]);
+                $password = htmlspecialchars($_POST["password"]);
+                $repeatpassword = htmlspecialchars($_POST["repassword"]);
+
+                // Validation of general attributes
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL))
                     array_push($errors, "Email is NOT valid!");
                 else {
                     // Check if email already exists
-                    global $pdo;
                     $sTestEmail = $pdo->prepare('SELECT * FROM user WHERE Email = "' . $email . '";');
-                    if ($sTestEmail->execute() == 0) {
-                        $sTestEmail->fetchAll();
-                        return true;
-                    } else
+                    if ($sTestEmail->execute() != 0)
                         array_push($errors, "Email already exists!");
+
+                    // Close the buffer so that I don't get an exception when executing other statements
+                    $sTestEmail->closeCursor();
                 }
 
-                return false;
-            }
-
-            function validatePassword($password, $repeatpassword, $errors)
-            {
                 // Equivalent one-line regex: /^(?=.*[A-Z])(?=.*\d).{5,}$/
                 if ($password !== $repeatpassword)
                     array_push($errors, "Passwords do NOT match!");
@@ -68,35 +57,14 @@
                     array_push($errors, "Password should contain at least 1 Uppercase!");
                 else if (!preg_match('/[0-9]/', $password))
                     array_push($errors, "Password should contain at least 1 Number!");
-                else
-                    return true;
-                return false;
-            }
-
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $usertype = sanitizeInput($_POST["user-type"]);
-                $errors = array(); //array to store errors
-
-                // Get and sanitize all general attributes from POST request
-                $firstname = sanitizeInput($_POST["fname"]);
-                $lastname = sanitizeInput($_POST["lname"]);
-                $email = sanitizeInput($_POST["email"]);
-                $gender = sanitizeInput($_POST["gender"]);
-                $dateofbirth = sanitizeInput($_POST["dob"]);
-                $password = sanitizeInput($_POST["password"]);
-                $repeatpassword = sanitizeInput($_POST["repassword"]);
-
-                // Validation of general attributes
-                validateEmail($email, $errors);
-                validatePassword($password, $repeatpassword, $errors);
                 $passwordhash = password_hash($password, PASSWORD_DEFAULT); // Hashing of password
 
                 // Get, sanitize & validate all specific attributes from POST request
                 switch ($usertype) {
                     case "Student":
-                        $classgroup = sanitizeInput(strtoupper($_POST["classGroup"]));
-                        $level = sanitizeInput($_POST["level"]);
-                        $subjects = explode(',', sanitizeInput($_POST["subjects"]));
+                        $classgroup = htmlspecialchars(strtoupper($_POST["classGroup"]));
+                        $level = htmlspecialchars($_POST["level"]);
+                        $subjects = explode(',', htmlspecialchars($_POST["subjects"]));
 
                         pushErrorIfEmpty($classgroup, $errors, "Class-group cannot be blank!");
                         pushErrorIfEmpty($level, $errors, "Level cannot be blank!");
@@ -106,14 +74,14 @@
                         if (count($subjects) < 5) array_push($errors, "Select 5 subjects!");
                         break;
                     case "Teacher":
-                        $subjecttaught = sanitizeInput($_POST["subjectTaught"]);
-                        $datejoinedteacher = sanitizeInput($_POST["teacherDateJoined"]);
+                        $subjecttaught = htmlspecialchars($_POST["subjectTaught"]);
+                        $datejoinedteacher = htmlspecialchars($_POST["teacherDateJoined"]);
 
                         pushErrorIfEmpty($subjecttaught, $errors, "Subject taught cannot be blank!");
                         pushErrorIfEmpty($datejoinedteacher, $errors, "Date Joined cannot be empty!");
                         break;
                     case "Admin":
-                        $datejoinedadmin = sanitizeInput($_POST["adminDateJoined"]);
+                        $datejoinedadmin = htmlspecialchars($_POST["adminDateJoined"]);
 
                         pushErrorIfEmpty($datejoinedadmin, $errors, "Date Joined cannot be blank!");
                         break;
