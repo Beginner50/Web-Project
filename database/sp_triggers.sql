@@ -1,4 +1,4 @@
--- Active: 1728142795858@@127.0.0.1@3306@web_project
+-- Active: 1728405159135@@127.0.0.1@3306@web_project
 DELIMITER $$
 
 -- Trigger to create all classes for a subject
@@ -116,6 +116,7 @@ CREATE PROCEDURE sp_addAdmin (
     datejoined DATE
 )
 BEGIN
+    DECLARE userID SMALLINT;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
@@ -125,7 +126,6 @@ BEGIN
     -- Insert Into User Table
     INSERT INTO user (DateOfBirth,FirstName,LastName,Email,Gender,Password)
     VALUES ( dateOfBirth, fname, lname, email, gender, password);
-    DECLARE userID SMALLINT;
     SET userID = LAST_INSERT_ID();
 
     -- Insert into admin table
