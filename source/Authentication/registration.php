@@ -14,7 +14,7 @@
 
         <div class="container">
             <?php
-            include '../connect.php';
+            require_once '../connect.php';
 
             function pushErrorIfEmpty($variable, $errorsArray, $errorMessage)
             {
