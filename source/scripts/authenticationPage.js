@@ -76,12 +76,12 @@ class AuthenticationController {
     // CSS applies only to elements before the DOM has been loaded.
     // Therefore, event listeners are required here
     subjectListEntryIcon.addEventListener("mouseenter", event => {
-      event.target.src = "icons/backspaceRed.svg";
+      event.target.src = "assets/backspaceRed.svg";
       event.target.parentElement.style.color = "red";
       event.target.parentElement.style.borderColor = "red";
     });
     subjectListEntryIcon.addEventListener("mouseleave", event => {
-      event.target.src = "icons/backspace.svg";
+      event.target.src = "assets/backspace.svg";
       event.target.parentElement.style.color = "var(--purpleVortex)";
       event.target.parentElement.style.borderColor = "var(--purpleVortex)";
     });
@@ -275,7 +275,7 @@ class AuthenticationView {
     const subjectListEntry = document.createElement("div");
     subjectListEntry.className = "subject";
     const subjectListEntryIcon = document.createElement("img");
-    subjectListEntryIcon.src = "icons/backspace.svg"
+    subjectListEntryIcon.src = "assets/backspace.svg"
     subjectListEntry.textContent = subjectCode;
     subjectListEntry.appendChild(subjectListEntryIcon);
 

@@ -85,8 +85,8 @@ function addTabButtonFunctionality($currentPage)
     <div id="left-section">
         <div id="logo-wrapper">
             <img src="<?php echo ($page != 'dashboardTab')
-                            ? 'icons/research-svgrepo-com.svg'
-                            : '../icons/research-svgrepo-com.svg'; ?>">
+                            ? 'assets/research-svgrepo-com.svg'
+                            : '../assets/research-svgrepo-com.svg'; ?>"> 
             <h1 id="logo-title">EduPortal</h1>
         </div>
         <?php generateTabButtons($page); ?>

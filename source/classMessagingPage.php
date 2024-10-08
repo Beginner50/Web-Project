@@ -48,7 +48,7 @@ require 'partials/navBar.php';
         <!-- Class Chat Header -->
         <div id="classChat-header" class="classChat" style="display: none;">
             <div id="left-section">
-                <img src="icons/schedule-svgrepo-com.svg">
+                <img src="assets/schedule-svgrepo-com.svg">
                 <div id="classChat-description"> Subject, Level, Group </div>
             </div>
             <button id="viewMembers-button" class="indigoTheme roundBorder shadow">
@@ -63,7 +63,7 @@ require 'partials/navBar.php';
             <form id="message-form" method="post" action="ClassMessaging/sendMessage.php">
                 <textarea name="message-input" id="message-input" placeholder="Input your message here"></textarea>
                 <button id="send-button" form="none">
-                    <img src="icons/send.svg"></img>
+                    <img src="assets/send.svg"></img>
                 </button>
             </form>
         </div>

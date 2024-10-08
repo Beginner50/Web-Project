@@ -14,6 +14,7 @@
 
         <div class="container">
             <?php
+            // Require once instead of require since pdo instantiated only once
             require_once '../connect.php';
 
             function pushErrorIfEmpty($variable, $errorsArray, $errorMessage)
@@ -23,17 +24,25 @@
             }
 
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $usertype = htmlspecialchars($_POST["user-type"]);
                 $errors = array(); //array to store errors
+                $usertype = htmlspecialchars($_POST["user-type"]);
+                pushErrorIfEmpty($usertype, $errors, "User Type is Empty!");
 
                 // Get and sanitize all general attributes from POST request
                 $firstname = htmlspecialchars($_POST["fname"]);
+                pushErrorIfEmpty($firstname, $errors,"First Name is Empty!");
                 $lastname = htmlspecialchars($_POST["lname"]);
+                pushErrorIfEmpty($lastname, $errors,"Last Name is Empty!");
                 $email = htmlspecialchars($_POST["email"]);
+                pushErrorIfEmpty($email, $errors,"Email is Empty!");
                 $gender = htmlspecialchars($_POST["gender"]);
+                pushErrorIfEmpty($gender, $errors," Gender is Empty!");
                 $dateofbirth = htmlspecialchars($_POST["dob"]);
+                pushErrorIfEmpty($dateofbirth, $errors,"Date of Birth is Empty!");
                 $password = htmlspecialchars($_POST["password"]);
+                pushErrorIfEmpty($password, $errors,"Password is Empty!");
                 $repeatpassword = htmlspecialchars($_POST["repassword"]);
+                pushErrorIfEmpty($repeatpassword, $errors,"Repeat Password is Empty!");
 
                 // Validation of general attributes
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL))

@@ -12,7 +12,7 @@ body #main-wrapper {
     position: relative;
     width: clamp(600px, 80%, 3000px);
     margin-top: 11.1vh;
-    background: url("../../icons/cool-background.png");
+    background: url("../../assets/cool-background.png");
     background-size: cover;
 }
 
