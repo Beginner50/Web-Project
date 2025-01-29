@@ -6,3 +6,6 @@
 <Files source>
 	Allow from all
 </Files>
+
+DirectoryIndex website/router.php
+FallbackResource website/router.php

@@ -80,13 +80,15 @@ function addTabButtonFunctionality($currentPage)
 ?>
 
 <!-- NAVBAR MARKUP -->
+<link rel="stylesheet" href="stylesheets/partials/navBar.css">
+
 <nav class="indigoTheme <?php if ($page == 'authenticationPage') echo ' relative';
                         else echo ' absolute'; ?>">
     <div id="left-section">
         <div id="logo-wrapper">
             <img src="<?php echo ($page != 'dashboardTab')
                             ? 'assets/research-svgrepo-com.svg'
-                            : '../assets/research-svgrepo-com.svg'; ?>"> 
+                            : 'assets/research-svgrepo-com.svg'; ?>">
             <h1 id="logo-title">EduPortal</h1>
         </div>
         <?php generateTabButtons($page); ?>

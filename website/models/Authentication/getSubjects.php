@@ -26,10 +26,4 @@ $stmt = $pdo->prepare('SELECT SubjectCode,SubjectName FROM subject;');
 $stmt->execute();
 
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-foreach ($rows as $row)
-    echo '<td>' .
-        '<button class="indigoTheme popUp" value="' .
-        $row['SubjectCode'] . '">' .
-        $row['SubjectName'] .
-        '</button>' .
-        '</td>';
+return $rows;

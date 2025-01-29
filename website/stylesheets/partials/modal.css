@@ -1,4 +1,4 @@
-#popUp-window {
+#modal-window {
     position: fixed;
     z-index: 1001;
     top: 0px;
@@ -11,11 +11,11 @@
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-#popUp-window #popUp-wrapper {
+#modal-window #modal-wrapper {
     margin: auto;
 }
 
-#popUp-wrapper #popUp-menu {
+#modal-wrapper #modal-menu {
     width: 300px;
     height: 400px;
     background-color: var(--paleSky);
@@ -30,22 +30,22 @@
     scrollbar-width: 0px;
 }
 
-#popUp-wrapper #popUp-menu::-webkit-scrollbar {
+#modal-wrapper #modal-menu::-webkit-scrollbar {
     display: none;
 }
 
-#popUp-menu .popUp {
+#modal-menu .modal {
     width: 100%;
     font-size: 1.1rem;
 }
 
-#popUp-menu button.popUp {
+#modal-menu button.modal {
     border-left: 0px;
     border-right: 0px;
     border-bottom: 0px;
 }
 
-#popUp-menu section.popUp {
+#modal-menu section.modal {
     width: 75%;
     display: flex;
     flex-direction: column;
@@ -59,7 +59,7 @@
 }
 
 
-#popUp-menu section.popUp>span:nth-child(2) {
+#modal-menu section.modal>span:nth-child(2) {
     font-size: 0.7rem;
     font-weight: bold;
 }
