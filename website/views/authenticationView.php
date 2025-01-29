@@ -1,13 +1,3 @@
-<!-- Variables for functions (Similar to react hooks) -->
-<script>
-    window.sharedState = {
-        onSubjectSelect: null, // Causes modal to react when subject is deselected from subjectList.
-        onSubjectDeselect: null, // Causes subjectList to react when subject is selected from modal.
-        selectedSubjects: 0
-    }
-</script>
-<!-- -------------------------------------------------------------------------------- -->
-
 <!-- AUTHENTICATION VIEW MARKUP -->
 <div id="main-wrapper" class="roundBorder-15">
     <!-- Call To Action Wrapper (Switches between Login & Registration)-->
