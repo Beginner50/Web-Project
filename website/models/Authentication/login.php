@@ -1,138 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+$errors = [];
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+$userType;
+$email = $_POST["email"];
+$password = $_POST["password"];
+$userID;
+$dateOfBirth;
+$firstName;
+$lastName;
+$gender;
 
-    <link rel="stylesheet" href="../stylesheets/common.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
+$level;
+$classGroup;
+$subjects;
 
-<body style="background-color: var(--duskSky);">
-    <div class="container">
-        <?php
-        // session_start();
-        // require_once '../connect.php';
+$subjectTaught;
+$dateJoined;
 
-        $email = $_POST["email"];
-        $password = $_POST["password"];
+function getUserRecordFromEmail($pdo, $email)
+{
+    /* 
+    Fetch the record of the user (if it exists) from the database
+    */
+    $stmt = $pdo->prepare('SELECT * FROM user WHERE Email=?;');
+    $stmt->bindParam(1, $email);
+    $stmt->execute();
 
-        // Authentication should be carried out before the rest of the code
-        // Get user data from email if user exists
-        $stmt = $pdo->prepare('SELECT * FROM user WHERE Email=?;');
-        $stmt->bindParam(1, $email);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-        // Seperate this part into a function that finds the type of user
-        //get usertype
-        $stmt = $pdo->prepare('SELECT * FROM student WHERE StudentID=?;');
-        $stmt->bindParam(1, $user['UserID']);
-        $stmt->execute();
+function getStudentRecordFromUserID($pdo, $userID)
+{
+    $stmt = $pdo->prepare('SELECT * FROM student WHERE StudentID=?;');
+    $stmt->bindParam(1, $userID);
+    $stmt->execute();
 
-        $student = $stmt->fetch(PDO::FETCH_ASSOC);
-        // Check if a row is returned
-        if ($student)
-            $_SESSION['UserType'] = 'Student';
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-        // Check if user is a teacher or admin only if the user is not a student
-        if ($_SESSION['UserType'] != 'Student') {
-            // Prepare the statement to check if the user is a teacher
-            $stmt = $pdo->prepare('SELECT * FROM teacher WHERE TeacherID = ?');
-            $stmt->bindParam(1, $user['UserID'], PDO::PARAM_INT); // Bind as an integer
-            $stmt->execute();
+function getTeacherRecordFromUserID($pdo, $userID)
+{
+    $stmt = $pdo->prepare('SELECT * FROM teacher WHERE TeacherID = ?');
+    $stmt->bindParam(1, $userID);
+    $stmt->execute();
 
-            // Use fetch() instead of rowCount() for reliability
-            $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-            if ($teacher)
-                // If a teacher record is found, set the user type to Teacher
-                $_SESSION['UserType'] = 'Teacher';
-            else
-                // Otherwise, assume the user is an Admin
-                $_SESSION['UserType'] = 'Admin';
-        }
+function getAdminRecordFromUserID($pdo, $userID)
+{
+    $stmt = $pdo->prepare("SELECT * FROM administrator WHERE AdminID=?;");
+    $stmt->bindParam(1, $userID);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-        if ($user) {
-            // Seperate this part into a function that 
-            if (password_verify($password, $user["Password"])) {
-                $_SESSION['Email'] = $user['Email'];
-                $_SESSION['Password'] = $user['Password'];
+// If email corresponds to an existing user, store the user data
+if (($userFetched = getUserRecordFromEmail($pdo, $email)) != null) {
+    // If the passwords match, get user data
+    if (password_verify($password, $userFetched["Password"])) {
+        $userID = $userFetched['UserID'];
+        $dateOfBirth = $userFetched['DateOfBirth'];
+        $firstName = $userFetched['FirstName'];
+        $lastName = $userFetched['LastName'];
+        $gender = $userFetched['Gender'];
 
-                $_SESSION['UserID'] = $user['UserID'];
-                $_SESSION['DateOfBirth'] = $user['DateOfBirth'];
-                $_SESSION['FirstName'] = $user['FirstName'];
-                $_SESSION['LastName'] = $user['LastName'];
-                $_SESSION['Gender'] = $user['Gender'];
+        // Get the userType specific data
+        if (($studentRecord = getStudentRecordFromUserID($pdo, $userID)) != null) {
+            $userType = 'Student';
+            $level = $studentRecord['Level'];
+            $classGroup = $studentRecord['ClassGroup'];
 
-                // If user is a student, query the student table using UserID to get additional data.
-                if ($_SESSION['UserType'] == 'Student') {
-                    $stmt = $pdo->prepare("SELECT Level, ClassGroup FROM student WHERE StudentID=?;");
-                    $stmt->bindParam(1, $user['UserID']);
-                    $stmt->execute();
-                    $student = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                    $_SESSION['Level'] = $student['Level'];
-                    $_SESSION['ClassGroup'] = $student['ClassGroup'];
-
-                    // Retrieve subjects taken by the student
-                    $stmt = $pdo->prepare("  SELECT s.Subjectname, s.SubjectCode FROM subject s 
+            // Retrieve subjects taken by the student
+            $stmt = $pdo->prepare("  SELECT s.Subjectname, s.SubjectCode FROM subject s 
                                             INNER JOIN class c ON s.SubjectCode = c.SubjectCode
                                             INNER JOIN class_student cs ON cs.ClassId = c.ClassID
                                             WHERE cs.StudentID= ?;");
-                    $stmt->bindParam(1, $user['UserID']);
-                    $stmt->execute();
-                    $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->bindParam(1, $userID);
+            $stmt->execute();
+            $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    if (!empty($subjects)) {
-                        $_SESSION['Subjects'] = $subjects;
-                    } else {
-                        echo "No subjects found for this student.";
-                    }
-                }
-                // Else if user is a teacher
-                else if ($_SESSION['UserType'] == 'Teacher') {
-                    $stmt = $pdo->prepare("SELECT SubjectTaught, DateJoined FROM teacher WHERE TeacherID=?;");
-                    $stmt->bindParam(1, $user['UserID']);
-                    $stmt->execute();
-                    $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                    if ($teacher) {
-                        $_SESSION['SubjectTaught'] = $teacher['SubjectTaught'];
-                        $_SESSION['DateJoined'] = $teacher['DateJoined'];
-                    }
-                }
-                // Else if user is an admin
-                else if ($_SESSION['UserType'] == 'Admin') {
-                    $stmt = $pdo->prepare("SELECT DateJoined FROM administrator WHERE AdminID=?;");
-                    $stmt->bindParam(1, $user['UserID']);
-                    $stmt->execute();
-                    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                    if ($admin) {
-                        $_SESSION['DateJoined'] = $admin['DateJoined'];
-                    }
-                    header("Location: ../AdminPage/adminPage.php");
-                    exit();
-                }
-
-                // Redirect to accountManagementPage
-                header("Location: ../accManagementPage.php");
-                exit();
-            } else {
-                echo "<h2 style='text-align: center; color: rgb(53, 12, 12);  '>Login Unsuccessfull </h2>";
-                echo "<div class='alert alert-danger'>Password does NOT match!</div>";
-                echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 4px; font-size:25px; padding:0px 15px;'> Back </button>";
+            if (empty($subjects)) {
+                array_push($errors, 'No subjects selected!');
+            } else if (count($subjects) < 5) {
+                array_push($errors, 'Less than 5 subjects selected!');
             }
-        } else {
-            echo "<h2 style='text-align: center; color: rgb(53, 12, 12);  '>Login Unsuccessfull </h2>";
-            echo "<div class='alert alert-danger'>Email does NOT exist!</div>";
-            echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 4px; font-size:25px; padding:0px 15px;'> Back </button>";
-        }
-        ?>
-    </div>
-</body>
+        } else if (($teacherRecord = getTeacherRecordFromUserID($pdo, $userID)) != null) {
+            $userType = 'Teacher';
+            $subjectTaught = $teacherRecord['SubjectTaught'];
+            $dateJoined = $teacherRecord['DateJoined'];
+        } else if (($adminRecord = getAdminRecordFromUserID($pdo, $userID)) != null) {
+            $userType = 'Admin';
+            $dateJoined = $adminRecord['DateJoined'];
+        } else
+            array_push($errors, 'User has no type!');
+    } else
+        array_push($errors, 'Passwords do not match!');
+} else
+    array_push($errors, 'Email does not correspond to any user!');
 
-</html>
+
+// Save session if all login information is valid
+if (count($errors) == 0) {
+    $_SESSION['UserType'] = $userType;
+    $_SESSION['UserID'] = $userID;
+    $_SESSION['DateOfBirth'] = $dateOfBirth;
+    $_SESSION['FirstName'] = $firstName;
+    $_SESSION['LastName'] = $lastName;
+    $_SESSION['Gender'] = $gender;
+    $_SESSION['Email'] = $email;
+    $_SESSION['Password'] = $password;
+
+    $_SESSION['Level'] = $level ?? null;
+    $_SESSION['ClassGroup'] = $classGroup ?? null;
+    $_SESSION['Subjects'] = $subjects ?? null;
+
+    $_SESSION['SubjectTaught'] = $subjectTaught ?? null;
+    $_SESSION['DateJoined'] = $dateJoined ?? null;
+}
+return $errors;

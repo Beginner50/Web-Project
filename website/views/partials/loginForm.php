@@ -1,4 +1,4 @@
-<form id="login-form" method="post" action="controllers/authenticationController.php">
+<form id="login-form" method="post" action="/login">
     <div class="input-group"> Email: <input class="input-box" type="email" name="email" required
             autocomplete="email">
     </div>
@@ -7,6 +7,4 @@
     <button id="loginSubmit-button" type="submit" class="indigoTheme roundBorder" form="login-form">
         Submit
     </button>
-
-    <input type="hidden" name="form_type" value="login">
 </form>
