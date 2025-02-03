@@ -1,42 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Authentication Page for the school website of ABC academy">
-    <base href="/website/">
-    <link rel="stylesheet" href="stylesheets/common.css">
-    <link rel="stylesheet" href="stylesheets/authenticationPage/main.css">
-    <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
-    <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormSpecific.css">
-    <title>School Website</title>
-</head>
+// Execute registration/login model logic on corresponding form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $formType = $_POST['form_type'];
 
-<body>
-    <!-- FOR SUBJECT LIST & MODAL ONLY -->
-    <!-- Placeholders for callbacks (Similar to react hooks) -->
-    <script>
-        window.sharedState = {
-            onSubjectSelect: null, // Callback for modal to react when subject is deselected from subjectList.
-            onSubjectDeselect: null, // Callback for subjectList to react when subject is selected from modal.
-            selectedSubjects: 0
-        }
-    </script>
-
-    <?php
+    if ($formType == "registration")
+        require 'models/Authentication/registration.php';
+    else if ($formType == "login")
+        require 'models/Authentication/login.php';
+}
+// Otherwise, display the authentication page
+else {
     $page = 'authenticationPage';
-    $subjects = include 'Authentication/getSubjects.php';
-
-    // Navigation Bar
-    require 'views/partials/navBar.php';
-
-    // Authentication View
+    $subjects = include 'models/Authentication/getSubjects.php';
     require 'views/authenticationView.php';
-
-    // Subject Modal (Default: Hidden)
-    require 'views/partials/modal.php';
-    ?>
-</body>
-
-</html>
+}

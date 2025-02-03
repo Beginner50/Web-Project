@@ -13,8 +13,8 @@
 <body style="background-color: var(--duskSky);">
     <div class="container">
         <?php
-        session_start();
-        require_once '../connect.php';
+        // session_start();
+        // require_once '../connect.php';
 
         $email = $_POST["email"];
         $password = $_POST["password"];

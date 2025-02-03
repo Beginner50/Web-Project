@@ -1,4 +1,4 @@
-<form id="registration-form" method="post" action="Authentication/registration.php"
+<form id="registration-form" method="post" action="controllers/authenticationController.php"
     style="display: none;">
     <!-- User Type Fieldset (Select between different users) -->
     <fieldset id="userType-fieldset">
@@ -108,6 +108,8 @@
 
     <!-- Hidden input to store selected subjects from modal -->
     <input type="hidden" id="selected-subjects" name="subjects" value="[]">
+
+    <input type="hidden" name="form_type" value="registration">
 </form>
 
 <!-- User Type Selection Logic -->
