@@ -139,7 +139,7 @@ if (count($errors) == 0) {
     // Get userID of user
     $sGetUserID = $pdo->prepare('SELECT UserID FROM user WHERE Email = ?;');
     $sGetUserID->execute([$email]);
-    $userID = $sGetUserID->fetchAll(PDO::FETCH_NUM)[0];
+    $userID = $sGetUserID->fetchAll(PDO::FETCH_NUM)[0][0];
 }
 // if (count($errors) == 0) {
 //     //displaying sucessful registraton status

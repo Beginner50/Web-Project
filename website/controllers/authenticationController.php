@@ -18,9 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // If there are any errors, display them accordingly
     // Otherwise, redirect to the normal/admin user dashboard controller
     if ($errors) {
-        require 'views/authenticationErrorView.php';
+        require 'views/partials/Authentication/authenticationErrorView.php';
     } else {
-        header('Location: /dashboard');
+        header('Location: /portal?page=account-management');
         exit;
     }
 }

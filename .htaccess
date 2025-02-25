@@ -1,11 +1,16 @@
-<Files source/AdminPage>
+<Files website/models/AdminDashboard>
 	Deny from all
 	Allow from 127.0.0.1
 </Files>
 
-<Files source>
+<Files website/views/AdminDashboard>
+	Deny from all
+	Allow from 127.0.0.1
+</Files>
+
+<Files website>
 	Allow from all
 </Files>
 
-DirectoryIndex website/router.php
-FallbackResource website/router.php
+DirectoryIndex /website/router.php
+FallbackResource /website/router.php

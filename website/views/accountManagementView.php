@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,6 +6,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Management</title>
 
+    <base href="/website/">
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -20,7 +18,6 @@ session_start();
     </script>
 </head>
 <?php
-$page = 'accountManagementTab';
 require 'partials/navBar.php';
 ?>
 
@@ -49,7 +46,7 @@ require 'partials/navBar.php';
             <div class="userID-content2 second-column">
                 <div class="information" style="width: 200px;">
                     <div class="sub-information">UserID</div>
-                    <div class="information-input"> <?php echo $_SESSION['UserID']; ?> </div>
+                    <div class="information-input"> <?php echo $_SESSION['UserID'] ?> </div>
                 </div>
 
             </div>
@@ -60,7 +57,7 @@ require 'partials/navBar.php';
                 <div class="information description">This is your private general information that is stored and will be used only for educative purposes.</div>
             </div>
             <div class="personalinfo-content2  second-column">
-                <form id="personalinfo-form" class="personalinfo-grid" method="post" action="AccountManagement/personalinfo.php">
+                <form id="personalinfo-form" class="personalinfo-grid" method="post" action="models/AccountManagement/personalinfo.php">
                     <div class="information">
                         <label class="sub-information">First Name: </label>
                         <input class="information-input" type="text" id="firstname" name="firstname" value="<?php echo $_SESSION['FirstName']; ?>">
@@ -212,8 +209,7 @@ require 'partials/navBar.php';
                 <div id="logout-content" class="information description">Worried that your account or password has been compromised? You can forcibly log out from all devices. </div>
             </div>
             <div class="logout-content2 second-column">
-
-                <form action="AccountManagement/logout.php">
+                <form action="models/AccountManagement/logout.php">
                     <button id="logout-button" type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
                 </form>
 
