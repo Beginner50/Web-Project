@@ -19,7 +19,7 @@
 
 <!-- Navigation Bar -->
 <?php $page = 'classTab';
-require 'partials/navBar.php';
+require 'partials/navBar.php?page=messaging';
 ?>
 
 <body>

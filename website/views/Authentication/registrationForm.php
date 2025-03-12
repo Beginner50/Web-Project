@@ -110,6 +110,7 @@
     <input type="hidden" id="selected-subjects" name="subjects" value="[]">
 </form>
 
+<!---------------------------------------------- Javascript --------------------------------------------->
 <!-- User Type Selection Logic -->
 <script>
     inTransit = false;

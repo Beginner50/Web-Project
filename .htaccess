@@ -13,4 +13,7 @@
 </Files>
 
 DirectoryIndex /website/router.php
-FallbackResource /website/router.php
+
+RewriteEngine On
+RewriteRule ^(authentication|account|dashboard|messaging|login|registration)$ /website/router.php?page=$1 [L,QSA]
+RewriteRule ^(authentication|account|dashboard|messaging|login|registration)/$ /website/router.php?page=$1 [L,QSA]

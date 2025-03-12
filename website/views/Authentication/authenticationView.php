@@ -31,7 +31,7 @@
     <div id="main-wrapper" class="roundBorder-15">
         <!-- Call To Action Wrapper (Switches between Login & Registration)-->
         <div id="callToAction-wrapper" class="registrationCTA">
-            <?php require 'views/partials/Authentication/callToAction.php' ?>
+            <?php require 'views/Authentication/callToAction.php' ?>
         </div>
 
         <!-- Form Wrapper -->
@@ -39,15 +39,15 @@
             <h1>Sign In</h1>
 
             <!-- Login Form (Default: Visible) -->
-            <?php require 'views/partials/Authentication/loginForm.php' ?>
+            <?php require 'views/Authentication/loginForm.php' ?>
 
             <!-- Registration Form (Default: Hidden)-->
-            <?php require 'views/partials/Authentication/registrationForm.php' ?>
+            <?php require 'views/Authentication/registrationForm.php' ?>
         </div>
     </div>
 
     <!-- Subject Modal (Default: Hidden) -->
-    <?php require 'views/partials/modal.php'; ?>
+    <?php require 'views/Authentication/subjectModal.php'; ?>
 </body>
 
 </html>

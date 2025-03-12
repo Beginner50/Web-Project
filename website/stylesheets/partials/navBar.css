@@ -65,9 +65,7 @@ nav.indigoTheme #left-section {
 #left-section #button-wrapper {
     display: flex;
     width: 100%;
-}
-
-#button-wrapper>form {
+    height: 80%;
     display: flex;
     margin-top: auto;
     margin-bottom: auto;
