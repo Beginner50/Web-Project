@@ -30,51 +30,6 @@
     padding-bottom: 3%;
 }
 
-#bottom-section #subjectList-header {
-    color: black;
-    margin-left: 4%;
-}
-
-#bottom-section #subjectList {
-    display: grid;
-    width: 100%;
-    grid-template-columns: repeat(auto-fill, max(68px, 28%));
-    gap: 7%;
-}
-
-#subjectList .subject {
-    width: 60px;
-    height: 19px;
-    margin-left: 2%;
-    margin-bottom: 2%;
-    font-size: 12px;
-    padding: 5px;
-    border: 1px var(--purpleVortex) solid;
-    color: var(--purpleVortex);
-    font-weight: 600;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-#subjectList .subject img {
-    position: absolute;
-    left: 70%;
-    cursor: pointer;
-    fill: var(--blueOcean);
-    width: 16px;
-    height: 16px;
-}
-
-#subjectList #addSubject-button {
-    margin-left: 10px;
-    width: 30px;
-    height: 30px;
-    border-radius: 5px;
-    grid-column: auto;
-    grid-row: auto;
-}
 
 #specificAttr-fieldset #specificAttr-fieldset-teacher {
     display: grid;
