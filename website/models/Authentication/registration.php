@@ -1,4 +1,6 @@
 <?php
+session_start();
+require_once '../../connect.php';
 $errors = [];
 
 $userType;
@@ -165,4 +167,10 @@ if (count($errors) == 0) {
     $_SESSION['SubjectTaught'] = $subjectTaught ?? null;
     $_SESSION['DateJoined'] = $dateJoined ?? null;
 }
-return $errors;
+
+if (empty($errors))
+    header("HTTP/1.1 200 Ok");
+else
+    header("HTTP/1.1 409 Conflict");
+header("Content-Type: application/json");
+echo json_encode($errors);

@@ -34,21 +34,4 @@ switch ($page = $_GET['page']) {
         if (isset($_SESSION['UserType']))
             require 'views/ClassMessaging/classMessagingView.php';
         break;
-        // To delete all section below and re-write form submission logic to use AJAX
-    case "registration":
-    case "login":
-        $errors = [];
-
-        // To convert into REST API, put all auth logic into a user handler and make it return a json
-        if ($page == "registration")
-            $errors = require 'models/Authentication/registration.php';
-        else if ($page == "login")
-            $errors = require 'models/Authentication/login.php';
-
-        // Display errors (if any), or redirect to account page
-        if ($errors)
-            require 'views/Authentication/authenticationErrorView.php';
-        else
-            header('Location: /account');
-        break;
 };

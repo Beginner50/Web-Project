@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="stylesheets/authenticationPage/main.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormGeneral.css">
     <link rel="stylesheet" href="stylesheets/authenticationPage/registrationFormSpecific.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <title>School Website</title>
 </head>
 
@@ -29,7 +30,7 @@
 
     <!-- Main Wrapper -->
     <div id="main-wrapper" class="roundBorder-15">
-        <!-- Call To Action Wrapper (Switches between Login & Registration)-->
+        <!-- Call To Action Wrapper (Switches between Login & Registration Forms)-->
         <div id="callToAction-wrapper" class="registrationCTA">
             <?php require 'views/Authentication/callToAction.php' ?>
         </div>

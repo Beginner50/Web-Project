@@ -1,4 +1,4 @@
-<form id="registration-form" method="post" action="/registration"
+<form id="registration-form"
     style="display: none;">
     <!-- User Type Fieldset (Select between different users) -->
     <fieldset id="userType-fieldset">
@@ -110,6 +110,7 @@
     <input type="hidden" id="selected-subjects" name="subjects" value="[]">
 </form>
 
+<!-- Use dialog to replace modal -->
 <!---------------------------------------------- Javascript --------------------------------------------->
 <!-- User Type Selection Logic -->
 <script>
@@ -163,7 +164,28 @@
                 updateUserTab(currentTab);
                 updateUserTypeInput(button.value);
             });
-        })
+        });
+
+        $("#registration-form").on("submit", function(event) {
+            event.preventDefault();
+
+            const formData = $(this).serialize();
+
+            $.ajax({
+                url: "/registration",
+                type: "POST",
+                data: formData,
+                success: function(response) {
+                    window.location.href = "/account";
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status == 409)
+                        alert(JSON.parse(xhr.responseText)[0]);
+                    else
+                        alert("An error occurred while submitting the form.");
+                }
+            });
+        });
     });
 </script>
 

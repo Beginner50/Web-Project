@@ -18,7 +18,7 @@
     </script>
 </head>
 <?php
-require 'partials/navBar.php';
+require 'views/partials/navBar.php';
 ?>
 
 <body>

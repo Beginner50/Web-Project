@@ -15,5 +15,9 @@
 DirectoryIndex /website/router.php
 
 RewriteEngine On
-RewriteRule ^(authentication|account|dashboard|messaging|login|registration)$ /website/router.php?page=$1 [L,QSA]
-RewriteRule ^(authentication|account|dashboard|messaging|login|registration)/$ /website/router.php?page=$1 [L,QSA]
+RewriteRule ^(authentication|account|dashboard|messaging)$ /website/router.php?page=$1 [L,QSA]
+RewriteRule ^(authentication|account|dashboard|messaging)/$ /website/router.php?page=$1 [L,QSA]
+RewriteRule ^login$ /website/models/Authentication/login.php [L,QSA]
+RewriteRule ^login/$ /website/models/Authentication/login.php [L,QSA]
+RewriteRule ^registration$ /website/models/Authentication/registration.php [L,QSA]
+RewriteRule ^registration/$ /website/models/Authentication/registration.php [L,QSA]

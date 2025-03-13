@@ -1,4 +1,4 @@
-<form id="login-form" method="post" action="/login">
+<form id="login-form">
     <div class="input-group"> Email: <input class="input-box" type="email" name="email" required
             autocomplete="email">
     </div>
@@ -9,21 +9,27 @@
     </button>
 </form>
 
+<script>
+    $(document).ready(function() {
+        $("#login-form").on("submit", function(event) {
+            event.preventDefault();
 
-<!-- Tasks -->
-<!-- Re-write submission logic and instead use AJAX -->
-<!-- Make display error page into its own url -->
+            const formData = $(this).serialize();
 
-<!-- $errors = [];
-
-if ($page == "registration")
-$errors = require 'models/Authentication/registration.php';
-else if ($page == "login")
-$errors = require 'models/Authentication/login.php';
-
-// Display errors (if any), or redirect to account page
-if ($errors)
-require 'views/Authentication/authenticationErrorView.php';
-else
-header('Location: /account');
-break; -->
+            $.ajax({
+                url: "/login",
+                type: "POST",
+                data: formData,
+                success: function(response) {
+                    window.location.href = "/account";
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status == 409)
+                        alert(JSON.parse(xhr.responseText)[0]);
+                    else
+                        alert("An error occurred while submitting the form.");
+                }
+            });
+        });
+    });
+</script>
