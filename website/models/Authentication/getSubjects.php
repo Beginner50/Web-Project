@@ -9,7 +9,11 @@
    only once, meaning bigger performance gain.
 
 */
-require_once 'connect.php';
+ini_set('display_startup_errors', 1);
+ini_set('display_errors', 1);
+error_reporting(-1);
+session_start();
+require_once '../../connect.php';
 
 /*
     Preparing $stmt allows the web server to cache the compiled version, while
@@ -26,4 +30,6 @@ $stmt = $pdo->prepare('SELECT SubjectCode,SubjectName FROM subject;');
 $stmt->execute();
 
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-return $rows;
+
+header("HTTP/1.1 200 OK");
+echo json_encode($rows);

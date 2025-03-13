@@ -1,0 +1,137 @@
+#addSubject-button {
+    display: block;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+#subjectDialog {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 90%;
+    width: 400px;
+    padding: 20px;
+    background-color: white;
+    position: fixed;
+    top: 40%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    max-height: 80vh;
+    overflow-y: auto;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#subjectDialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+h4 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#courseList {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding: 0;
+    list-style: none;
+}
+
+#courseList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    background: #f8f9fa;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+}
+
+#courseList li:hover {
+    background: #e9ecef;
+}
+
+#courseList button {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#courseList button:hover {
+    background-color: gray;
+}
+
+#closeDialogButton {
+    display: block;
+    width: auto;
+    margin: 10px auto 0;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+#closeDialogButton:hover {
+    background-color: var(--purpleVortex);
+    color: white;
+    cursor: pointer;
+}
+
+#bottom-section #subjectList-header {
+    color: black;
+    margin-left: 4%;
+}
+
+
+/* #bottom-section #subjectList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, max(68px, 28%));
+} */
+
+#subjectList {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 7%;
+    text-align: center;
+}
+
+#subjectList .subject {
+    width: 60px;
+    height: 19px;
+    margin-left: 2%;
+    margin-bottom: 2%;
+    font-size: 12px;
+    padding: 5px;
+    border: 1px var(--purpleVortex) solid;
+    color: var(--purpleVortex);
+    font-weight: 600;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+#subjectList .subject img {
+    position: absolute;
+    left: 70%;
+    cursor: pointer;
+    fill: var(--blueOcean);
+    width: 16px;
+    height: 16px;
+}
+
+#subjectList #addSubject-button {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    grid-column: auto;
+    grid-row: auto;
+}

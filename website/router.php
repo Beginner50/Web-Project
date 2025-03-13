@@ -19,7 +19,6 @@ if (!isset($_GET['page'])) {
 // Routing Logic
 switch ($page = $_GET['page']) {
     case "authentication":
-        $subjects = include 'models/Authentication/getSubjects.php';
         require 'views/Authentication/authenticationView.php';
         break;
     case "dashboard":

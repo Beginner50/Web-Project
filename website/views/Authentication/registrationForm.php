@@ -7,6 +7,7 @@
         <input id="teacher-button" class="indigoTheme noGap" type="button" form="none" value="Teacher">
         <input id="admin-button" class="indigoTheme noGap" type="button" form="none" value="Admin">
     </fieldset>
+
     <!-- Hidden input to store the user type (Triggered by above inputs) -->
     <input type="hidden" id="user-type" name="user-type" name="role" value="Student">
 
@@ -76,12 +77,7 @@
                     </select>
                 </div>
             </div>
-            <div id="bottom-section">
-                <h5 id="subjectList-header"> Subjects: </h5>
-                <div id="subjectList">
-                    <button id="addSubject-button" class="indigoTheme " form="none">+</button>
-                </div>
-            </div>
+            <?php require 'subjectList.php'; ?>
         </fieldset>
         <!-- Teacher specific attributes -->
         <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;" disabled>
@@ -110,8 +106,33 @@
     <input type="hidden" id="selected-subjects" name="subjects" value="[]">
 </form>
 
-<!-- Use dialog to replace modal -->
 <!---------------------------------------------- Javascript --------------------------------------------->
+<!-- Registration Form Submission Logic -->
+<script>
+    $(document).ready(function(event) {
+        $("#registration-form").on("submit", function(event) {
+            event.preventDefault();
+
+            const formData = $(this).serialize();
+
+            $.ajax({
+                url: "/registration",
+                type: "POST",
+                data: formData,
+                success: function(response) {
+                    window.location.href = "/account";
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status == 409)
+                        alert(JSON.parse(xhr.responseText)[0]);
+                    else
+                        alert("An error occurred while submitting the form.");
+                }
+            });
+        });
+    });
+</script>
+
 <!-- User Type Selection Logic -->
 <script>
     inTransit = false;
@@ -151,7 +172,7 @@
         document.getElementById("user-type").value = userType;
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    $(document).ready(() => {
         /*
           When user clicks on a userType button, get the index of the button clicked and update
           the user specific fieldset of the registration form accordingly.
@@ -166,97 +187,6 @@
             });
         });
 
-        $("#registration-form").on("submit", function(event) {
-            event.preventDefault();
 
-            const formData = $(this).serialize();
-
-            $.ajax({
-                url: "/registration",
-                type: "POST",
-                data: formData,
-                success: function(response) {
-                    window.location.href = "/account";
-                },
-                error: function(xhr, status, error) {
-                    if (xhr.status == 409)
-                        alert(JSON.parse(xhr.responseText)[0]);
-                    else
-                        alert("An error occurred while submitting the form.");
-                }
-            });
-        });
     });
-</script>
-
-<!-- Subject List Logic -->
-<script>
-    let addSubjectButton = document.getElementById('addSubject-button');
-    const selectedSubjectsInput = document.getElementById("selected-subjects");
-    const subjectList = document.getElementById("subjectList");
-
-    function createSubjectListEntry(subjectCode) {
-        const subjectListEntry = document.createElement("div");
-        subjectListEntry.className = "subject";
-        const subjectListEntryIcon = document.createElement("img");
-        subjectListEntryIcon.src = "assets/backspace.svg"
-        subjectListEntry.textContent = subjectCode;
-        subjectListEntry.appendChild(subjectListEntryIcon);
-
-        return subjectListEntry;
-    }
-
-    function deleteSubjectListEntry(subjectListEntry) {
-        subjectListEntry.remove();
-    }
-
-    sharedState.onSubjectSelect = function addSubjectListEntry(subjectCode) {
-        // Creates a subject list entry & adds deselect functionality to it
-        let subjectListEntry = createSubjectListEntry(subjectCode);
-        deselectSubjectEntryListFunctionality(subjectListEntry);
-
-        // Places addSubject button ahead of last subject list entry
-        addSubjectButton = subjectList.removeChild(subjectList.querySelector("button"));
-        subjectList.appendChild(subjectListEntry);
-        subjectList.appendChild(addSubjectButton);
-
-        // Increment the selected subjects count
-        sharedState.selectedSubjects++;
-    }
-
-    function removeSubjectListEntry(subjectListEntry) {
-        // Delete the subject list entry from the subjectList
-        deleteSubjectListEntry(subjectListEntry);
-
-        // Decrement the selected subjects count
-        --sharedState.selectedSubjects;
-
-        // Call the modal to show the corresponding subject entry
-        sharedState.onSubjectDeselect(subjectListEntry.textContent);
-    }
-
-    function deselectSubjectEntryListFunctionality(subjectListEntry) {
-        let subjectListEntryIcon = subjectListEntry.querySelector("img");
-
-        // CSS applies only to elements before the DOM has been loaded.
-        // Therefore, event listeners are required here
-        subjectListEntryIcon.addEventListener("mouseenter", event => {
-            event.target.src = "assets/backspaceRed.svg";
-            event.target.parentElement.style.color = "red";
-            event.target.parentElement.style.borderColor = "red";
-        });
-        subjectListEntryIcon.addEventListener("mouseleave", event => {
-            event.target.src = "assets/backspace.svg";
-            event.target.parentElement.style.color = "var(--purpleVortex)";
-            event.target.parentElement.style.borderColor = "var(--purpleVortex)";
-        });
-
-        /*
-          If user clicks on icon, delete the corresponding subject entry
-          from the subject list
-        */
-        subjectListEntryIcon.addEventListener("mousedown", event => {
-            removeSubjectListEntry(subjectListEntryIcon.parentElement);
-        });
-    }
 </script>

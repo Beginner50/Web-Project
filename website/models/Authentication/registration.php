@@ -143,11 +143,6 @@ if (count($errors) == 0) {
     $sGetUserID->execute([$email]);
     $userID = $sGetUserID->fetchAll(PDO::FETCH_NUM)[0][0];
 }
-// if (count($errors) == 0) {
-//     //displaying sucessful registraton status
-//     echo "<h2 style='text-align: center; color: rgb(11, 91, 32); ;  '>Successfully registered!</h2>";
-//     echo "<a href='javascript:self.history.back()'><button class='indigoTheme roundBorder' style=' margin-top: 15px; border-width: 2px; font-size:25px;'> Click to here Sign in! </button>";
-// }
 
 // Save session if all login information is valid
 if (count($errors) == 0) {

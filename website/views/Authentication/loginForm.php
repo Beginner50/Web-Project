@@ -9,6 +9,8 @@
     </button>
 </form>
 
+<!---------------------------------------------- Javascript --------------------------------------------->
+<!-- Login Form Submission Logic -->
 <script>
     $(document).ready(function() {
         $("#login-form").on("submit", function(event) {
