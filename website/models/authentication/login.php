@@ -28,7 +28,9 @@ function getUserRecordFromEmail($pdo, $email)
     $stmt->bindParam(1, $email);
     $stmt->execute();
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    if (($userRecords =  $stmt->fetchAll(PDO::FETCH_ASSOC)) != null)
+        return $userRecords[0];
+    return null;
 }
 
 function getStudentRecordFromUserID($pdo, $userID)
@@ -37,7 +39,9 @@ function getStudentRecordFromUserID($pdo, $userID)
     $stmt->bindParam(1, $userID);
     $stmt->execute();
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($studentRecords =  $stmt->fetchAll(PDO::FETCH_ASSOC))
+        return $studentRecords[0];
+    return null;
 }
 
 function getTeacherRecordFromUserID($pdo, $userID)
@@ -46,7 +50,9 @@ function getTeacherRecordFromUserID($pdo, $userID)
     $stmt->bindParam(1, $userID);
     $stmt->execute();
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($teacherRecords =  $stmt->fetchAll(PDO::FETCH_ASSOC))
+        return $teacherRecords[0];
+    return null;
 }
 
 function getAdminRecordFromUserID($pdo, $userID)
@@ -54,7 +60,9 @@ function getAdminRecordFromUserID($pdo, $userID)
     $stmt = $pdo->prepare("SELECT * FROM administrator WHERE AdminID=?;");
     $stmt->bindParam(1, $userID);
     $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    if (($adminRecords = $stmt->fetchAll(PDO::FETCH_ASSOC)) != null)
+        return $adminRecords[0];
+    return null;
 }
 
 // If email corresponds to an existing user, store the user data

@@ -1,9 +1,9 @@
-<Files website/models/AdminDashboard>
+<Files website/models/adminDashboard>
 	Deny from all
 	Allow from 127.0.0.1
 </Files>
 
-<Files website/views/AdminDashboard>
+<Files website/views/adminDashboard>
 	Deny from all
 	Allow from 127.0.0.1
 </Files>
@@ -17,9 +17,9 @@ DirectoryIndex /website/router.php
 RewriteEngine On
 RewriteRule ^(authentication|account|dashboard|messaging)$ /website/router.php?page=$1 [L,QSA]
 RewriteRule ^(authentication|account|dashboard|messaging)/$ /website/router.php?page=$1 [L,QSA]
-RewriteRule ^login$ /website/models/Authentication/login.php [L,QSA]
-RewriteRule ^login/$ /website/models/Authentication/login.php [L,QSA]
-RewriteRule ^registration$ /website/models/Authentication/registration.php [L,QSA]
-RewriteRule ^registration/$ /website/models/Authentication/registration.php [L,QSA]
-RewriteRule ^get-subjects$ /website/models/Authentication/getSubjects.php [L,QSA]
-RewriteRule ^get-subjects/$ /website/models/Authentication/getSubjects.php [L,QSA]
+RewriteRule ^login$ /website/models/authentication/login.php [L,QSA]
+RewriteRule ^login/$ /website/models/authentication/login.php [L,QSA]
+RewriteRule ^registration$ /website/models/authentication/registration.php [L,QSA]
+RewriteRule ^registration/$ /website/models/authentication/registration.php [L,QSA]
+RewriteRule ^get-subjects$ /website/models/authentication/getSubjects.php [L,QSA]
+RewriteRule ^get-subjects/$ /website/models/authentication/getSubjects.php [L,QSA]

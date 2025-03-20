@@ -8,11 +8,11 @@
 
     <base href="/website/">
     <link rel="stylesheet" href="stylesheets/common.css">
-    <link rel="stylesheet" href="stylesheets/authenticationPage/main.css">
+    <link rel="stylesheet" href="stylesheets/authentication/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="stylesheets/partials/navBar.css">
     <link rel="stylesheet" href="stylesheets/partials/sidebar.css">
-    <link rel="stylesheet" href="stylesheets/accountManagementPage/Acc_management.css">
+    <link rel="stylesheet" href="stylesheets/accountManagement/Acc_management.css">
     <script>
         0
     </script>
@@ -209,7 +209,7 @@ require 'views/partials/navBar.php';
                 <div id="logout-content" class="information description">Worried that your account or password has been compromised? You can forcibly log out from all devices. </div>
             </div>
             <div class="logout-content2 second-column">
-                <form action="models/AccountManagement/logout.php">
+                <form action="models/accountManagement/logout.php">
                     <button id="logout-button" type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
                 </form>
 

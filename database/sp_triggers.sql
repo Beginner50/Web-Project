@@ -1,4 +1,4 @@
--- Active: 1728405159135@@127.0.0.1@3306@web_project
+-- Active: 1742379510396@@127.0.0.1@3306
 DELIMITER $$
 
 -- Trigger to create all classes for a subject

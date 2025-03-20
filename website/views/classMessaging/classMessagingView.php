@@ -7,9 +7,11 @@
     <meta http-equiv="expires" content="0">
     <meta http-equiv="Cache-Control" content="no-cache">
     <title>Education Portal Class Tab</title>
+
+    <base href="/website">
     <link rel="stylesheet" href="stylesheets/partials/sidebar.css">
     <link rel="stylesheet" href="stylesheets/common.css">
-    <link rel="stylesheet" href="stylesheets/classMessagingPage/main.css">
+    <link rel="stylesheet" href="stylesheets/classMessaging/main.css">
     <link rel="stylesheet" href="stylesheets/partials/popUp.css">
     <link rel="stylesheet" href="stylesheets/partials/navBar.css">
     <script>

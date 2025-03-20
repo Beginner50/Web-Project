@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="stylesheets/authenticationPage/subjectList.css">
+<link rel="stylesheet" href="stylesheets/authentication/subjectList.css">
 
 <div id="bottom-section">
     <dialog id="subjectDialog">

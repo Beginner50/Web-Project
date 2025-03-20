@@ -6,6 +6,7 @@ error_reporting(-1);
 session_start();
 require_once 'connect.php';
 
+
 // Note: Cookies need to be read instead of session data for this
 // If user enters the website after a fresh session, redirect to authentication, otherwise redirect to account-management
 if (!isset($_GET['page'])) {
@@ -19,18 +20,20 @@ if (!isset($_GET['page'])) {
 // Routing Logic
 switch ($page = $_GET['page']) {
     case "authentication":
-        require 'views/Authentication/authenticationView.php';
+        require 'views/authentication/authenticationView.php';
         break;
     case "dashboard":
-        if (isset($_SESSION['UserType']) && $_SESSION['UserType'] == 'Admin')
-            require 'views/AdminDashboard/adminDashboardView.php';
+        if (isset($_SESSION['UserType']) && $_SESSION['UserType'] == 'Admin') {
+            require 'models/adminDashboard/getListUsers.php';
+            require 'views/adminDashboard/adminDashboardView.php';
+        }
         break;
     case "account":
         if (isset($_SESSION['UserType']))
-            require 'views/AccountManagement/accountManagementView.php';
+            require 'views/accountManagement/accountManagementView.php';
         break;
     case "messaging":
         if (isset($_SESSION['UserType']))
-            require 'views/ClassMessaging/classMessagingView.php';
+            require 'views/classMessaging/classMessagingView.php';
         break;
 };

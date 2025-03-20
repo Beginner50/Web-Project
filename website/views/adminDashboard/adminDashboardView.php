@@ -9,15 +9,14 @@
 
   <base href="/website/">
   <link rel="stylesheet" href="stylesheets/common.css">
-  <link rel="stylesheet" href="stylesheets/adminPage/adminPage.css">
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"> -->
-  <link rel="stylesheet" href="stylesheets/accountManagementPage/Acc_management.css">
+  <link rel="stylesheet" href="stylesheets/adminDashboard/adminPage.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link rel="stylesheet" href="stylesheets/accountManagement/Acc_management.css">
   <link rel="stylesheet" href="stylesheets/partials/navBar.css">
   <title>Admin Page</title>
 </head>
 
 <?php
-$page = "dashboardTab";
 include 'views/partials/navBar.php';
 ?>
 
@@ -92,7 +91,7 @@ include 'views/partials/navBar.php';
             <th>Authorisation</th>
           </tr>
           <?php
-          require 'getListUsers.php';
+          // require '../../models/adminDashboard/getListUsers.php';
           foreach ($users as $user) {
             echo '<tr>' .
               '<td>' . $user['UserID'] . '</td>' .
