@@ -1,4 +1,4 @@
-<Files website/models/adminDashboard>
+<Files website/webservices/adminDashboard>
 	Deny from all
 	Allow from 127.0.0.1
 </Files>
@@ -12,14 +12,48 @@
 	Allow from all
 </Files>
 
-DirectoryIndex /website/router.php
+DirectoryIndex /website/viewController.php
 
 RewriteEngine On
-RewriteRule ^(authentication|account|dashboard|messaging)$ /website/router.php?page=$1 [L,QSA]
-RewriteRule ^(authentication|account|dashboard|messaging)/$ /website/router.php?page=$1 [L,QSA]
-RewriteRule ^login$ /website/models/authentication/login.php [L,QSA]
-RewriteRule ^login/$ /website/models/authentication/login.php [L,QSA]
-RewriteRule ^registration$ /website/models/authentication/registration.php [L,QSA]
-RewriteRule ^registration/$ /website/models/authentication/registration.php [L,QSA]
-RewriteRule ^get-subjects$ /website/models/authentication/getSubjects.php [L,QSA]
-RewriteRule ^get-subjects/$ /website/models/authentication/getSubjects.php [L,QSA]
+RewriteRule ^(authentication|account|dashboard|messaging)$ /website/viewController.php?page=$1 [L,QSA]
+RewriteRule ^(authentication|account|dashboard|messaging)/$ /website/viewController.php?page=$1 [L,QSA]
+
+# Authenticates the user and returns their user data
+# Ex:
+# 		localhost/login		
+RewriteRule ^login$ /website/restController.php?resource=user&action=authentication [L,QSA]
+RewriteRule ^login/$ /website/restController.php?resource=user&action=authentication [L,QSA]
+
+#  List users WITHOUT their type-specific information
+#  Ex: 
+# 		localhost/users 	- Lists all users 
+# 		localhost/users/1 	- Lists user by userID 1 (Shows password for single user)
+RewriteRule ^users$ /website/restController.php?resource=user&action=list [L,QSA]
+RewriteRule ^users/$ /website/restController.php?resource=user&action=list [L,QSA]
+RewriteRule ^users/([0-9]+)$ /website/restController.php?resource=user&action=list&userID=$1 [L,QSA]
+
+#  List users WITH their type-specific information
+#  Ex: 
+# 		localhost/users/student 	- Lists all students 
+# 		localhost/users/student/1	- Lists student by userID 1 (Shows password for single user)
+RewriteRule ^users/(student|teacher|admin)$ /website/restController.php?resource=user&action=list&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher|admin)/$ /website/restController.php?resource=user&action=list&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher|admin)/([0-9]+)$ /website/restController.php?resource=user&action=list&user-type=$1&userID=$2 [L,QSA]
+
+#  List classes enrolled/classes taught by students/teachers
+#  Ex: 
+# 		localhost/users/student/classes 			- Lists classes enrolled by all students, by their UserIDs
+# 		localhost/users/student/1/classes			- Lists classes enrolled by student with userID 1 
+# 
+# 		localhost/users/teacher/classes				- Lists classes taught by all teachers, by their UsersIDs
+# 		localhost/users/teacher/1/classes			- Lists classes taught by teacher with userID 1 
+RewriteRule ^users/(student|teacher)/classes$ /website/restController.php?resource=classes&action=list&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher)/classes/$ /website/restController.php?resource=classes&action=list&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher)/([0-9]+)/classes$ /website/restController.php?resource=classes&action=list&user-type=$1&userID=$2 [L,QSA]
+RewriteRule ^users/(student|teacher)/([0-9]+)/classes/$ /website/restController.php?resource=classes&action=list&user-type=$1&userID=$2 [L,QSA]
+
+# Lists subjects
+# Ex:
+# 		localhost/subjects
+RewriteRule ^subjects$ /website/restController.php?resource=subject&action=list [L,QSA]
+RewriteRule ^subjects/$ /website/restController.php?resource=subject&action=list [L,QSA]

@@ -20,6 +20,8 @@ if (!isset($_GET['page'])) {
 // Routing Logic
 switch ($page = $_GET['page']) {
     case "authentication":
+        // Add page_action for login & register
+        // Re-write login & registration logic in terms of webservices
         require 'views/authentication/authenticationView.php';
         break;
     case "dashboard":
