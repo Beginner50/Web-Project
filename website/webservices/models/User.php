@@ -14,13 +14,13 @@ class User
         // Base query parts
         $queries = [
             'student' => "
-                SELECT 'Student' AS UserType, user.UserID, DateOfBirth, FirstName, LastName, Email, Gender, " . ($userID != 0 ? "Password," : "")  . "1 AS Authorisation 
+                SELECT 'Student' AS UserType, user.UserID, DateOfBirth, FirstName, LastName, Email, Gender, " . ($userID != 0 ? "Password," : "")  . "1 AS IsApproved
                 FROM user 
                 INNER JOIN student ON user.UserID = student.StudentID "
                 . ($userID != 0 ? "WHERE user.UserID = " . $userID : "") .
                 " LIMIT ? OFFSET ?;",
             'teacher' => "
-                SELECT 'Teacher' AS UserType, user.UserID, DateOfBirth, FirstName, LastName, Email, Gender, " . ($userID != 0 ? "Password," : "") . "approval.IsApproved AS Authorisation 
+                SELECT 'Teacher' AS UserType, user.UserID, DateOfBirth, FirstName, LastName, Email, Gender, " . ($userID != 0 ? "Password," : "") . "approval.IsApproved 
                 FROM user 
                 INNER JOIN teacher ON user.UserID = teacher.TeacherID
                 LEFT JOIN approval ON user.UserID = approval.UserID "
@@ -28,7 +28,7 @@ class User
                 " LIMIT ? OFFSET ?;
             ",
             'admin' => "
-                SELECT 'Admin' AS UserType, user.UserID, DateOfBirth, FirstName, LastName, Email, Gender, " . ($userID != 0 ? "Password," : "") . "approval.IsApproved AS Authorisation 
+                SELECT 'Admin' AS UserType, user.UserID, DateOfBirth, FirstName, LastName, Email, Gender, " . ($userID != 0 ? "Password," : "") . "approval.IsApproved 
                 FROM user 
                 INNER JOIN administrator ON user.UserID = administrator.AdminID
                 LEFT JOIN approval ON user.UserID = approval.UserID "

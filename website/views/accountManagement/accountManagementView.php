@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="stylesheets/partials/navBar.css">
     <link rel="stylesheet" href="stylesheets/partials/sidebar.css">
     <link rel="stylesheet" href="stylesheets/accountManagement/Acc_management.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script>
         0
     </script>
@@ -38,7 +39,7 @@ require 'views/partials/navBar.php';
         <div id="main-content" class="main-content">
 
             <!--USERID information  -->
-            <span id="hidden-navigation" style="grid-column: 1/3;"></span>
+            <div id="hidden-navigation" style="grid-column: 1/3; padding-top: 80px; margin-top: -80px;"></div>
             <div class="userID-content first-column">
                 <h3>UserID:</h3>
                 <div id="userID-content" class="information description">Your UserID is used to uniquely identify yourself within the database. </div>
@@ -46,7 +47,7 @@ require 'views/partials/navBar.php';
             <div class="userID-content2 second-column">
                 <div class="information" style="width: 200px;">
                     <div class="sub-information">UserID</div>
-                    <div class="information-input"> <?php echo $_SESSION['UserID'] ?> </div>
+                    <div class="information-input"> <?php echo $userData['UserID'] ?> </div>
                 </div>
 
             </div>
@@ -60,58 +61,34 @@ require 'views/partials/navBar.php';
                 <form id="personalinfo-form" class="personalinfo-grid" method="post" action="models/AccountManagement/personalinfo.php">
                     <div class="information">
                         <label class="sub-information">First Name: </label>
-                        <input class="information-input" type="text" id="firstname" name="firstname" value="<?php echo $_SESSION['FirstName']; ?>">
+                        <input class="information-input" type="text" id="firstname" name="firstname" value="<?php echo $userData['FirstName']; ?>">
                     </div>
                     <div class="information">
                         <label class="sub-information" for="lastname">Last Name: </label>
-                        <input class="information-input" type="text" id="lastname" name="lastname" value="<?php echo $_SESSION['LastName']; ?>">
+                        <input class="information-input" type="text" id="lastname" name="lastname" value="<?php echo $userData['LastName']; ?>">
                     </div>
-                    <!--  -->
 
                     <div class="information">
                         <label class="sub-information" for="gender">Gender: </label>
-                        <input class="information-input" type="text" id="gender" name="gender" value="<?php echo $_SESSION['Gender']; ?>"> <!-- must do a dropdown menu like in register -->
+                        <input class="information-input" type="text" id="gender" name="gender" value="<?php echo $userData['Gender']; ?>"> <!-- must do a dropdown menu like in register -->
 
                     </div>
                     <div class="information">
                         <label class="sub-information" for="dateofbirth">Date Of Birth: </label>
-                        <input class="information-input" type="date" id="dateofbirth" name="dateofbirth" value="<?php echo date('Y-m-d', strtotime($_SESSION['DateOfBirth'])); ?>"> <!-- Formats date in proper format -->
+                        <input class="information-input" type="date" id="dateofbirth" name="dateofbirth" value="<?php echo date("Y-m-d", strtotime($userData['DateOfBirth'])) ?>"> <!-- Formats date in proper format -->
 
                     </div>
                     <div class="information personalinfo-email">
                         <label class="sub-information" for="email">Email: </label>
-                        <input class="information-input" type="email" id="email" name="email" value="<?php echo $_SESSION['Email']; ?>" style="width:300px;">
+                        <input class="information-input" type="email" id="email" name="email" value="<?php echo $userData['Email']; ?>" style="width:300px;">
                     </div>
 
                     <button type="submit" id="personalinfo-savechanges" name="personalinfo-savechanges" class="indigoTheme roundBorder savebutton" form="personalinfo-form">Save Changes</button>
-
                 </form>
-                <?php
-
-                // Check if there are any errors in the session
-                if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
-
-                    foreach ($_SESSION['errors'] as $error) {
-                        echo '<div class="error-container">' . $error . '</div>'; // Display each error
-                    }
-
-                    // Unset the errors after displaying them
-                    unset($_SESSION['errors']);
-                }
-
-                if (isset($_SESSION['Success'])) {
-
-                    echo '<div class="success-container" >' . $_SESSION['Success'] . '</div>';
-                    unset($_SESSION['Success']);
-                }
-                ?>
-
             </div>
 
             <!--Displaying either student or teacher information-->
-            <?php if (empty($_SESSION['Level']) && empty($_SESSION['ClassGroup'])): //Checks if it is a student or a teacher
-            ?>
-
+            <?php if ($userData["UserType"] == "Teacher"): ?>
                 <!--Teacher information  -->
                 <div id="teacherinformation" class="teacherinformation-content first-column">
                     <h2>Teacher information</h2>
@@ -120,19 +97,33 @@ require 'views/partials/navBar.php';
                 <div class="teacherinformation-content2  second-column">
                     <div class="information">
                         <div class="sub-information">Teaching subject:</div>
-                        <div class="information-input"> <?php echo $_SESSION['SubjectTaught']; ?> </div>
+                        <div class="information-input"> <?php echo $userData['SubjectTaught']; ?> </div>
                     </div>
                     <div class="information">
-                        <div class="sub-information">Date You joined EduPortal</div>
-                        <div class="information-input"> <?php echo date('jS F Y', strtotime($_SESSION['DateOfBirth'])) . "  "; //displays datejoined in words 
-                                                        ?> </div>
-                        <div class="information-input"> <?php echo "(" . (new DateTime($_SESSION['DateOfBirth']))->diff(new DateTime())->days . " days ago)"; //displays number of days that have passed
-                                                        ?>
-                        </div>
+                        <div class="sub-information">Date You Joined EduPortal</div>
+
+                        <?php if (!empty($userData['DateJoined'])): ?>
+                            <?php
+                            $dateJoined = new DateTime($userData['DateJoined']);
+                            $now = new DateTime();
+                            $daysAgo = $dateJoined->diff($now)->days;
+                            ?>
+                            <div class="information-input">
+                                <?= $dateJoined->format('jS F Y') ?>
+                            </div>
+                            <div class="information-input">
+                                (<?= $daysAgo ?> day<?= $daysAgo !== 1 ? 's' : '' ?> ago)
+                            </div>
+                        <?php else: ?>
+                            <div class="information-input">
+                                Not available
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
+            <?php endif; ?>
 
-            <?php else: ?>
+            <?php if ($userData["UserType"] == "Student"): ?>
                 <!--Student information  -->
                 <div id="studentinfo" class="studentinformation-content first-column">
                     <h2>Student information</h2>
@@ -141,21 +132,24 @@ require 'views/partials/navBar.php';
                 <div class="studentinformation-content2  second-column">
                     <div class="information">
                         <div class="sub-information">Level</div>
-                        <div class="information-input"> <?php echo $_SESSION['Level']; ?> </div>
+                        <div class="information-input"> <?php echo $userData['Level']; ?> </div>
                     </div>
                     <div class="information">
                         <div class="sub-information">Class Group</div>
-                        <div class="information-input"> <?php echo $_SESSION['ClassGroup']; ?> </div>
+                        <div class="information-input"> <?php echo $userData['ClassGroup']; ?> </div>
                     </div>
 
                     <div class="information studentinfo-grid">
                         <div class="sub-information">Subjects Taken</div>
                         <div class="subjectstaken">
                             <?php
-                            foreach ($_SESSION['Subjects'] as $Subjects) {
+                            $subjects = array_map(function ($classEnrolled) {
+                                return ["SubjectCode" => $classEnrolled["SubjectCode"], "SubjectName" => $classEnrolled["SubjectName"]];
+                            }, $userData["ClassesEnrolled"]);
+                            foreach ($subjects as $subject) {
                                 echo '<div class="subject-item">';
-                                echo '<div class="subject-code">' . $Subjects['SubjectCode'] . '</div>';
-                                echo '<div class="subject-name">' . $Subjects['Subjectname'] . '</div>';
+                                echo '<div class="subject-code">' . $subject['SubjectCode'] . '</div>';
+                                echo '<div class="subject-name">' . $subject['SubjectName'] . '</div>';
                                 echo '</div>';
                             }
                             ?>
@@ -209,16 +203,42 @@ require 'views/partials/navBar.php';
                 <div id="logout-content" class="information description">Worried that your account or password has been compromised? You can forcibly log out from all devices. </div>
             </div>
             <div class="logout-content2 second-column">
-                <form action="models/accountManagement/logout.php">
+                <form action="/logout">
                     <button id="logout-button" type="submit" class="indigoTheme roundBorder savebutton">Log out Everywhere</button>
                 </form>
-
             </div>
         </div>
     </div>
 
-    <script src="scripts/accManagementPage.js"></script>
+    <script>
+        function togglePasswordVisibility(passwordId, toggleId) {
 
+            var passwordInput = document.getElementById(passwordId);
+            var toggleIcon = document.getElementById(toggleId);
+
+            if (passwordInput.type === "password") { //displaying dots
+                passwordInput.type = "text";
+                toggleIcon.src = "assets/eye-open.png"; //  icon to indicate hiding
+
+            } else { //displaying texts
+                passwordInput.type = "password";
+                toggleIcon.src = "assets/eye-close.png"; //  show icon
+            }
+        }
+
+        $(document).ready(function() {
+            $('a[href^="#"]').on('click', function(e) {
+                e.preventDefault();
+
+                const target = $($(this).attr("href"))[0];
+                if (target) {
+                    $('#main-content').animate({
+                        scrollTop: target.offsetTop
+                    }, 100);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 
+html {
+    scroll-behavior: smooth;
+}
+
+.scroll-anchor {
+    display: block;
+    padding-top: 80px;
+    margin-top: -80px;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -13,7 +23,6 @@ body {
     display: flex;
     position: relative;
     padding-top: 11.3vh;
-    scroll-behavior: smooth;
     height: 88.7svh;
     overflow-y: hidden;
 }

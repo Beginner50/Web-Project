@@ -11,7 +11,7 @@
         <?php if ($page != 'authentication'): ?>
             <div id="button-wrapper">
                 <button id="accountManagement-button" class="indigoTheme shadow <?php echo $page == "account" ? "active" : "" ?>" onclick="window.location.href = '/account';"> Account Management</button>
-                <?php if ($_SESSION['UserType'] == 'Admin'): ?>
+                <?php if ($userData['UserType'] == 'Admin'): ?>
                     <button id="adminDashboard-button" class="indigoTheme shadow <?php echo $page == "dashboard" ? "active" : "" ?>" onclick="window.location.href = '/dashboard';"> Dashboard </button>
                 <?php else: ?>
                     <button id="classes-button" class="indigoTheme shadow <?php echo $page == "messaging" ? "active" : "" ?>" onclick="window.location.href = '/messaging';"> Classes </button>

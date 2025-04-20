@@ -15,8 +15,8 @@
 DirectoryIndex /website/viewController.php
 
 RewriteEngine On
-RewriteRule ^(authentication|account|dashboard|messaging)$ /website/viewController.php?page=$1 [L,QSA]
-RewriteRule ^(authentication|account|dashboard|messaging)/$ /website/viewController.php?page=$1 [L,QSA]
+RewriteRule ^(authentication|dashboard|messaging)$ /website/viewController.php?page=$1 [L,QSA]
+RewriteRule ^(authentication|dashboard|messaging)/$ /website/viewController.php?page=$1 [L,QSA]
 
 RewriteRule ^login$ /website/viewController.php?page=authentication&action=login [L,QSA]
 RewriteRule ^login/$ /website/viewController.php?page=authentication&action=login [L,QSA]
@@ -26,6 +26,9 @@ RewriteRule ^registration/$ /website/viewController.php?page=authentication&acti
 
 RewriteRule ^logout$ /website/viewController.php?page=logout [L,QSA]
 RewriteRule ^logout/$ /website/viewController.php?page=logout [L,QSA]
+
+RewriteRule ^account/(student|teacher|admin)/([0-9]+) /website/viewController.php?page=account&user-type=$1&userID=$2 [L,QSA]
+RewriteRule ^account/(student|teacher|admin)/([0-9]+)/ /website/viewController.php?page=account&user-type=$1&userID=$2 [L,QSA]
 
 #-------------------------------------- Users ---------------------------------------------
 #  List users WITHOUT their type-specific information

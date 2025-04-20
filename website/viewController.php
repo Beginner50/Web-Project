@@ -27,9 +27,8 @@ function sendPostRequest($url, $data)
     return $response;
 }
 
-// Note: Cookies need to be read instead of session data for this
-// If user enters the website after a fresh session, redirect to authentication, otherwise redirect to account-management
-if (!isset($_GET['page'])) {
+function redirectAuthenticationOrRestoreSession()
+{
     if (!isset($_SESSION['userType']))
         header("Location: /authentication");
     else
@@ -37,7 +36,11 @@ if (!isset($_GET['page'])) {
     exit;
 }
 
+
 // Routing Logic
+if (!isset($_GET['page']))
+    redirectAuthenticationOrRestoreSession();
+
 switch ($page = $_GET['page']) {
     case "authentication":
         $errors = [];
@@ -69,8 +72,14 @@ switch ($page = $_GET['page']) {
         }
         break;
     case "account":
-        if (isset($_SESSION['userType']))
+        if (isset($_SESSION['userType'])) {
+            $userData = json_decode(
+                file_get_contents("http://localhost/users/" . $_GET["user-type"] . "/" . $_GET["userID"]),
+                true
+            )["data"][0];
+
             require 'views/accountManagement/accountManagementView.php';
+        }
         break;
     case "messaging":
         if (isset($_SESSION['userType']))

@@ -148,7 +148,7 @@ class UserRestHandler extends SimpleRest
 
             if (!password_verify($_POST["password"], $userData["Password"]))
                 $result["errors"][] = "Invalid password!";
-            if (!$userData["Authorisation"])
+            if (!$userData["IsApproved"])
                 $result["errors"][] = "User is not authorised!";
         }
 
