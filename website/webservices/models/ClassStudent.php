@@ -47,4 +47,28 @@ class ClassStudent
         }, $studentIDs);
         return ["success" => 1, "data" => $result];
     }
+
+    public function getAllStudentsEnrolledByClassIDs() {}
+
+    /*
+        StudentData + subjectCodes
+    */
+    public function enrollStudentInClasses($studentID, $classes)
+    {
+        try {
+            $this->pdo->beginTransaction();
+            foreach ($classes as $class) {
+                $stmt = $this->pdo->prepare("INSERT INTO class_student(ClassID, StudentID) VALUES(?, ?);");
+                $stmt->execute([$class["ClassID"], $studentID]);
+                $stmt->closeCursor();
+            }
+
+            $this->pdo->commit();
+            return ["success" => 1];
+        } catch (PDOException $e) {
+            if ($this->pdo->inTransaction())
+                $this->pdo->rollBack();
+            return ["success" => 0, "errors" => array("Could not enroll students in classes: " . $e->getMessage())];
+        }
+    }
 }

@@ -18,17 +18,22 @@
 
             const formData = $(this).serialize();
 
+            // login redirects to page controller, which gets resources, saves session & navigate to page
             $.ajax({
                 url: "/login",
                 type: "POST",
                 data: formData,
                 success: function(response) {
-                    window.location.href = "/account";
+                    const userID = response["userID"];
+                    const userType = response["userType"];
+                    window.location.href = "/account/" + userType + "/" + userID;
                 },
                 error: function(xhr, status, error) {
-                    if (xhr.status == 409)
-                        alert(JSON.parse(xhr.responseText)[0]);
-                    else
+                    if (xhr.status == 409 || xhr.status == 401) {
+
+                        const response = xhr.responseJSON;
+                        alert("Error:\n" + response.errors.join('\n'));
+                    } else
                         alert("An error occurred while submitting the form.");
                 }
             });

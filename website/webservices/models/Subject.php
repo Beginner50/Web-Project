@@ -14,6 +14,6 @@ class Subject
         $stmt->execute();
         $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $subjects;
+        return ["success" => 1, "data" => $subjects];
     }
 }

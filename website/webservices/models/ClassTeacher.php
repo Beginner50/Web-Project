@@ -10,7 +10,6 @@ class ClassTeacher
 
     public function getAllClassesTaughtByTeacherIDs()
     {
-
         // Get teacherID(s)
         $teacherIDs = array();
         if (isset($_GET['userID']))
@@ -30,22 +29,19 @@ class ClassTeacher
             }, $teachers);
         }
 
-        // Get classes taught
         $result = array_map(function ($teacherID) {
             $stmt = $this->pdo->prepare("SELECT class.ClassID, class.Level, class.ClassGroup, class.SubjectCode FROM teacher 
                                          INNER JOIN class ON teacher.TeacherID = class.TeacherID
-                                         WHERE teacher.teacherID = ?
-                                         LIMIT ? OFFSET ?;");
-            $stmt->bindParam(1, $teacherID);
-            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
-            $stmt->bindParam(2, $limit, PDO::PARAM_INT);
-            $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
-            $stmt->bindParam(3, $offset, PDO::PARAM_INT);
-            $stmt->execute();
+                                         WHERE teacher.teacherID = ?;");
+            $stmt->execute([$teacherID]);
 
             $classesTaught = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return [$teacherID => $classesTaught];
         }, $teacherIDs);
-        return ["success" => 1, "data" => $result];
+
+        return [
+            "success" => 1,
+            "data" => $result
+        ];
     }
 }

@@ -29,15 +29,15 @@ class Admin extends User
 
         $this->pdo->beginTransaction();
         try {
-            $userData = $_GET["user"];
+            $userData = $_POST;
             $adminID = $this->addUser($userData, true);
 
             $sInsertAdmin = $this->pdo->prepare('INSERT INTO administrator(AdminID, DateJoined) VALUES(?, ?);');
-            $sInsertAdmin->execute([$adminID,  $userData["datejoined"]]);
+            $sInsertAdmin->execute([$adminID,  $userData["date-joined"]]);
             $sInsertAdmin->closeCursor();
 
             $this->pdo->commit();
-            $result["data"]["userID"] = $adminID;
+            $result["data"] = $adminID;
         } catch (Exception $e) {
             var_dump($e);
             if ($this->pdo->inTransaction())
@@ -50,11 +50,11 @@ class Admin extends User
 
     public function validateAdmin()
     {
-        $userData = $_POST["user"];
+        $userData = $_POST;
         $result = $this->validateUser();
 
         if ($result["success"] == 1) {
-            $dateJoined = htmlspecialchars($userData["dateJoined"] ?? '');
+            $dateJoined = htmlspecialchars($userData["date-joined"] ?? '');
 
             if (empty($dateJoined)) {
                 $result["errors"][] = "Date joined cannot be blank!";
@@ -62,7 +62,7 @@ class Admin extends User
                 $result["errors"][] = "Invalid date format!";
             }
         }
-        if (sizeof($result["errors"]) > 0)
+        if (count($result["errors"]) > 0)
             $result["success"] = 0;
         return $result;
     }

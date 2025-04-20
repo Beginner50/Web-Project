@@ -8,19 +8,8 @@ class User
         $this->pdo = $pdo;
     }
 
-    /*
-        Provides just enough information for tabulation of users
 
-        Complete information is obtained by sophisticated extensions of the User
-        base class (Ex: Student, Teacher, Admin)
-
-        URL Query Arguments:
-        userID - Single user selection (Shows Password for single user)
-        user-type - Selects only user of that type
-        limit - Limit selection
-        offset - offset selection
-    */
-    public function getAllUsers($userType = "all")
+    public function getAllUsers()
     {
         // Set default pagination values
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
@@ -57,6 +46,7 @@ class User
         try {
             $users = array();
 
+            // Get users
             $queries = ($userType != "all" ?  [$queries[$userType]] : $queries);
             foreach ($queries as $query) {
                 $stmt = $this->pdo->prepare($query);
@@ -68,18 +58,18 @@ class User
             }
 
             return [
-                'success' => true,
+                'success' => 1,
                 'data' => $users,
                 'pagination' => [
                     'limit' => $limit,
                     'offset' => $offset,
                     'count' => count($users),
-                    'total' => ($userID == 0 ? $this->getTotalUsersCount($userType) : 1) // Implement this method
+                    'total' => ($userID == 0 ? $this->getTotalUsersCount($userType) : 1)
                 ]
             ];
         } catch (PDOException $e) {
             return [
-                'success' => false,
+                'success' => 0,
                 'errors' => array('Database error: ' . $e->getMessage())
             ];
         }
@@ -109,25 +99,30 @@ class User
 
     protected function addUser($userData, $approval)
     {
-        $sInsertUser = $this->pdo->prepare('INSERT INTO user(DateOfBirth, FirstName, LastName,Email,Gender,Password) VALUES(?,?,?,?,?,?);');
-        $sInsertUser->execute([$userData["dateOfBirth"], $userData["firstName"], $userData["lastName"], $userData["email"], $userData["gender"], $userData["passwordhash"]]);
-        $sInsertUser->closeCursor();
+        try {
+            $passwordHash = password_hash($userData['password'], PASSWORD_BCRYPT);
+            $sInsertUser = $this->pdo->prepare('INSERT INTO user(DateOfBirth, FirstName, LastName,Email,Gender,Password) VALUES(?,?,?,?,?,?);');
+            $sInsertUser->execute([$userData["dob"], $userData["fname"], $userData["lname"], $userData["email"], $userData["gender"], $passwordHash]);
+            $sInsertUser->closeCursor();
 
-        $sGetUserID = $this->pdo->query("SELECT LAST_INSERT_ID();");
-        $sGetUserID->execute();
-        $userID = $sGetUserID->fetchAll(PDO::FETCH_NUM)[0];
+            $sGetUserID = $this->pdo->query("SELECT LAST_INSERT_ID();");
+            $sGetUserID->execute();
+            $userID = $sGetUserID->fetchAll(PDO::FETCH_NUM)[0][0];
 
-        if ($approval == true) {
-            $sInsertApproval = $this->pdo->prepare('INSERT INTO approval(AdminID, UserID, UserType, IsApproved) VALUES(null, ?, ?, ?);');
-            $sInsertApproval->execute([$userID, $userData["userType"], 0]);
-            $sInsertApproval->closeCursor();
+            if ($approval == true) {
+                $sInsertApproval = $this->pdo->prepare('INSERT INTO approval(AdminID, UserID, UserType, IsApproved) VALUES(null, ?, ?, ?);');
+                $sInsertApproval->execute([$userID, $userData["user-type"], 0]);
+                $sInsertApproval->closeCursor();
+            }
+            return ["success" => 1, "data" => $userID];
+        } catch (PDOException $e) {
+            return ["success" => 0, "errors" => array($e->getMessage())];
         }
-        return $userID;
     }
 
     public function validateUser()
     {
-        $userData = $_POST["user"] ?? null;
+        $userData = $_POST ?? null;
         $result = ["success" => 0, "errors" => []];
 
         // Early return if empty user data
@@ -137,20 +132,20 @@ class User
         }
 
         // Validate user type
-        $userType = htmlspecialchars($userData["userType"] ?? '');
+        $userType = htmlspecialchars($userData["user-type"] ?? '');
         if (empty($userType)) {
             $result["errors"][] = "User Type is required!";
         }
 
         // Validate general attributes
-        $firstName = htmlspecialchars($userData["firstName"] ?? '');
+        $firstName = htmlspecialchars($userData["fname"] ?? '');
         if (empty($firstName)) {
             $result["errors"][] = "First Name is required!";
         } elseif (!preg_match('/^[a-zA-Z \-]+$/', $firstName)) {
             $result["errors"][] = "First Name contains invalid characters!";
         }
 
-        $lastName = htmlspecialchars($userData["lastName"] ?? '');
+        $lastName = htmlspecialchars($userData["lname"] ?? '');
         if (empty($lastName)) {
             $result["errors"][] = "Last Name is required!";
         } elseif (!preg_match('/^[a-zA-Z \-]+$/', $lastName)) {
@@ -163,18 +158,18 @@ class User
             $result["errors"][] = "Email is required!";
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $result["errors"][] = "Invalid email format!";
-        } elseif ($this->findUserID($email)) {
+        } elseif ($this->findUserID($email)["success"]) {
             $result["errors"][] = "User already exists with this email!";
         }
 
         $gender = htmlspecialchars($userData["gender"] ?? '');
         if (empty($gender)) {
             $result["errors"][] = "Gender is required!";
-        } elseif (!in_array($gender, ['Male', 'Female', 'Other'])) {
+        } elseif (!in_array($gender, ['M', 'F', 'Other'])) {
             $result["errors"][] = "Invalid gender selection!";
         }
 
-        $dateOfBirth = htmlspecialchars($userData["dateOfBirth"] ?? '');
+        $dateOfBirth = htmlspecialchars($userData["dob"] ?? '');
         if (empty($dateOfBirth)) {
             $result["errors"][] = "Date of Birth is required!";
         } elseif (!strtotime($dateOfBirth)) {
@@ -185,13 +180,13 @@ class User
 
         // Password validation
         $password = $userData["password"] ?? '';
-        $repeatPassword = $userData["repeatPassword"] ?? '';
+        $repeatPassword = $userData["repeat-password"] ?? '';
 
         if (empty($password)) {
             $result["errors"][] = "Password is required!";
         } else {
-            if (strlen($password) < 8) {
-                $result["errors"][] = "Password must be at least 8 characters!";
+            if (strlen($password) < 5) {
+                $result["errors"][] = "Password must be at least 5 characters!";
             }
             if (!preg_match('/[A-Z]/', $password)) {
                 $result["errors"][] = "Password must contain at least 1 uppercase letter!";
@@ -202,9 +197,9 @@ class User
             if (!preg_match('/[0-9]/', $password)) {
                 $result["errors"][] = "Password must contain at least 1 number!";
             }
-            if (!preg_match('/[^A-Za-z0-9]/', $password)) {
-                $result["errors"][] = "Password must contain at least 1 special character!";
-            }
+            // if (!preg_match('/[^A-Za-z0-9]/', $password)) {
+            //     $result["errors"][] = "Password must contain at least 1 special character!";
+            // }
         }
 
         if (empty($repeatPassword)) {
@@ -221,27 +216,30 @@ class User
         return $result;
     }
 
-    public function findUserID()
+    public function findUserID($email)
     {
-        $stmt = $this->pdo->prepare("SELECT UserID FROM user WHERE Email = ? LIMIT 1");
-        $stmt->execute([$_POST["email"]]);
-        return $stmt->fetch();
-    }
+        try {
+            // UserID
+            $stmt = $this->pdo->prepare("SELECT UserID FROM user WHERE Email = ? LIMIT 1");
+            $stmt->execute([$email]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result == NULL)
+                return ["success" => 0, "errors" => array("Could not find user!")];
+            else
+                $userID = $result[0]["UserID"];
 
-    public function findUserType()
-    {
-        $userID = $_GET["userID"];
-        $stmt = $this->pdo->prepare("
-        SELECT 'student' AS user_type FROM student WHERE StudentID = ?
-        UNION ALL
-        SELECT 'teacher' FROM teacher WHERE TeacherID = ?
-        UNION ALL
-        SELECT 'admin' FROM administrator WHERE AdminID = ?
-        LIMIT 1
-        ");
-        $stmt->execute([$userID, $userID, $userID]);
+            // UserType
+            $stmt = $this->pdo->prepare("(SELECT 'Student' AS UserType FROM student WHERE StudentID = ?)
+                                         UNION
+                                         (SELECT 'Teacher' AS UserType FROM teacher WHERE TeacherID = ?)
+                                         UNION
+                                         (SELECT 'Admin' AS UserType FROM administrator WHERE AdminID = ?);");
+            $stmt->execute([$userID, $userID, $userID]);
+            $userType = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["UserType"];
 
-        $result = $stmt->fetch();
-        return $result ? $result['user_type'] : null;
+            return ["success" => 1, "data" => ["userID" => $userID, "userType" => $userType]];
+        } catch (PDOException $e) {
+            return ["success" => 0, "errors" => $e->getMessage()];
+        }
     }
 }

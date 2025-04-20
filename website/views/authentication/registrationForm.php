@@ -3,13 +3,13 @@
     <!-- User Type Fieldset (Select between different users) -->
     <fieldset id="userType-fieldset">
         <input id="student-button" class="indigoTheme active noGap" type="button" form="none"
-            value="Student">
-        <input id="teacher-button" class="indigoTheme noGap" type="button" form="none" value="Teacher">
-        <input id="admin-button" class="indigoTheme noGap" type="button" form="none" value="Admin">
+            value="student">
+        <input id="teacher-button" class="indigoTheme noGap" type="button" form="none" value="teacher">
+        <input id="admin-button" class="indigoTheme noGap" type="button" form="none" value="admin">
     </fieldset>
 
     <!-- Hidden input to store the user type (Triggered by above inputs) -->
-    <input type="hidden" id="user-type" name="user-type" name="role" value="Student">
+    <input type="hidden" id="user-type" name="user-type" name="role" value="student">
 
     <!-- General Attributes Fieldset -->
     <fieldset id="generalAttr-fieldset">
@@ -48,7 +48,7 @@
         </div>
         <!-- Re-enter Password -->
         <div class="input-group"> <label>Re-enter Password </label><input
-                class="input-box hover transparent-placeholder" type="password" required name="repassword"
+                class="input-box hover transparent-placeholder" type="password" required name="repeat-password"
                 pattern="(?=.*[A-Z])(?=.*\d).{5,}" minlength="5">
         </div>
     </fieldset>
@@ -60,7 +60,7 @@
             <div id="top-section">
                 <div class="input-group student">
                     <span> Class Group: </span>
-                    <select class="input-box transparent-placeholder hover student" name="classGroup" required>
+                    <select class="input-box transparent-placeholder hover student" name="class-group" required>
                         <option> </option>
                         <option> Red </option>
                         <option> Blue </option>
@@ -82,17 +82,17 @@
         <!-- Teacher specific attributes -->
         <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;" disabled>
             <div class="teacher input-group">
-                Subject Taught: <input class="input-box hover transparent-placeholder " name="subjectTaught"
+                Subject Taught: <input class="input-box hover transparent-placeholder " name="subject-taught"
                     type="text" required>
             </div>
             <div class="teacher input-group">
-                Date Joined: <input class="input-box hover transparent-placeholder " name="teacherDateJoined"
+                Date Joined: <input class="input-box hover transparent-placeholder " name="teacher-date-joined"
                     type="date" required>
             </div>
         </fieldset>
         <fieldset id="specificAttr-fieldset-admin" class="no-border" style="display:none;" disabled>
             <div class="admin input-group">
-                Date Joined <input class="input-box hover transparent-placeholder " name="adminDateJoined"
+                Date Joined <input class="input-box hover transparent-placeholder " name="admin-date-joined"
                     type="date" required>
             </div>
         </fieldset>
@@ -116,7 +116,7 @@
             const formData = $(this).serialize();
 
             $.ajax({
-                url: "/registration",
+                url: "/register/" + userType,
                 type: "POST",
                 data: formData,
                 success: function(response) {

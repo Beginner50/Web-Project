@@ -3,14 +3,12 @@ ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
 
-header("Content-Type: application/json");
 require_once("connect.php");
 require_once("webservices/userRestHandler.php");
 require_once("webservices/classRestHandler.php");
 require_once("webservices/subjectRestHandler.php");
 
 $method = $_SERVER['REQUEST_METHOD'];
-$view = "";
 $result = ["success" => 0, "errors" => array()];
 
 if (isset($_GET["resource"]))
@@ -27,6 +25,16 @@ switch ($resource) {
 				break;
 			case "create":
 				if ($method == "POST") {
+					// Clean & Validate POST request
+					if (isset($_POST["admin-date-joined"])) {
+						$_POST["date-joined"] = $_POST["admin-date-joined"];
+						unset($_POST["admin-date-joined"]);
+					} else if (isset($_POST["teacher-date-joined"])) {
+						$_POST["date-joined"] = $_POST["teacher-date-joined"];
+						unset($_POST["teacher-date-joined"]);
+					}
+					$_POST["subjects"] = json_decode($_POST["subjects"], true);
+
 					$userRestHandler = new UserRestHandler($pdo);
 					$result = $userRestHandler->addUser();
 				} else {
@@ -52,7 +60,8 @@ switch ($resource) {
 	case "classes":
 		switch ($action) {
 			case "list":
-				switch ($_GET['user-type']) {
+				$userType = isset($_GET['user-type']) ?? "";
+				switch ($userType) {
 					case "student":
 						$classRestHandler = new ClassRestHandler($pdo);
 						$result = $classRestHandler->getClassesEnrolledByStudentIDs();
@@ -60,6 +69,10 @@ switch ($resource) {
 					case "teacher":
 						$classRestHandler = new ClassRestHandler($pdo);
 						$result = $classRestHandler->getClassesTaughtByTeacherIDs();
+						break;
+					default:
+						$classRestHandler = new ClassRestHandler($pdo);
+						$result = $classRestHandler->getAllClasses();
 						break;
 				}
 				break;
@@ -75,4 +88,4 @@ switch ($resource) {
 		break;
 }
 
-echo $result;
+echo json_encode($result);

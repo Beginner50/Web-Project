@@ -16,18 +16,19 @@
     $(document).ready(function() {
         let courses = [];
 
-        $.getJSON("/get-subjects")
-            .done(function(response) {
-                courses = response.map(subject => {
+        $.ajax({
+            url: "/subjects",
+            method: "GET",
+            dataType: "json",
+            success: function(response) {
+                courses = response["data"].map(subject => {
                     return {
                         [subject.SubjectCode]: subject.SubjectName
                     };
                 });
-                console.log("Courses loaded:", courses);
-            })
-            .fail(function(jqXHR, textStatus, errorThrown) {
-                console.error("Error fetching courses:", textStatus, errorThrown);
-            });
+            },
+            error: function(xhr, status, error) {}
+        });
 
         let selectedSubjects = [];
         const maxSubjects = 5;

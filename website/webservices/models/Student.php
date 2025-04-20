@@ -37,52 +37,66 @@ class Student extends User
 
     public function addStudent()
     {
-        $userData = $_POST["user"];
         $result = $this->validateStudent();
         if (!$result["success"])
             return $result;
+        $userData = $_POST;
 
         $this->pdo->beginTransaction();
         try {
-            $studentID = $this->addUser($userData, false);
+            $response = $this->addUser($userData, false);
+            if (!$response["success"]) throw new Exception(implode(", ", $response["errors"]));
+            $studentID = $response["data"];
 
             // Insert into student table
-            $sInsertStudent = $this->pdo->prepare('INSERT INTO student(StudentID, Level, ClassGroup) VALUES(LAST_INSERT_ID(),?,?);');
-            $sInsertStudent->execute([$studentID, $userData["classGroup"], $userData["level"]]);
+            $sInsertStudent = $this->pdo->prepare('INSERT INTO student(StudentID, Level, ClassGroup) VALUES(?, ?, ?);');
+            $sInsertStudent->execute([$studentID, $userData["level"], $userData["class-group"]]);
             $sInsertStudent->closeCursor();
 
             $sGetClassID = $this->pdo->prepare('SELECT ClassID FROM class WHERE SubjectCode = ? AND Level = ? AND ClassGroup = ?;');
             $sAssignClass = $this->pdo->prepare('INSERT INTO class_student(ClassID, StudentID) VALUES(?, ?);');
 
             foreach ($userData["subjects"] as $subject) {
-                $sGetClassID->execute([$subject, $userData["level"], $userData["classGroup"]]);
-                $classID = $sGetClassID->fetchAll(PDO::FETCH_NUM)[0];
+                // Before adding a student to a class, find the list of available classes (Create classes if required)
+                // If possible, create its own rest handler to assign classes to students
+                // Implode $subjects, pass subjects, class-groups, level as query args 
+                var_dump($subject, $userData["level"], $userData["class-group"]);
+                $sGetClassID->execute([$subject, $userData["level"], $userData["class-group"]]);
+                $classID = $sGetClassID->fetchAll(PDO::FETCH_NUM)[0][0];
                 $sGetClassID->closeCursor();
-                $sAssignClass->execute([$classID[0], $studentID]);
+                $sAssignClass->execute([$classID, $studentID]);
                 $sAssignClass->closeCursor();
             }
 
+            throw new Exception("");
             $this->pdo->commit();
-            $result["data"]["userID"] = $studentID;
+            $result["data"] = $studentID;
         } catch (Exception $e) {
-            var_dump($e);
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();
             $result["success"] = 0;
-            $result["errors"][] = $e;
+            $result["errors"][] = $e->getMessage();
         }
         return $result;
     }
 
     public function validateStudent()
     {
-        $userData = $_POST["user"];
+        $userData = $_POST;
+        $subjects = $userData["subjects"];
         $result = $this->validateUser();
 
         if ($result["success"] == 1) {
-            $classGroup = htmlspecialchars(strtoupper($userData["classGroup"] ?? ''));
+            $classGroup = htmlspecialchars(strtoupper($userData["class-group"] ?? ''));
             $level = htmlspecialchars($userData["level"] ?? '');
-            $subjects = $userData["subjects"] ?? [];
+            if ($subjects == NULL || empty($subjects))
+                $result["errors"][] = "No subjects selected!";
+            else {
+                $subjects = rtrim(ltrim($subjects, "[\""), "\"]");
+                $subjects = str_replace("\"", "", $subjects);
+                $subjects =  explode(", ", $subjects);
+                $_POST["subjects"] = $subjects;
+            }
 
             if (empty($classGroup)) {
                 $result["errors"][] = "Class group cannot be blank!";
@@ -94,9 +108,16 @@ class Student extends User
             }
             if (count($subjects) < 5) {
                 $result["errors"][] = "You must select at least 5 subjects!";
+            } else {
+                $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM subject WHERE SubjectCode IN (?, ?, ?, ?, ?)");
+                $stmt->execute([...$subjects]);
+                $count = $stmt->fetchAll(PDO::FETCH_NUM)[0][0];
+
+                if ($count != count($subjects))
+                    $result["errors"][] = "Invalid subjects selected!";
             }
         }
-        if (sizeof($result["errors"]) > 0)
+        if (count($result["errors"]) > 0)
             $result["success"] = 0;
         return $result;
     }

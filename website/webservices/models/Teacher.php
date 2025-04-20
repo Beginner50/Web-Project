@@ -36,15 +36,17 @@ class Teacher extends User
 
         $this->pdo->beginTransaction();
         try {
-            $userData = $_GET["user"];
-            $teacherID = $this->addUser($userData, true);
+            $userData = $_POST;
+            $response = $this->addUser($userData, true);
+            if (!$response["success"]) throw new Exception(implode(", ", $response["errors"]));
+            $teacherID = $response["data"];
 
             $sInsertTeacher = $this->pdo->prepare('INSERT INTO teacher(TeacherID, SubjectTaught, DateJoined) VALUES(?, ?, ?);');
-            $sInsertTeacher->execute([$teacherID, $userData["subjectTaught"], $userData["datejoined"]]);
+            $sInsertTeacher->execute([$teacherID, $userData["subject-taught"], $userData["date-joined"]]);
             $sInsertTeacher->closeCursor();
 
             $this->pdo->commit();
-            $result["data"]["userID"] = $teacherID;
+            $result["data"] = $teacherID;
         } catch (Exception $e) {
             var_dump($e);
             if ($this->pdo->inTransaction())
@@ -57,12 +59,12 @@ class Teacher extends User
 
     public function validateTeacher()
     {
-        $userData = $_POST["user"];
+        $userData = $_POST;
         $result = $this->validateUser();
 
         if ($result["success"] == 1) {
-            $subjectTaught = htmlspecialchars($userData["subjectTaught"] ?? '');
-            $dateJoined = htmlspecialchars($userData["dateJoined"] ?? '');
+            $subjectTaught = htmlspecialchars($userData["subject-taught"] ?? '');
+            $dateJoined = htmlspecialchars($userData["date-joined"] ?? '');
 
             if (empty($subjectTaught)) {
                 $result["errors"][] = "Subject taught cannot be blank!";

@@ -15,16 +15,6 @@
 </head>
 
 <body>
-    <!-- FOR SUBJECT LIST & MODAL ONLY -->
-    <!-- Placeholders for callbacks (Similar to react hooks) -->
-    <script>
-        window.sharedState = {
-            onSubjectSelect: null, // Callback for modal to react when subject is deselected from subjectList.
-            onSubjectDeselect: null, // Callback for subjectList to react when subject is selected from modal.
-            selectedSubjects: 0
-        }
-    </script>
-
     <!-- Navigation Bar -->
     <?php require 'views/partials/navBar.php'; ?>
 
