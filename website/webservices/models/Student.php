@@ -3,16 +3,10 @@ require_once "User.php";
 
 class Student extends User
 {
-    /*
-        URL Query Arguments:
 
-        userID - Single user selection (Shows Password for single user)
-        limit - Limit selection
-        offset - offset selection
-    */
-    public function getAllStudents()
+    public function getAllStudents($userID = 0, $limit = 50, $offset = 0)
     {
-        $result = $this->getAllUsers();
+        $result = $this->getAllUsers(userType: "student", userID: $userID, limit: $limit, offset: $offset);
         $students = array_map(function ($u) {
             $userID = $u["UserID"];
 
@@ -35,68 +29,48 @@ class Student extends User
         return $result;
     }
 
-    public function addStudent()
+    public function create($userData)
     {
-        $result = $this->validateStudent();
+        $result = $this->validateStudent($userData);
         if (!$result["success"])
             return $result;
-        $userData = $_POST;
 
-        $this->pdo->beginTransaction();
+        // Create student if not found
         try {
-            $response = $this->addUser($userData, false);
-            if (!$response["success"]) throw new Exception(implode(", ", $response["errors"]));
-            $studentID = $response["data"];
+            $this->pdo->beginTransaction();
+
+            $studentID = $this->create($userData, false)["data"]["userID"];
 
             // Insert into student table
             $sInsertStudent = $this->pdo->prepare('INSERT INTO student(StudentID, Level, ClassGroup) VALUES(?, ?, ?);');
             $sInsertStudent->execute([$studentID, $userData["level"], $userData["class-group"]]);
             $sInsertStudent->closeCursor();
 
-            $sGetClassID = $this->pdo->prepare('SELECT ClassID FROM class WHERE SubjectCode = ? AND Level = ? AND ClassGroup = ?;');
-            $sAssignClass = $this->pdo->prepare('INSERT INTO class_student(ClassID, StudentID) VALUES(?, ?);');
-
-            foreach ($userData["subjects"] as $subject) {
-                // Before adding a student to a class, find the list of available classes (Create classes if required)
-                // If possible, create its own rest handler to assign classes to students
-                // Implode $subjects, pass subjects, class-groups, level as query args 
-                var_dump($subject, $userData["level"], $userData["class-group"]);
-                $sGetClassID->execute([$subject, $userData["level"], $userData["class-group"]]);
-                $classID = $sGetClassID->fetchAll(PDO::FETCH_NUM)[0][0];
-                $sGetClassID->closeCursor();
-                $sAssignClass->execute([$classID, $studentID]);
-                $sAssignClass->closeCursor();
-            }
-
-            throw new Exception("");
             $this->pdo->commit();
-            $result["data"] = $studentID;
+            $result["data"] = ["userID" => $studentID, "userType" => $userData["user-type"]];
         } catch (Exception $e) {
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();
             $result["success"] = 0;
             $result["errors"][] = $e->getMessage();
+            return $result;
         }
+
+
+
         return $result;
     }
 
-    public function validateStudent()
+    public function validateStudent($userData)
     {
-        $userData = $_POST;
         $subjects = $userData["subjects"];
-        $result = $this->validateUser();
+        $result = $this->validateUser($userData);
 
         if ($result["success"] == 1) {
             $classGroup = htmlspecialchars(strtoupper($userData["class-group"] ?? ''));
             $level = htmlspecialchars($userData["level"] ?? '');
             if ($subjects == NULL || empty($subjects))
                 $result["errors"][] = "No subjects selected!";
-            else {
-                $subjects = rtrim(ltrim($subjects, "[\""), "\"]");
-                $subjects = str_replace("\"", "", $subjects);
-                $subjects =  explode(", ", $subjects);
-                $_POST["subjects"] = $subjects;
-            }
 
             if (empty($classGroup)) {
                 $result["errors"][] = "Class group cannot be blank!";

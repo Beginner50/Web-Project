@@ -52,5 +52,36 @@ class Classroom
         }
     }
 
-    public function create() {}
+    /*
+        Creates a class and returns the classID
+    */
+    public function create($level, $classGroup, $subjectCode)
+    {
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO class(Level, ClassGroup, SubjectCode) VALUES(?,?,?)");
+            $stmt->execute([$level, $classGroup, $subjectCode]);
+            $stmt->closeCursor();
+
+            $classID = $this->pdo->lastInsertId();
+            $this->pdo->commit();
+
+            return ["success" => 1, "data" => ["classID" => $classID]];
+        } catch (PDOException $e) {
+            if ($this->pdo->inTransaction())
+                $this->pdo->rollBack();
+            return ["success" => 0, "errors" => array("Could not create class: " . $e->getMessage())];
+        }
+    }
+
+    public function findClassID($level, $classGroup, $subjectCode)
+    {
+        $stmt = $this->pdo->prepare("SELECT ClassID FROM class WHERE Level = ? AND ClassGroup = ? AND SubjectCode = ?;");
+        $stmt->execute([$level, $classGroup, $subjectCode]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($result == NULL)
+            return ["success" => 0, "errors" => array("Could not find classID!")];
+
+        $classID = $result[0]["ClassID"];
+        return ["success" => 1, "data" => ["classID" => $classID]];
+    }
 }

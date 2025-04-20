@@ -10,7 +10,6 @@ class ClassStudent
     }
     /*
         URL Query Arguments:
-
         userID - Single user selection
     */
     public function getAllClassesEnrolledByStudentIDs()
@@ -50,25 +49,22 @@ class ClassStudent
 
     public function getAllStudentsEnrolledByClassIDs() {}
 
-    /*
-        StudentData + subjectCodes
-    */
-    public function enrollStudentInClasses($studentID, $classes)
+    public function enrollStudentInClass($studentID, $classID)
     {
         try {
             $this->pdo->beginTransaction();
-            foreach ($classes as $class) {
-                $stmt = $this->pdo->prepare("INSERT INTO class_student(ClassID, StudentID) VALUES(?, ?);");
-                $stmt->execute([$class["ClassID"], $studentID]);
-                $stmt->closeCursor();
-            }
+
+            $stmt = $this->pdo->prepare("INSERT INTO class_student(ClassID, StudentID) 
+                                         VALUES(?, ?) ON DUPLICATE KEY UPDATE StudentID = ?;");
+            $stmt->execute([$classID, $studentID, $studentID]);
+            $stmt->closeCursor();
 
             $this->pdo->commit();
             return ["success" => 1];
         } catch (PDOException $e) {
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();
-            return ["success" => 0, "errors" => array("Could not enroll students in classes: " . $e->getMessage())];
+            return ["success" => 0, "errors" => array("Could not enroll students in class: " . $e->getMessage())];
         }
     }
 }

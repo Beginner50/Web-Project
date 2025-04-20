@@ -36,7 +36,7 @@ switch ($resource) {
 					$_POST["subjects"] = json_decode($_POST["subjects"], true);
 
 					$userRestHandler = new UserRestHandler($pdo);
-					$result = $userRestHandler->addUser();
+					$result = $userRestHandler->createUser();
 				} else {
 					$result["success"] = 0;
 					$result["errors"][] = "Invalid HTTP method!";
@@ -75,6 +75,17 @@ switch ($resource) {
 						$result = $classRestHandler->getAllClasses();
 						break;
 				}
+				break;
+			case "enroll":
+				if ($method == "POST") {
+					$classRestHandler = new ClassRestHandler($pdo);
+					$result = $classRestHandler->enrollStudentInClasses();
+				} else {
+					$result["success"] = 0;
+					$result["errors"][] = "Invalid HTTP method!";
+				}
+				break;
+			case "teach":
 				break;
 		}
 		break;

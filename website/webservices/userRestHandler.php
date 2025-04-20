@@ -26,69 +26,32 @@ class UserRestHandler extends SimpleRest
     {
         $rawData = null;
         $userType = $_GET["user-type"] ?? "all";
+        $userID = $_GET["userID"] ?? 0;
+        $limit = $_GET["limit"] ?? 25;
+        $offset = $_GET["offset"] ?? 0;
+
         switch ($userType) {
             case "student":
                 $student = new Student($this->pdo);
-                $rawData = $student->getAllStudents();
+                $rawData = $student->getAllStudents(userID: $userID, limit: $limit, offset: $offset);
                 break;
             case "teacher":
                 $teacher = new Teacher($this->pdo);
-                $rawData = $teacher->getAllTeachers();
+                $rawData = $teacher->getAllTeachers(userID: $userID, limit: $limit, offset: $offset);
                 break;
             case "admin":
                 $admin = new Admin($this->pdo);
-                $rawData = $admin->getAllAdmins();
+                $rawData = $admin->getAllAdmins(userID: $userID, limit: $limit, offset: $offset);
                 break;
             default:
                 $user = new User($this->pdo);
-                $rawData = $user->getAllUsers();
+                $rawData = $user->getAllUsers(userID: $userID, limit: $limit, offset: $offset);
                 break;
         }
 
         $statusCode = empty($rawData) ? 404 : 200;
         $this->setHttpHeaders("application/json", $statusCode);
         echo json_encode($rawData);
-        exit;
-    }
-
-    /*
-        Authenticates and returns the userID & userType
-
-        POST:
-        {
-            "email": "xyz@mail.com",
-            "password": "tesmp"
-        }
-
-        Return:
-            userID, userType
-    */
-    public function authenticateUser()
-    {
-        $result = ["success" => 1, "errors" => array()];
-
-        $user = new User($this->pdo);
-        $response = $user->findUserID($_POST["email"]);
-        if (!$response["success"])
-            $result["errors"][] = "Email does not exist!";
-        else {
-            $userID = $response["data"]["userID"];
-            $userType = strtolower($response["data"]["userType"]);
-            $userData = json_decode(file_get_contents("http://localhost/" . $userID), true)["data"][0];
-
-            if (!password_verify($_POST["password"], $userData["Password"]))
-                $result["errors"][] = "Invalid password!";
-            if (!$userData["Authorisation"])
-                $result["errors"][] = "User is not authorised!";
-        }
-
-        if (sizeof($result["errors"]) > 0)
-            $result["success"] = 0;
-        else
-            $result["data"] = ["userID" => $userID, "userType" => $userType];
-
-        $this->setHttpHeaders("application/json", $result["success"] == 1 ? 200 : 401);
-        echo json_encode($result);
         exit;
     }
 
@@ -106,29 +69,45 @@ class UserRestHandler extends SimpleRest
         Return:
             userID, userType
     */
-    public function addUser()
+    public function createUser()
     {
+        $result = ["success" => 1, "errors" => array()];
+        $userData = $_POST;
+
         // Route user-type
         switch ($_GET['user-type']) {
             case "student":
                 $student = new Student($this->pdo);
-                $result = $student->addStudent();
+                if (!($result = $student->findUserID($userData["email"]))["success"]) {
+                    $result = $student->create($userData);
+                    if (!$result["success"])
+                        break;
+
+                    $studentID = $result["data"]["userID"];
+                } else
+                    $studentID = $result["data"]["userID"];
+
+                // Enroll student in classes based on subjects taken
+                $response = $this->sendPostRequest(
+                    "http://localhost/classes/enroll/" . $studentID,
+                    $userData['subjects']
+                );
+
+                if (!$response["success"]) {
+                    $result["success"] = 0;
+                    $result["errors"] = [...$result["errors"], ...$response["errors"]];
+                }
                 break;
             case "teacher":
                 $teacher = new Teacher($this->pdo);
-                $result = $teacher->addTeacher();
+                $result = $teacher->create($userData);
                 break;
             case "admin":
                 $admin = new Admin($this->pdo);
-                $result = $admin->addAdmin();
+                $result = $admin->create($userData);
                 break;
             default:
                 break;
-        }
-        if ($result["success"]) {
-            $response = json_decode(file_get_contents("http://localhost/users/" . $_GET['user-type'] . "/" . $result['data']), true);
-            if ($response["success"])
-                $result["data"] = $response["data"];
         }
 
         $statusCode = $result["success"] == 1 ? 201 : 400;
@@ -140,5 +119,50 @@ class UserRestHandler extends SimpleRest
     public function editUser()
     {
         // Write your code here
+    }
+
+    /*
+        Authenticates and returns the userID & userType
+
+        POST:
+        {
+            "email": "xyz@mail.com",
+            "password": "tesmp"
+        }
+
+        Return:
+            userID, userType
+    */
+    public function authenticateUser()
+    {
+        $result = ["success" => 1, "errors" => array()];
+        $userID = 0;
+        $userType = "";
+
+        $user = new User($this->pdo);
+        $response = $user->findUserID($_POST["email"]);
+        if (!$response["success"])
+            $result["errors"][] = "Email does not exist!";
+        else {
+            $userID = $response["data"]["userID"];
+            $userType = strtolower($response["data"]["userType"]);
+
+            $user = new User($this->pdo);
+            $userData = $user->getAllUsers(userID: $userID)["data"][0];
+
+            if (!password_verify($_POST["password"], $userData["Password"]))
+                $result["errors"][] = "Invalid password!";
+            if (!$userData["Authorisation"])
+                $result["errors"][] = "User is not authorised!";
+        }
+
+        if (sizeof($result["errors"]) > 0)
+            $result["success"] = 0;
+        else
+            $result["data"] = ["userID" => $userID, "userType" => $userType];
+
+        $this->setHttpHeaders("application/json", $result["success"] == 1 ? 200 : 401);
+        echo json_encode($result);
+        exit;
     }
 }

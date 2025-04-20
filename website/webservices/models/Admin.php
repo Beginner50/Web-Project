@@ -3,9 +3,9 @@ require_once "User.php";
 
 class Admin extends User
 {
-    public function getAllAdmins()
+    public function getAllAdmins($userID, $limit, $offset)
     {
-        $result = $this->getAllUsers("admin");
+        $result = $this->getAllUsers(userType: "admin", userID: $userID, limit: $limit, offset: $offset);
         $admins = array_map(function ($u) {
             $userID = $u["UserID"];
 
@@ -21,23 +21,22 @@ class Admin extends User
         return $result;
     }
 
-    public function addAdmin()
+    public function create($userData)
     {
-        $result = $this->validateAdmin();
+        $result = $this->validateAdmin($userData);
         if (!$result["success"])
             return $result;
 
         $this->pdo->beginTransaction();
         try {
-            $userData = $_POST;
-            $adminID = $this->addUser($userData, true);
+            $adminID = $this->create($userData, true)["data"]["userID"];
 
             $sInsertAdmin = $this->pdo->prepare('INSERT INTO administrator(AdminID, DateJoined) VALUES(?, ?);');
             $sInsertAdmin->execute([$adminID,  $userData["date-joined"]]);
             $sInsertAdmin->closeCursor();
 
             $this->pdo->commit();
-            $result["data"] = $adminID;
+            $result["data"] = ["userID" => $adminID, "userType" => $userData["user-type"]];
         } catch (Exception $e) {
             var_dump($e);
             if ($this->pdo->inTransaction())
@@ -48,10 +47,9 @@ class Admin extends User
         return $result;
     }
 
-    public function validateAdmin()
+    public function validateAdmin($userData)
     {
-        $userData = $_POST;
-        $result = $this->validateUser();
+        $result = $this->validateUser($userData);
 
         if ($result["success"] == 1) {
             $dateJoined = htmlspecialchars($userData["date-joined"] ?? '');

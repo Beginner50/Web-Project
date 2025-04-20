@@ -45,7 +45,7 @@ RewriteRule ^login/$ /website/restController.php?resource=user&action=authentica
 
 # Validates, registers a user of their type & returns the userID & userType
 # Ex:
-#		localhost/register/(student|teacher|admin) - Registers a new student/teacher/admin 
+#		localhost/users/(student|teacher|admin)/register - Registers a new student/teacher/admin 
 #		POST: 
 #		{
 #			"user-type", "fname", "lname", "email", "gender", "dob", "password", "repeat-password"
@@ -53,8 +53,8 @@ RewriteRule ^login/$ /website/restController.php?resource=user&action=authentica
 #			"subject-taught", "teacher-date-joined"
 #			"admin-date-joined"
 #		}
-RewriteRule ^register/(student|teacher|admin)$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
-RewriteRule ^register/(student|teacher|admin)/$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher|admin)/register$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher|admin)/register/$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
 
 #  List classes
 #  (Accepts limit & offset query params for pagination)
@@ -63,20 +63,28 @@ RewriteRule ^register/(student|teacher|admin)/$ /website/restController.php?reso
 #		localhost/classes/1		- 	Lists class by classID=1
 RewriteRule ^classes$ /website/restController.php?resource=classes&action=list	[L,QSA]
 RewriteRule ^classes/$ /website/restController.php?resource=classes&action=list	[L,QSA]
-RewriteRule ^classes/([0-9]+) /website/restController.php?resource=classes&action=list&classID=$1 [L]
-RewriteRule ^classes/([0-9]+)/ /website/restController.php?resource=classes&action=list&classID=$1 [L]
+RewriteRule ^classes/([0-9]+)$ /website/restController.php?resource=classes&action=list&classID=$1 [L]
+RewriteRule ^classes/([0-9]+)/$ /website/restController.php?resource=classes&action=list&classID=$1 [L]
 
 #  List classes enrolled/classes taught by students/teachers
 #  Ex: 
-# 		localhost/users/student/classes 			- Lists classes enrolled by all students, by their UserIDs
-# 		localhost/users/student/1/classes			- Lists classes enrolled by student with userID 1 
+# 		localhost/users/student/classes 	- Lists classes enrolled by all students, by their UserIDs
+# 		localhost/users/student/1/classes	- Lists classes enrolled by student with userID 1 
 # 
-# 		localhost/users/teacher/classes				- Lists classes taught by all teachers, by their UsersIDs
-# 		localhost/users/teacher/1/classes			- Lists classes taught by teacher with userID 1 
+# 		localhost/users/teacher/classes		- Lists classes taught by all teachers, by their UsersIDs
+# 		localhost/users/teacher/1/classes	- Lists classes taught by teacher with userID 1 
 RewriteRule ^users/(student|teacher)/classes$ /website/restController.php?resource=classes&action=list&user-type=$1 [L,QSA]
 RewriteRule ^users/(student|teacher)/classes/$ /website/restController.php?resource=classes&action=list&user-type=$1 [L,QSA]
 RewriteRule ^users/(student|teacher)/([0-9]+)/classes$ /website/restController.php?resource=classes&action=list&user-type=$1&userID=$2 [L,QSA]
 RewriteRule ^users/(student|teacher)/([0-9]+)/classes/$ /website/restController.php?resource=classes&action=list&user-type=$1&userID=$2 [L,QSA]
+
+#  Enroll a student into classes by subjects taken
+#  Ex:
+#		localhost/classes/enroll/1	- Enroll student with userID 1 in classes based on subjects selected
+#		POST:
+#		{ "subjects": array }
+RewriteRule ^classes/enroll/([0-9]+)$ /website/restController.php?resource=classes&action=enroll&userID=$1 [L]
+RewriteRule ^classes/enroll/([0-9]+)/$ /website/restController.php?resource=classes&action=enroll&userID=$1 [L]
 
 # Lists subjects
 # Ex:

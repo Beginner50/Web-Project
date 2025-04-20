@@ -3,9 +3,9 @@ require_once "User.php";
 
 class Teacher extends User
 {
-    public function getAllTeachers()
+    public function getAllTeachers($userID = 0, $limit = 25, $offset = 0)
     {
-        $result = $this->getAllUsers("teacher");
+        $result = $this->getAllUsers(userType: "teacher", userID: $userID, limit: $limit, offset: $offset);
         $teachers = array_map(function ($u) {
             $userID = $u["UserID"];
 
@@ -28,25 +28,22 @@ class Teacher extends User
         return $result;
     }
 
-    public function addTeacher()
+    public function create($userData)
     {
-        $result = $this->validateTeacher();
+        $result = $this->validateTeacher($userData);
         if (!$result["success"])
             return $result;
 
         $this->pdo->beginTransaction();
         try {
-            $userData = $_POST;
-            $response = $this->addUser($userData, true);
-            if (!$response["success"]) throw new Exception(implode(", ", $response["errors"]));
-            $teacherID = $response["data"];
+            $teacherID = $this->create($userData, true)["data"]["userID"];
 
             $sInsertTeacher = $this->pdo->prepare('INSERT INTO teacher(TeacherID, SubjectTaught, DateJoined) VALUES(?, ?, ?);');
             $sInsertTeacher->execute([$teacherID, $userData["subject-taught"], $userData["date-joined"]]);
             $sInsertTeacher->closeCursor();
 
             $this->pdo->commit();
-            $result["data"] = $teacherID;
+            $result["data"] = ["userID" => $teacherID, "userType" => $userData["user-type"]];
         } catch (Exception $e) {
             var_dump($e);
             if ($this->pdo->inTransaction())
@@ -57,10 +54,9 @@ class Teacher extends User
         return $result;
     }
 
-    public function validateTeacher()
+    public function validateTeacher($userData)
     {
-        $userData = $_POST;
-        $result = $this->validateUser();
+        $result = $this->validateUser($userData);
 
         if ($result["success"] == 1) {
             $subjectTaught = htmlspecialchars($userData["subject-taught"] ?? '');

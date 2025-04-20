@@ -9,14 +9,8 @@ class User
     }
 
 
-    public function getAllUsers()
+    public function getAllUsers($userType = "all", $userID = 0, $limit = 25, $offset = 0)
     {
-        // Set default pagination values
-        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
-        $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
-        $userID = isset($_GET['userID']) ? (int)$_GET['userID'] : 0;
-        $userType = isset($_GET['user-type']) ? $_GET['user-type'] : "all";
-
         // Base query parts
         $queries = [
             'student' => "
@@ -97,8 +91,9 @@ class User
         return (int)$stmt->fetchColumn();
     }
 
-    protected function addUser($userData, $approval)
+    protected function create($userData, $approval)
     {
+        $userType = strtoupper($userData["user-type"][0]) . substr($userData["user-type"], 1, strlen($userData["user-type"]) - 1);
         try {
             $passwordHash = password_hash($userData['password'], PASSWORD_BCRYPT);
             $sInsertUser = $this->pdo->prepare('INSERT INTO user(DateOfBirth, FirstName, LastName,Email,Gender,Password) VALUES(?,?,?,?,?,?);');
@@ -110,19 +105,21 @@ class User
             $userID = $sGetUserID->fetchAll(PDO::FETCH_NUM)[0][0];
 
             if ($approval == true) {
-                $sInsertApproval = $this->pdo->prepare('INSERT INTO approval(AdminID, UserID, UserType, IsApproved) VALUES(null, ?, ?, ?);');
-                $sInsertApproval->execute([$userID, $userData["user-type"], 0]);
+                $sInsertApproval = $this->pdo->prepare('INSERT INTO approval(UserID, UserType) VALUES(?, ?);');
+                $sInsertApproval->bindParam(1, $userID, PDO::PARAM_INT);
+                $sInsertApproval->bindParam(2, $userType, PDO::PARAM_STR);
+                $sInsertApproval->execute();
                 $sInsertApproval->closeCursor();
             }
-            return ["success" => 1, "data" => $userID];
+
+            return ["success" => 1, "data" => ["userID" => $userID]];
         } catch (PDOException $e) {
             return ["success" => 0, "errors" => array($e->getMessage())];
         }
     }
 
-    public function validateUser()
+    public function validateUser($userData)
     {
-        $userData = $_POST ?? null;
         $result = ["success" => 0, "errors" => []];
 
         // Early return if empty user data

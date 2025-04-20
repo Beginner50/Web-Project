@@ -14,6 +14,12 @@ class ClassRestHandler extends SimpleRest
         $this->pdo = $pdo;
     }
 
+    /*
+    URL Query Arguments:
+    classID      -  Single class selection
+    limit -         Limits selection
+    offset -        Offset
+    */
     public function getAllClasses()
     {
         $class = new Classroom($this->pdo);
@@ -47,10 +53,45 @@ class ClassRestHandler extends SimpleRest
         exit;
     }
 
+    /*
+        Enrolls students based on their subjects taken and their level & class group.
+        If no class is found, create the corresponding class
+
+        POST:
+        {
+            "subjects": array
+        }
+    */
     public function enrollStudentInClasses()
     {
-        // Get & filter list of classes
+        $errors = [];
+        $subjects = json_decode($_POST["subjects"]);
+
+        // Get student data
+        $response = json_decode(file_get_contents("http://localhost/users/student/" . $_GET["userID"]), true);
+        if (!$response["success"]) return $response;
+        $studentData = $response["data"][0];
+
         $class = new Classroom($this->pdo);
-        $classes = $class->getAllClasses()["data"];
+        $classStudent = new ClassStudent($this->pdo);
+        foreach ($subjects as $subject) {
+            // Find classID (Create class if not found)
+            if (!($result = $class->findClassID($studentData["Level"], $studentData["ClassGroup"], $subject))["success"])
+                $result = $class->create($studentData["Level"], $studentData["ClassGroup"], $subject);
+            $classID = $result["data"]["classID"];
+
+            // Enroll student in class
+            $result = $classStudent->enrollStudentInClass($studentData["UserID"], $classID);
+            if (!$result["success"])
+                array_push($errors, ...$result["errors"]);
+        }
+
+        $statusCode = count($errors) > 0 ? 404 : 200;
+        $this->setHttpHeaders("application/json", $statusCode);
+        if (count($errors) > 0)
+            echo json_encode(["success" => 0, "errors" => [...$errors]]);
+        else
+            echo json_encode(["success" => 1]);
+        exit;
     }
 }
