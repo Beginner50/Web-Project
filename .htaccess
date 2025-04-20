@@ -18,6 +18,16 @@ RewriteEngine On
 RewriteRule ^(authentication|account|dashboard|messaging)$ /website/viewController.php?page=$1 [L,QSA]
 RewriteRule ^(authentication|account|dashboard|messaging)/$ /website/viewController.php?page=$1 [L,QSA]
 
+RewriteRule ^login$ /website/viewController.php?page=authentication&action=login [L,QSA]
+RewriteRule ^login/$ /website/viewController.php?page=authentication&action=login [L,QSA]
+
+RewriteRule ^registration$ /website/viewController.php?page=authentication&action=registration [L,QSA]
+RewriteRule ^registration/$ /website/viewController.php?page=authentication&action=registration [L,QSA]
+
+RewriteRule ^logout$ /website/viewController.php?page=logout [L,QSA]
+RewriteRule ^logout/$ /website/viewController.php?page=logout [L,QSA]
+
+#-------------------------------------- Users ---------------------------------------------
 #  List users WITHOUT their type-specific information
 #  (Accepts limit & offset query params for pagination)
 #  Ex: 
@@ -36,16 +46,16 @@ RewriteRule ^users/(student|teacher|admin)$ /website/restController.php?resource
 RewriteRule ^users/(student|teacher|admin)/$ /website/restController.php?resource=user&action=list&user-type=$1 [L,QSA]
 RewriteRule ^users/(student|teacher|admin)/([0-9]+)$ /website/restController.php?resource=user&action=list&user-type=$1&userID=$2 [L,QSA]
 
-# Authenticates the user and returns the userID & userType 
+# Authenticates the user and returns userID & userType
 # Ex:
 # 		localhost/login	
 # 		POST: {"email": "xyz@mail.com", "password": "tesmp"}
-RewriteRule ^login$ /website/restController.php?resource=user&action=authenticate [L,QSA]
-RewriteRule ^login/$ /website/restController.php?resource=user&action=authenticate [L,QSA]
+RewriteRule ^users/authenticate$ /website/restController.php?resource=user&action=authenticate [L,QSA]
+RewriteRule ^users/authenticate/$ /website/restController.php?resource=user&action=authenticate [L,QSA]
 
-# Validates, registers a user of their type & returns the userID & userType
+# Creates a user of their type & returns the userID & userType
 # Ex:
-#		localhost/users/(student|teacher|admin)/register - Registers a new student/teacher/admin 
+#		localhost/users/(student|teacher|admin)/create - Create a new student/teacher/admin 
 #		POST: 
 #		{
 #			"user-type", "fname", "lname", "email", "gender", "dob", "password", "repeat-password"
@@ -53,9 +63,10 @@ RewriteRule ^login/$ /website/restController.php?resource=user&action=authentica
 #			"subject-taught", "teacher-date-joined"
 #			"admin-date-joined"
 #		}
-RewriteRule ^users/(student|teacher|admin)/register$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
-RewriteRule ^users/(student|teacher|admin)/register/$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher|admin)/create$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher|admin)/create/$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
 
+#-------------------------------------- CLASSES ---------------------------------------------
 #  List classes
 #  (Accepts limit & offset query params for pagination)
 #  Ex:

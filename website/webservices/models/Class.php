@@ -8,12 +8,7 @@ class Classroom
         $this->pdo = $pdo;
     }
 
-    /*
-    URL Query Arguments:
-    classID      -  Single class selection
-    limit -         Limits selection
-    offset -        Offset
-    */
+
     public function getAllClasses()
     {
         $classID = isset($_GET["classID"]) ? (int)$_GET["classID"] : 0;
@@ -58,6 +53,7 @@ class Classroom
     public function create($level, $classGroup, $subjectCode)
     {
         try {
+            $this->pdo->beginTransaction();
             $stmt = $this->pdo->prepare("INSERT INTO class(Level, ClassGroup, SubjectCode) VALUES(?,?,?)");
             $stmt->execute([$level, $classGroup, $subjectCode]);
             $stmt->closeCursor();

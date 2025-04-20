@@ -21,15 +21,15 @@ class Admin extends User
         return $result;
     }
 
-    public function create($userData)
+    public function create($userData, $approval = true)
     {
-        $result = $this->validateAdmin($userData);
+        $result = $this->validateAdmin($userData, $approval);
         if (!$result["success"])
             return $result;
 
-        $this->pdo->beginTransaction();
         try {
-            $adminID = $this->create($userData, true)["data"]["userID"];
+            $this->pdo->beginTransaction();
+            $adminID = User::create($userData, true)["data"]["userID"];
 
             $sInsertAdmin = $this->pdo->prepare('INSERT INTO administrator(AdminID, DateJoined) VALUES(?, ?);');
             $sInsertAdmin->execute([$adminID,  $userData["date-joined"]]);
@@ -49,7 +49,7 @@ class Admin extends User
 
     public function validateAdmin($userData)
     {
-        $result = $this->validateUser($userData);
+        $result = User::validateUser($userData);
 
         if ($result["success"] == 1) {
             $dateJoined = htmlspecialchars($userData["date-joined"] ?? '');

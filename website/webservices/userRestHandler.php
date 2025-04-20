@@ -78,13 +78,9 @@ class UserRestHandler extends SimpleRest
         switch ($_GET['user-type']) {
             case "student":
                 $student = new Student($this->pdo);
-                if (!($result = $student->findUserID($userData["email"]))["success"]) {
-                    $result = $student->create($userData);
-                    if (!$result["success"])
-                        break;
-
-                    $studentID = $result["data"]["userID"];
-                } else
+                if (!($result = $student->findUserID($userData["email"]))["success"])
+                    break;
+                else
                     $studentID = $result["data"]["userID"];
 
                 // Enroll student in classes based on subjects taken

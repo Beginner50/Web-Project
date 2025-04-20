@@ -28,15 +28,15 @@ class Teacher extends User
         return $result;
     }
 
-    public function create($userData)
+    public function create($userData, $approval = true)
     {
         $result = $this->validateTeacher($userData);
         if (!$result["success"])
             return $result;
 
-        $this->pdo->beginTransaction();
         try {
-            $teacherID = $this->create($userData, true)["data"]["userID"];
+            $this->pdo->beginTransaction();
+            $teacherID = User::create($userData, $approval)["data"]["userID"];
 
             $sInsertTeacher = $this->pdo->prepare('INSERT INTO teacher(TeacherID, SubjectTaught, DateJoined) VALUES(?, ?, ?);');
             $sInsertTeacher->execute([$teacherID, $userData["subject-taught"], $userData["date-joined"]]);
@@ -56,7 +56,7 @@ class Teacher extends User
 
     public function validateTeacher($userData)
     {
-        $result = $this->validateUser($userData);
+        $result = User::validateUser($userData);
 
         if ($result["success"] == 1) {
             $subjectTaught = htmlspecialchars($userData["subject-taught"] ?? '');

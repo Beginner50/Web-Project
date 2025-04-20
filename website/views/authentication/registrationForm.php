@@ -1,4 +1,4 @@
-<form id="registration-form"
+<form id="registration-form" action="/registration" method="post"
     style="display: none;">
     <!-- User Type Fieldset (Select between different users) -->
     <fieldset id="userType-fieldset">
@@ -31,7 +31,7 @@
         </div>
         <!-- Gender -->
         <div class="input-group"> <label>Gender</label>
-            <select class="input-box hover transparent-placeholder" name="gender" required>
+            <select id="gender" class="input-box hover transparent-placeholder" name="gender" required>
                 <option> </option>
                 <option value="M"> Male </option>
                 <option value="F"> Female </option>
@@ -39,15 +39,15 @@
         </div>
         <!-- Date of Birth -->
         <div class="input-group"> <label>Date of Birth </label><input
-                class="input-box hover transparent-placeholder" type="date" required name="dob">
+                id="dob" class="input-box hover transparent-placeholder" type="date" required name="dob">
         </div>
         <!-- Password -->
         <div class="input-group">
-            <label>Password </label><input class="input-box hover transparent-placeholder" type="password"
+            <label>Password </label><input id="password" class="input-box hover transparent-placeholder" type="password"
                 required name="password" pattern="(?=.*[A-Z])(?=.*\d).{5,}" minlength="5">
         </div>
         <!-- Re-enter Password -->
-        <div class="input-group"> <label>Re-enter Password </label><input
+        <div class="input-group"> <label>Re-enter Password </label><input id="repeat-password"
                 class="input-box hover transparent-placeholder" type="password" required name="repeat-password"
                 pattern="(?=.*[A-Z])(?=.*\d).{5,}" minlength="5">
         </div>
@@ -60,7 +60,7 @@
             <div id="top-section">
                 <div class="input-group student">
                     <span> Class Group: </span>
-                    <select class="input-box transparent-placeholder hover student" name="class-group" required>
+                    <select id="class-group" class="input-box transparent-placeholder hover student" name="class-group" required>
                         <option> </option>
                         <option> Red </option>
                         <option> Blue </option>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="input-group student">
                     <span> Level:</span>
-                    <select class="input-box transparent-placeholder hover " style="padding-left:1px;"
+                    <select id="level" class="input-box transparent-placeholder hover " style="padding-left:1px;"
                         name="level" required>
                         <option> </option>
                         <option> 1</option>
@@ -82,17 +82,17 @@
         <!-- Teacher specific attributes -->
         <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;" disabled>
             <div class="teacher input-group">
-                Subject Taught: <input class="input-box hover transparent-placeholder " name="subject-taught"
+                Subject Taught: <input id="subject-taught" class="input-box hover transparent-placeholder " name="subject-taught"
                     type="text" required>
             </div>
             <div class="teacher input-group">
-                Date Joined: <input class="input-box hover transparent-placeholder " name="teacher-date-joined"
+                Date Joined: <input id="teacher-date-joined" class="input-box hover transparent-placeholder " name="teacher-date-joined"
                     type="date" required>
             </div>
         </fieldset>
         <fieldset id="specificAttr-fieldset-admin" class="no-border" style="display:none;" disabled>
             <div class="admin input-group">
-                Date Joined <input class="input-box hover transparent-placeholder " name="admin-date-joined"
+                Date Joined <input id="admin-date-joined" class="input-box hover transparent-placeholder " name="admin-date-joined"
                     type="date" required>
             </div>
         </fieldset>
@@ -107,32 +107,6 @@
 </form>
 
 <!---------------------------------------------- Javascript --------------------------------------------->
-<!-- Registration Form Submission Logic -->
-<script>
-    $(document).ready(function(event) {
-        $("#registration-form").on("submit", function(event) {
-            event.preventDefault();
-
-            const formData = $(this).serialize();
-
-            $.ajax({
-                url: "/register/" + userType,
-                type: "POST",
-                data: formData,
-                success: function(response) {
-                    window.location.href = "/account";
-                },
-                error: function(xhr, status, error) {
-                    if (xhr.status == 409)
-                        alert(JSON.parse(xhr.responseText)[0]);
-                    else
-                        alert("An error occurred while submitting the form.");
-                }
-            });
-        });
-    });
-</script>
-
 <!-- User Type Selection Logic -->
 <script>
     inTransit = false;
@@ -188,5 +162,43 @@
         });
 
 
+    });
+</script>
+
+<!-- Cookie Logic -->
+<script>
+    $(document).ready(function() {
+        $("#fname").val(window.localStorage.getItem("fname"));
+        $("#lname").val(window.localStorage.getItem("lname"));
+        $("#email").val(window.localStorage.getItem("email"));
+        $("#gender").val(window.localStorage.getItem("gender"));
+        $("#dob").val(window.localStorage.getItem("dob"));
+        $("#password").val(window.localStorage.getItem("password"));
+        $("#repeat-password").val(window.localStorage.getItem("repeat-password"));
+
+        $("#class-group").val(window.localStorage.getItem("class-group"));
+        $("#level").val(window.localStorage.getItem("level"));
+        $("#teacher-date-joined").val(window.localStorage.getItem("teacher-date-joined"));
+        $("#subject-taught").val(window.localStorage.getItem("subject-taught"));
+        $("#admin-date-joined").val(window.localStorage.getItem("admin-date-joined"));
+
+
+        $("#registration-form").on("submit", function() {
+            const formData = new FormData(this);
+
+            window.localStorage.setItem("fname", formData.get("fname"));
+            window.localStorage.setItem("lname", formData.get("lname"));
+            window.localStorage.setItem("email", formData.get("email"));
+            window.localStorage.setItem("gender", formData.get("gender"));
+            window.localStorage.setItem("dob", formData.get("dob"));
+            window.localStorage.setItem("password", formData.get("password"));
+            window.localStorage.setItem("repeat-password", formData.get("repeat-password"));
+
+            window.localStorage.setItem("class-group", formData.get("class-group"));
+            window.localStorage.setItem("level", formData.get("level"));
+            window.localStorage.setItem("teacher-date-joined", formData.get("teacher-date-joined"));
+            window.localStorage.setItem("subject-taught", formData.get("subject-taught"));
+            window.localStorage.setItem("admin-date-joined", formData.get("admin-date-joined"));
+        });
     });
 </script>

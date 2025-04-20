@@ -1,42 +1,23 @@
-<form id="login-form">
-    <div class="input-group"> Email: <input class="input-box" type="email" name="email" required
+<form id="login-form" action="/login" method="post">
+    <div class="input-group"> Email: <input id="login-email" class="input-box" type="email" name="email" required
             autocomplete="email">
     </div>
-    <div class="input-group"> Password: <input class="input-box" type="" name="password" id="login-password" required>
+    <div class="input-group"> Password: <input id="login-password" class="input-box" type="" name="password" id="login-password" required>
     </div>
     <button id="loginSubmit-button" type="submit" class="indigoTheme roundBorder" form="login-form">
         Submit
     </button>
 </form>
 
-<!---------------------------------------------- Javascript --------------------------------------------->
-<!-- Login Form Submission Logic -->
 <script>
     $(document).ready(function() {
+        $("#login-email").val(window.localStorage.getItem("login-email"));
+        $("#login-password").val(window.localStorage.getItem("login-password"));
+
         $("#login-form").on("submit", function(event) {
-            event.preventDefault();
-
-            const formData = $(this).serialize();
-
-            // login redirects to page controller, which gets resources, saves session & navigate to page
-            $.ajax({
-                url: "/login",
-                type: "POST",
-                data: formData,
-                success: function(response) {
-                    const userID = response["userID"];
-                    const userType = response["userType"];
-                    window.location.href = "/account/" + userType + "/" + userID;
-                },
-                error: function(xhr, status, error) {
-                    if (xhr.status == 409 || xhr.status == 401) {
-
-                        const response = xhr.responseJSON;
-                        alert("Error:\n" + response.errors.join('\n'));
-                    } else
-                        alert("An error occurred while submitting the form.");
-                }
-            });
+            const formData = new FormData(this);
+            window.localStorage.setItem("login-email", formData.get("email"));
+            window.localStorage.setItem("login-password", formData.get("password"));
         });
     });
 </script>

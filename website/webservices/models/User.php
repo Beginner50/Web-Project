@@ -88,7 +88,9 @@ class User
         }
 
         $stmt = $this->pdo->query($sql);
-        return (int)$stmt->fetchColumn();
+        $result = (int)$stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $result;
     }
 
     protected function create($userData, $approval)
@@ -145,9 +147,10 @@ class User
         $lastName = htmlspecialchars($userData["lname"] ?? '');
         if (empty($lastName)) {
             $result["errors"][] = "Last Name is required!";
-        } elseif (!preg_match('/^[a-zA-Z \-]+$/', $lastName)) {
-            $result["errors"][] = "Last Name contains invalid characters!";
         }
+        //  elseif (!preg_match('/^[a-zA-Z \-]+$/', $lastName)) {
+        //     $result["errors"][] = "Last Name contains invalid characters!";
+        // }
 
         // Email validation
         $email = htmlspecialchars($userData["email"] ?? '');
@@ -215,28 +218,26 @@ class User
 
     public function findUserID($email)
     {
-        try {
-            // UserID
-            $stmt = $this->pdo->prepare("SELECT UserID FROM user WHERE Email = ? LIMIT 1");
-            $stmt->execute([$email]);
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if ($result == NULL)
-                return ["success" => 0, "errors" => array("Could not find user!")];
-            else
-                $userID = $result[0]["UserID"];
+        // UserID
+        $stmt = $this->pdo->prepare("SELECT UserID FROM user WHERE Email = ? LIMIT 1");
+        $stmt->execute([$email]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        if ($result == NULL)
+            return ["success" => 0, "errors" => array("Could not find user!")];
+        else
+            $userID = $result[0]["UserID"];
 
-            // UserType
-            $stmt = $this->pdo->prepare("(SELECT 'Student' AS UserType FROM student WHERE StudentID = ?)
+        // UserType
+        $stmt = $this->pdo->prepare("(SELECT 'Student' AS UserType FROM student WHERE StudentID = ?)
                                          UNION
                                          (SELECT 'Teacher' AS UserType FROM teacher WHERE TeacherID = ?)
                                          UNION
                                          (SELECT 'Admin' AS UserType FROM administrator WHERE AdminID = ?);");
-            $stmt->execute([$userID, $userID, $userID]);
-            $userType = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["UserType"];
+        $stmt->execute([$userID, $userID, $userID]);
+        $userType = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["UserType"];
+        $stmt->closeCursor();
 
-            return ["success" => 1, "data" => ["userID" => $userID, "userType" => $userType]];
-        } catch (PDOException $e) {
-            return ["success" => 0, "errors" => $e->getMessage()];
-        }
+        return ["success" => 1, "data" => ["userID" => $userID, "userType" => $userType]];
     }
 }
