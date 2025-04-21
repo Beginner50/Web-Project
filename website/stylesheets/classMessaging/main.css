@@ -1,149 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
 body {
-    position: relative;
-    height: 101vh;
-    overflow-y: hidden;
-    margin-top: 20%;
-    margin: auto;
-    display: flex;
-    flex-direction: row;
-}
-
-body #main-wrapper {
-    position: relative;
-    width: clamp(600px, 80%, 3000px);
-    margin-top: 11.1vh;
-    background: url("../../assets/cool-background.png");
-    background-size: cover;
-}
-
-#main-wrapper #classChat-header {
-    width: 100%;
-    height: 12%;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 0px;
-    border-radius: 0px 5px 0px 0px;
-    background-color: rgba(222, 222, 255, 0.5);
-    box-shadow: 1px 2px 3px grey;
-}
-
-#classChat-header #left-section {
-    display: flex;
-    width: 100%;
-    justify-items: center;
-    align-items: center;
-    align-content: center;
-    gap: 10px;
-}
-
-#left-section #classChat-description {
-    font-size: clamp(0.7rem, 1.4vw + 0.1rem, 5rem);
-    width: 20vw;
-}
-
-#classChat-header #left-section>img {
-    margin-left: 2%;
-}
-
-#classChat-header #classChat-description {
-    margin-top: 2.5%;
-    margin-left: 1%;
-    padding-bottom: 2.5%;
-    font-weight: bold;
-    color: var(--blueOcean);
-}
-
-#classChat-header #viewMembers-button {
-    height: 80%;
-    margin: auto;
-    width: 20%;
-    margin-right: 1%;
-    font-size: clamp(0.5rem, 0.8vw + 0.4rem, 5rem);
-}
-
-#main-wrapper #classChat-body {
-    position: relative;
-    width: 100%;
-    height: 75%;
-    overflow-y: scroll;
-    overflow-wrap: break-word;
     display: flex;
     flex-direction: column;
+    /* Body arranges children vertically */
+    height: 100vh;
+    margin: 0;
+    font-family: 'Josefin Sans', sans-serif;
+    /* Remove overflow: hidden from body if it was there, let children handle scroll */
 }
 
-#classChat-body .message {
+* {
+    box-sizing: border-box;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: row;
+    /* Sidebar and main content side-by-side */
+    align-items: stretch;
+    /* MODIFIED: Make children stretch to equal height */
+    flex-grow: 1;
+    /* ADDED: Make this row take up available vertical space in body */
+    overflow: hidden;
+    /* ADDED: Prevent this container from scrolling, children will scroll */
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: rgba(230, 230, 255, 0.7);
+    padding: 1em 0.5em;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    /* REMOVED height: 84vh !important; Height will come from align-items: stretch */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    /* Allow sidebar internal scrolling if needed */
+    overflow-x: hidden;
+    font-family: inherit;
+    width: 250px;
+    /* ADDED: Give sidebar a fixed width */
+    /* Or use flex-basis if you prefer: */
+    /* flex-basis: 250px; */
+    flex-shrink: 0;
+    /* ADDED: Prevent sidebar from shrinking */
+}
+
+.sidebar h2 {
+    margin-bottom: 1em;
+    font-family: inherit;
+}
+
+#class-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* This centers the .class-entry blocks */
+    width: 100%;
+    gap: 0.5em;
+    list-style: none;
+    margin-left: 20%;
+    padding-left: 0;
+    font-family: inherit;
+    /* border: 1px solid red; */
+}
+
+#class-menu .class-entry {
+    width: 90%;
+    /* Keeps the block centered horizontally via parent's align-items */
+    text-align: center;
+    /* MODIFIED: Align text *inside* the block to the center */
+    background-color: rgba(150, 150, 255, 0.2);
+    padding: 0.6em 1em;
+    /* Internal padding */
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    border: 1px solid #aaa;
+    color: white;
+    list-style: none;
+    font-family: inherit;
+    /* REMOVED: !important from text-align if it was added */
+}
+
+#class-menu .class-entry:hover {
+    background-color: rgba(120, 120, 255, 0.4);
+}
+
+/* Main Wrapper */
+#main-wrapper {
+    flex-grow: 1;
+    /* Take remaining horizontal space */
+    display: flex;
+    flex-direction: column;
+    /* Stack header, body, footer */
+    background: url("../../assets/cool-background.png") no-repeat center center / cover;
+    overflow: hidden;
+    /* Important: Prevent wrapper scroll, let #classChat-body scroll */
+    font-family: inherit;
+    /* Height is determined by align-items: stretch from .flex-col */
+}
+
+
+/* Header */
+#classChat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Use a fixed height or smaller vh/percentage */
+    height: 70px;
+    /* Reduced fixed height */
+    /* height: 9vh; */
+    /* Alternative vh height */
+    padding: 0 1em;
+    background-color: rgba(222, 222, 255, 0.5);
+    box-shadow: 1px 2px 3px grey;
+    z-index: 2;
+    font-family: inherit;
+    flex-shrink: 0;
+    /* Prevent header from shrinking */
+}
+
+#left-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: inherit;
+}
+
+#left-section>img {
+    height: 32px;
+    /* Keep icon size reasonable */
+    width: 32px;
+    /* Ensure aspect ratio if needed */
+    object-fit: contain;
+    /* Ensure icon fits well */
+    margin-right: 8px;
+}
+
+#classChat-description {
+    font-weight: bold;
+    color: var(--blueOcean);
+    /* Adjusted clamp for smaller max size */
+    font-size: clamp(0.8rem, 1.2vw + 0.1rem, 1.4rem);
+    font-family: inherit;
+}
+
+/* View Members Button */
+#viewMembers-button {
+    padding: 0.4em 1em;
+    /* Adjusted clamp for smaller max size */
+    font-size: clamp(0.7rem, 0.8vw + 0.3rem, 1.1rem);
+    /* Adjust height relative to new header height if needed, or keep auto */
+    /* height: 80%; */
+    /* Maybe remove fixed percentage height */
+    border-radius: 8px;
+    background-color: white;
+    border: none;
+    box-shadow: 0 0 4px gray;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    /* Prevent button text wrapping */
+}
+
+/* Chat Body */
+#classChat-body {
+    flex-grow: 1;
+    /* Take available vertical space within #main-wrapper */
+    overflow-y: auto;
+    /* *** THIS is the main scrollable chat area *** */
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    font-family: inherit;
+}
+
+.message {
     width: 60%;
     border-radius: 10px;
     background-color: rgba(222, 222, 255, 0.7);
-    margin: 1%;
-    padding: 1%;
+    margin: 0.5em 0;
+    padding: 0.6em;
+    font-family: inherit;
 }
 
-#main-wrapper #classChat-footer {
-    width: 100%;
-    height: 10svh;
+/* Footer */
+#classChat-footer {
+    /* Keep height reasonable, e.g., fixed or vh */
+    height: 65px;
+    /* height: 8vh; */
     background-color: rgba(222, 222, 255, 0.6);
-    padding-top: 5px;
-    padding-bottom: 5px;
+    display: flex;
+    align-items: center;
+    /* Vertically center items */
+    padding: 0 1em;
+    /* Keep horizontal padding */
+    gap: 15px;
+    /* Increased gap between input and button */
+    box-sizing: border-box;
+    font-family: inherit;
+    flex-shrink: 0;
+    /* Prevent footer from shrinking */
 }
 
-
-#classChat-footer #message-input {
-    height: 65%;
-    width: 68svw;
-    padding: 5px;
-    margin-left: 1%;
-    font-size: clamp(0.2rem, 1vw + 0.1rem, 5rem);
+#message-input {
+    flex-grow: 1;
+    /* Allow input to take available space */
+    /* Let height be controlled by footer alignment, or set explicit height */
+    height: 40px;
+    /* Example fixed height */
+    /* height: 70%; */
+    /* Alternative percentage height */
+    font-size: clamp(0.8rem, 1vw + 0.1rem, 1.1rem);
+    /* Adjust font size */
+    padding: 0.5em;
     border-radius: 5px;
+    border: 1px solid #aaa;
+    resize: none;
+    font-family: inherit;
 }
 
-#classChat-footer #send-button {
-    position: relative;
-    width: 4svw;
-    margin-left: clamp(10px, 0.2svw, 500px);
-    height: 8.5svh;
-    cursor: pointer;
-    border-radius: 5px;
+#send-button {
+    height: 40px;
+    /* Match height of the input bar */
+    width: 40px;
+    /* Make it square */
+    /* aspect-ratio: 1 / 1; */
+    /* Alternatively use aspect ratio */
     background-color: rgba(255, 255, 255, 0.6);
-    padding-right: 0.3vw;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    /* position: relative; */
+    /* Usually not needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    padding: 0;
+    /* Remove padding that might affect size */
+    flex-shrink: 0;
+    /* Prevent button from shrinking */
 }
 
-#send-button>img {
-    position: absolute;
-    top: 25%;
-    left: 0.9vw;
+#send-button img {
     width: 24px;
     height: 24px;
 }
 
-
-
-@media(width < 400px) {
-
-    #classChat-footer #message-input {
-        width: 60svw;
-    }
-
-    #send-button>img {
-        width: 3vw;
-        height: 4vh;
-    }
-}
-
-#classChat-footer #send-button:hover {
+#send-button:hover {
     background-color: rgba(205, 25, 100, 0.6);
 }
 
-#classChat-footer #send-button:active {
+#send-button:active {
     background-color: rgba(205, 25, 100, 0.8);
 }
 
-#main-wrapper #classChat-cover {
+/* Cover Message */
+#classChat-cover {
+    flex-grow: 1;
     background-color: white;
-    width: 100%;
-    height: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-size: 1.5em;
+    font-family: inherit;
 }

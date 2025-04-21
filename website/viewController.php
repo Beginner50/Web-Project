@@ -29,10 +29,10 @@ function sendPostRequest($url, $data)
 
 function redirectAuthenticationOrRestoreSession()
 {
-    if (!isset($_SESSION['userType']))
+    if (!isset($_SESSION['UserType']))
         header("Location: /authentication");
     else
-        header("Location: /account/" . $_SESSION["userType"] . "/" . $_SESSION["userID"]);
+        header("Location: /account/" . $_SESSION["UserType"] . "/" . $_SESSION["userID"]);
     exit;
 }
 
@@ -52,10 +52,12 @@ switch ($page = $_GET['page']) {
 
             $response = json_decode(sendPostRequest($url, $_POST), true);
             if ($response["success"]) {
-                $_SESSION["userType"] = strtolower($response["data"]["userType"]);
-                $_SESSION["userID"] = $response["data"]["userID"];
+                $_SESSION = json_decode(
+                    file_get_contents("http://localhost/users/" . $response["data"]["userType"] . "/" . $response["data"]["userID"]),
+                    true
+                )["data"][0];
 
-                header("Location: /account/" . $_SESSION["userType"] . "/" . $_SESSION["userID"]);
+                header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
                 exit;
             } else {
                 $errors = $response["errors"];
@@ -66,28 +68,24 @@ switch ($page = $_GET['page']) {
         require 'views/authentication/authenticationView.php';
         break;
     case "dashboard":
-        if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'Admin') {
-            require 'models/adminDashboard/getListUsers.php';
+        if (isset($_SESSION['UserType']) && $_SESSION['UserType'] == 'Admin') {
+            // require 'models/adminDashboard/getListUsers.php';
             require 'views/adminDashboard/adminDashboardView.php';
         }
         break;
     case "account":
-        if (isset($_SESSION['userType'])) {
-            $userData = json_decode(
-                file_get_contents("http://localhost/users/" . $_GET["user-type"] . "/" . $_GET["userID"]),
-                true
-            )["data"][0];
-
+        if (isset($_SESSION['UserType'])) {
             require 'views/accountManagement/accountManagementView.php';
         }
         break;
     case "messaging":
-        if (isset($_SESSION['userType']))
+        if (isset($_SESSION['UserType']))
             require 'views/classMessaging/classMessagingView.php';
         break;
     case "logout":
-        unset($_SESSION["userType"]);
-        unset($_SESSION["userID"]);
+        foreach (array_keys($_SESSION) as $key) {
+            unset($_SESSION[$key]);
+        }
         header("Location: /");
         break;
 };
