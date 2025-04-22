@@ -52,12 +52,77 @@ class ClassRestHandler extends SimpleRest
         $rawData = $classMessage->getAllMessagesByClassIDs(classID: $classID, limit: $limit, offset: $offset);
 
         $statusCode = empty($rawData) ? 404 : 200;
+        if ($classID != 0) {
+            $rawData = [
+                "data" => $rawData["data"][0][$classID]["Messages"],
+                "pagination" => $rawData["data"][0][$classID]["pagination"]
+            ];
+        }
+
         $this->setHttpHeaders("application/json", $statusCode);
         echo json_encode($rawData);
         exit;
     }
 
     /*
+    URL Query Arguments:
+    userID      -  Single user selection
+    */
+    public function getClassesEnrolledByStudentIDs()
+    {
+        $userID = $_GET["userID"] ?? 0;
+
+        $classStudent = new ClassStudent($this->pdo);
+        $rawData = $classStudent->getAllClassesEnrolledByStudentIDs(userID: $userID);
+
+        $statusCode = empty($rawData) ? 404 : 200;
+        if ($userID != 0)
+            $rawData["data"] = $rawData["data"][0][$userID];
+        $this->setHttpHeaders("application/json", $statusCode);
+        echo json_encode($rawData);
+        exit;
+    }
+
+    /*
+    URL Query Arguments:
+    userID      -  Single user selection
+    */
+    public function getClassesTaughtByTeacherIDs()
+    {
+        $userID = $_GET["userID"] ?? 0;
+
+        $classTeacher = new ClassTeacher($this->pdo);
+        $rawData = $classTeacher->getAllClassesTaughtByTeacherIDs(userID: $userID);
+
+        $statusCode = empty($rawData) ? 404 : 200;
+        if ($userID != 0)
+            $rawData["data"] = $rawData["data"][0][$userID];
+        $this->setHttpHeaders("application/json", $statusCode);
+        echo json_encode($rawData);
+        exit;
+    }
+
+    /*
+    URL Query Arguments:
+    classID      - Single class selection
+    */
+    public function getClassMembersByClassIDs()
+    {
+        $classID = $_GET["classID"] ?? 0;
+
+        $class = new Classroom($this->pdo);
+        $rawData = $class->getClassMembersByClassIDs(classID: $classID);
+
+        $statusCode = empty($rawData) ? 404 : 200;
+        $this->setHttpHeaders("application/json", $statusCode);
+        echo json_encode($rawData);
+        exit;
+    }
+
+    /*
+        Post a message to a class
+        If valiation constraints are not met, return failure
+
         POST:
         { classID, userID, message }
     */
@@ -77,6 +142,8 @@ class ClassRestHandler extends SimpleRest
     }
 
     /*
+        Assigns a teacher to a class
+
         POST:
         {userID, classID}
     */
@@ -95,47 +162,11 @@ class ClassRestHandler extends SimpleRest
     }
 
     /*
-    URL Query Arguments:
-    userID      -  Single class selection
-    */
-    public function getClassesEnrolledByStudentIDs()
-    {
-        $userID = $_GET["userID"] ?? 0;
-
-        $classStudent = new ClassStudent($this->pdo);
-        $rawData = $classStudent->getAllClassesEnrolledByStudentIDs(userID: $userID);
-
-        $statusCode = empty($rawData) ? 404 : 200;
-        $this->setHttpHeaders("application/json", $statusCode);
-        echo json_encode($rawData);
-        exit;
-    }
-
-    /*
-    URL Query Arguments:
-    userID      -  Single class selection
-    */
-    public function getClassesTaughtByTeacherIDs()
-    {
-        $userID = $_GET["userID"] ?? 0;
-
-        $classTeacher = new ClassTeacher($this->pdo);
-        $rawData = $classTeacher->getAllClassesTaughtByTeacherIDs(userID: $userID);
-
-        $statusCode = empty($rawData) ? 404 : 200;
-        $this->setHttpHeaders("application/json", $statusCode);
-        echo json_encode($rawData);
-        exit;
-    }
-
-    /*
         Enrolls students based on their subjects taken and their level & class group.
         If no class is found, create the corresponding class
 
         POST:
-        {
-            "subjects": array
-        }
+        { "subjects": array }
     */
     public function enrollStudentInClasses()
     {

@@ -119,14 +119,19 @@ RewriteRule ^classes/([0-9]+)/assign/([0-9]+)/$ /website/restController.php?reso
 #  Ex:
 #		localhost/classes/messages		- Lists class messages by classIDs
 #		localhost/classes/7/messages	- Lists class messages for class with ClassID 7	
-RewriteRule ^classes/messages$ /website/restController.php?resource=classes&action=list-users [L,QSA]
-RewriteRule ^classes/messages/$ /website/restController.php?resource=classes&action=list-users [L,QSA]
-RewriteRule ^classes/([0-9]+)/messages$ /website/restController.php?resource=classes&action=list-users&classID=$1 [L,QSA]
-RewriteRule ^classes/([0-9]+)/messages/$ /website/restController.php?resource=classes&action=list-users&classID=$1 [L,QSA]
+RewriteRule ^classes/messages$ /website/restController.php?resource=classes&action=list-messages [L,QSA]
+RewriteRule ^classes/messages/$ /website/restController.php?resource=classes&action=list-messages [L,QSA]
+RewriteRule ^classes/([0-9]+)/messages$ /website/restController.php?resource=classes&action=list-messages&classID=$1 [L,QSA]
+RewriteRule ^classes/([0-9]+)/messages/$ /website/restController.php?resource=classes&action=list-messages&classID=$1 [L,QSA]
 
 #  Lists class members
+#  Ex:
+#		localhost/classes/members		- Lists class members by classIDs
+#		localhost/classes/1/members		- Lists class members for class with ClassID 1
 RewriteRule ^classes/members$ /website/restController.php?resource=classes&action=list-members [L,QSA]
 RewriteRule ^classes/members/$ /website/restController.php?resource=classes&action=list-members [L,QSA]
+RewriteRule ^classes/([0-9]+)/members$ /website/restController.php?resource=classes&action=list-members&classID=$1 [L,QSA]
+RewriteRule ^classes/([0-9]+)/members/$ /website/restController.php?resource=classes&action=list-members&classID=$1 [L,QSA]
 
 #  Creates a messsage
 #  Ex:

@@ -34,7 +34,7 @@ class ClassStudent
         }
 
         // Get classes enrolled by studentIDs
-        $result = array_map(function ($studentID) {
+        $result = array_values(array_map(function ($studentID) {
             $stmt = $this->pdo->prepare("SELECT class.*, subject.SubjectName FROM class_student 
                                          INNER JOIN class ON class_student.ClassID = class.ClassID
                                          INNER JOIN subject ON class.SubjectCode = subject.SubjectCode
@@ -43,11 +43,9 @@ class ClassStudent
             $classesEnrolled = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             return [$studentID => $classesEnrolled];
-        }, $studentIDs);
-        return ["success" => 1, "data" => $userID == 0 ? $result : $result[0][$userID]];
+        }, $studentIDs));
+        return ["success" => 1, "data" =>  $result];
     }
-
-    public function getAllStudentsEnrolledByClassIDs() {}
 
     public function enrollStudentInClass($studentID, $classID)
     {

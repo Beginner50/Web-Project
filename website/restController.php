@@ -24,7 +24,7 @@ switch ($resource) {
 				$result = $userRestHandler->getAllUsers();
 				break;
 			case "list-classes":
-				$userType = isset($_GET['user-type']) ?? "";
+				$userType = $_GET['user-type'] ?? "";
 				switch ($userType) {
 					case "student":
 						$classRestHandler = new ClassRestHandler($pdo);
@@ -71,7 +71,8 @@ switch ($resource) {
 				$result = $classRestHandler->getAllClasses();
 				break;
 			case "list-members":
-
+				$classRestHandler = new ClassRestHandler($pdo);
+				$result = $classRestHandler->getClassMembersByClassIDs();
 				break;
 			case "list-messages":
 				$classRestHandler = new ClassRestHandler($pdo);

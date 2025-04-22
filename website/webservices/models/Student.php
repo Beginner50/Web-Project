@@ -16,6 +16,7 @@ class Student extends User
             $studentData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Get student class enrolled
+            $response = file_get_contents("http://localhost/users/student/" . $userID . "/classes");
             $response = json_decode(file_get_contents("http://localhost/users/student/" . $userID . "/classes"), true);
             if (!$response["success"])
                 return ["success" => 0, "errors" => array("Could not get classes enrolled!")];

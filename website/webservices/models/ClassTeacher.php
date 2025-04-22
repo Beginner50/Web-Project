@@ -17,31 +17,31 @@ class ClassTeacher
         else {
             $response = json_decode(file_get_contents("http://localhost/users?limit=999"), true);
             if (!$response["success"])
-                return ["success" => 0, "errors" => array("Could not get students!")];
+                return ["success" => 0, "errors" => array("Could not get teachers!")];
 
-            $teachers = array_filter($response["data"], function ($user) {
-                if ($user["UserType"] == "Teacher") return true;
-                return false;
+            $teacherIDs = array_filter(array_map(function ($user) {
+                if ($user["UserType"] == "Teacher")
+                    return $user["UserID"];
+                else
+                    return 0;
+            }, $response["data"]), function ($elem) {
+                if ($elem == 0) return false;
+                return true;
             });
-
-            $teacherIDs = array_map(function ($teacher) {
-                return $teacher["UserID"];
-            }, $teachers);
         }
 
-        $result = array_map(function ($teacherID) {
-            $stmt = $this->pdo->prepare("SELECT class.ClassID, class.Level, class.ClassGroup, class.SubjectCode FROM teacher 
-                                         INNER JOIN class ON teacher.TeacherID = class.TeacherID
-                                         WHERE teacher.teacherID = ?;");
+        $result = array_values(array_map(function ($teacherID) {
+            $stmt = $this->pdo->prepare("SELECT ClassID, Level, ClassGroup, SubjectCode 
+                                         FROM class WHERE TeacherID = ?;");
             $stmt->execute([$teacherID]);
 
             $classesTaught = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return [$teacherID => $classesTaught];
-        }, $teacherIDs);
+        }, $teacherIDs));
 
         return [
             "success" => 1,
-            "data" => $userID == 0 ? $result : $result[0][$userID]
+            "data" => $result
         ];
     }
 

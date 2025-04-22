@@ -43,6 +43,37 @@ class Classroom
         }
     }
 
+    public function getClassMembersByClassIDs($classID = 0, $limit = 999, $offset = 0)
+    {
+        $classIDs = [];
+        if ($classID == 0) {
+            $response = $this->getAllClasses(limit: $limit, offset: $offset);
+            if (!$response["success"]) return $response;
+            $classIDs = array_map(function ($class) {
+                return $class["ClassID"];
+            }, $response["data"]);
+        } else
+            $classIDs = [$classID];
+
+        $classMembersByClassIDs = array_values(array_filter(array_map(function ($classID) {
+            $stmt = $this->pdo->prepare("(SELECT 'Student' AS UserType, StudentID AS UserID
+                                     FROM class_student WHERE ClassID = ?)
+                                     UNION
+                                     (SELECT 'Teacher' AS UserType, TeacherID AS UserID
+                                      FROM class WHERE ClassID = ? AND TeacherID IS NOT NULL)");
+            $stmt->execute([$classID, $classID]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (!empty($result))
+                return [$classID => $result];
+            else
+                return 0;
+        }, $classIDs), function ($elem) {
+            if ($elem == 0) return false;
+            return true;
+        }));
+        return ["success" => 1, "data" => $classMembersByClassIDs];
+    }
+
     public function create($level, $classGroup, $subjectCode)
     {
         try {
@@ -61,8 +92,6 @@ class Classroom
             return ["success" => 0, "errors" => array("Could not create class: " . $e->getMessage())];
         }
     }
-
-    public function assignTeacher($userID, $classID) {}
 
     public function findClassID($level, $classGroup, $subjectCode)
     {

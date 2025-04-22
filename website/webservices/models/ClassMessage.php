@@ -11,18 +11,18 @@ class ClassMessage
     {
         $classIDs = [];
         if ($classID == 0) {
-            $response = json_decode(file_get_contents("http://localhost/classes"), true);
+            $response = json_decode(file_get_contents("http://localhost/classes?limit=999"), true);
             if (!$response["success"]) return $response;
 
-            $classIDs = array_map(function ($class) {
+            $classIDs = array_values(array_map(function ($class) {
                 return $class["ClassID"];
-            }, $response["data"]);
+            }, $response["data"]));
         } else
             $classIDs = [$classID];
 
 
-        $classMessagesByClassIDs = array_map(function ($classID) use ($limit, $offset) {
-            $stmt = $this->pdo->prepare("SELECT * FROM class_message
+        $classMessagesByClassIDs = array_values(array_filter(array_map(function ($classID) use ($limit, $offset) {
+            $stmt = $this->pdo->prepare("SELECT UserID, DateSent, Message FROM class_message
                                         WHERE ClassID = ?
                                         LIMIT ? OFFSET ?");
             $stmt->bindParam(1, $classID, PDO::PARAM_INT);
@@ -37,36 +37,38 @@ class ClassMessage
             $count = $countStmt->fetchAll(PDO::FETCH_ASSOC)[0]["MessageCount"];
 
             $classMessages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (count($classMessages) == 0)
+                return 0;
             return [
-                $classID => $classMessages,
-                "pagination" => [
-                    "limit" => $limit,
-                    "offset" => $offset,
-                    "count" => count($classMessages),
-                    "total" => $count
+                $classID => [
+                    "Messages" => $classMessages,
+                    "pagination" => [
+                        "limit" => $limit,
+                        "offset" => $offset,
+                        "count" => count($classMessages),
+                        "total" => $count
+                    ]
                 ]
             ];
-        }, $classIDs);
+        }, $classIDs), function ($elem) {
+            if ($elem == 0)  return false;
+            return true;
+        }));
 
-        if ($classID != 0)
-            return [
-                "success" => 1,
-                "data" => $classMessagesByClassIDs[0][$classID],
-                "pagination" => $classMessagesByClassIDs[0]["pagination"]
-            ];
-        else
-            return [
-                "success" => 1,
-                "data" => $classMessagesByClassIDs
-            ];
+        return [
+            "success" => 1,
+            "data" => $classMessagesByClassIDs
+        ];
     }
 
     public function create($classID, $userID, $message)
     {
         $result = ["success" => 1, "errors" => array()];
+
+        // Validation
         if ($classID == NULL) $result["errors"][] = "classID cannot be empty!";
         else if ($userID == NULL) $result["errors"][] = "userID cannot be empty!";
-        else if (sizeof($message) == 0) $result["errors"][] = "Message cannot be empty!";
+        else if (strlen($message) == 0) $result["errors"][] = "Message cannot be empty!";
         if (count($result["errors"]) > 0) {
             $result["success"] = 0;
             return $result;
@@ -79,8 +81,8 @@ class ClassMessage
                                          VALUES(?, ?, NOW(), ?); ");
             $stmt->execute([$classID, $userID, $message]);
 
-            return ["success" => 1];
             $this->pdo->commit();
+            return ["success" => 1];
         } catch (PDOException $e) {
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();
