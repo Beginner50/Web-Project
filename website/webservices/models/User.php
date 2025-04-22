@@ -37,36 +37,29 @@ class User
             "
         ];
 
-        try {
-            $users = array();
+        $users = array();
 
-            // Get users
-            $queries = ($userType != "all" ?  [$queries[$userType]] : $queries);
-            foreach ($queries as $query) {
-                $stmt = $this->pdo->prepare($query);
-                $stmt->bindValue(1, $limit, PDO::PARAM_INT);
-                $stmt->bindValue(2, $offset, PDO::PARAM_INT);
-                $stmt->execute();
-                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                if (!empty($res)) array_push($users, ...$res);
-            }
-
-            return [
-                'success' => 1,
-                'data' => $users,
-                'pagination' => [
-                    'limit' => $limit,
-                    'offset' => $offset,
-                    'count' => count($users),
-                    'total' => ($userID == 0 ? $this->getTotalUsersCount($userType) : 1)
-                ]
-            ];
-        } catch (PDOException $e) {
-            return [
-                'success' => 0,
-                'errors' => array('Database error: ' . $e->getMessage())
-            ];
+        // Get users
+        $queries = ($userType != "all" ?  [$queries[$userType]] : $queries);
+        foreach ($queries as $query) {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+            $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (!empty($res)) array_push($users, ...$res);
         }
+
+        return [
+            'success' => 1,
+            'data' => $users,
+            'pagination' => [
+                'limit' => $limit,
+                'offset' => $offset,
+                'count' => count($users),
+                'total' => ($userID == 0 ? $this->getTotalUsersCount($userType) : 1)
+            ]
+        ];
     }
 
     private function getTotalUsersCount($userType)

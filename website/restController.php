@@ -100,6 +100,8 @@ switch ($resource) {
 	case "message":
 		switch ($action) {
 			case "list":
+				$classRestHandler = new ClassRestHandler($pdo);
+				$result = $classRestHandler->getClassMessagesByClassIDs();
 				break;
 		}
 		break;

@@ -1,6 +1,7 @@
 <?php
 
 require_once "simpleRest.php";
+require_once "models/ClassMessage.php";
 require_once "models/ClassStudent.php";
 require_once "models/ClassTeacher.php";
 require_once "models/Class.php";
@@ -35,6 +36,31 @@ class ClassRestHandler extends SimpleRest
         exit;
     }
 
+    /*
+    URL Query Arguments:
+    classID      -  Single class selection
+    limit -         Limits selection
+    offset -        Offset
+    */
+    public function getClassMessagesByClassIDs()
+    {
+        $classID = isset($_GET["classID"]) ? (int)$_GET["classID"] : 0;
+        $limit = isset($_GET["limit"]) ? (int)$_GET["limit"] : 10;
+        $offset = isset($_GET["offset"]) ? (int)$_GET["offset"] : 0;
+
+        $classMessage = new ClassMessage($this->pdo);
+        $rawData = $classMessage->getAllMessagesByClassIDs(classID: $classID, limit: $limit, offset: $offset);
+
+        $statusCode = empty($rawData) ? 404 : 200;
+        $this->setHttpHeaders("application/json", $statusCode);
+        echo json_encode($rawData);
+        exit;
+    }
+
+    /*
+    URL Query Arguments:
+    userID      -  Single class selection
+    */
     public function getClassesEnrolledByStudentIDs()
     {
         $userID = $_GET["userID"] ?? 0;
@@ -48,6 +74,10 @@ class ClassRestHandler extends SimpleRest
         exit;
     }
 
+    /*
+    URL Query Arguments:
+    userID      -  Single class selection
+    */
     public function getClassesTaughtByTeacherIDs()
     {
         $userID = $_GET["userID"] ?? 0;
