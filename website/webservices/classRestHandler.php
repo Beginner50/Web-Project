@@ -22,8 +22,12 @@ class ClassRestHandler extends SimpleRest
     */
     public function getAllClasses()
     {
+        $classID = isset($_GET["classID"]) ? (int)$_GET["classID"] : 0;
+        $limit = isset($_GET["limit"]) ? (int)$_GET["limit"] : 10;
+        $offset = isset($_GET["offset"]) ? (int)$_GET["offset"] : 0;
+
         $class = new Classroom($this->pdo);
-        $rawData = $class->getAllClasses();
+        $rawData = $class->getAllClasses(classID: $classID, limit: $limit, offset: $offset);
 
         $statusCode = empty($rawData) ? 404 : 200;
         $this->setHttpHeaders("application/json", $statusCode);
@@ -33,8 +37,10 @@ class ClassRestHandler extends SimpleRest
 
     public function getClassesEnrolledByStudentIDs()
     {
+        $userID = $_GET["userID"] ?? 0;
+
         $classStudent = new ClassStudent($this->pdo);
-        $rawData = $classStudent->getAllClassesEnrolledByStudentIDs();
+        $rawData = $classStudent->getAllClassesEnrolledByStudentIDs(userID: $userID);
 
         $statusCode = empty($rawData) ? 404 : 200;
         $this->setHttpHeaders("application/json", $statusCode);
@@ -44,8 +50,10 @@ class ClassRestHandler extends SimpleRest
 
     public function getClassesTaughtByTeacherIDs()
     {
+        $userID = $_GET["userID"] ?? 0;
+
         $classTeacher = new ClassTeacher($this->pdo);
-        $rawData = $classTeacher->getAllClassesTaughtByTeacherIDs();
+        $rawData = $classTeacher->getAllClassesTaughtByTeacherIDs(userID: $userID);
 
         $statusCode = empty($rawData) ? 404 : 200;
         $this->setHttpHeaders("application/json", $statusCode);

@@ -9,12 +9,8 @@ class Classroom
     }
 
 
-    public function getAllClasses()
+    public function getAllClasses($classID = 0, $limit = 999, $offset = 0)
     {
-        $classID = isset($_GET["classID"]) ? (int)$_GET["classID"] : 0;
-        $limit = isset($_GET["limit"]) ? (int)$_GET["limit"] : 10;
-        $offset = isset($_GET["offset"]) ? (int)$_GET["offset"] : 0;
-
         try {
             // Get classes
             $stmt = $this->pdo->prepare("SELECT * FROM class "

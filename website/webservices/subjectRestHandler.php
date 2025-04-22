@@ -10,10 +10,21 @@ class SubjectRestHandler extends SimpleRest
         $this->pdo = $pdo;
     }
 
+    /*
+    URL Query Params:
+    user-type       Lists subjects by user type
+    userID          Single selection
+    */
     public function getAllSubjects()
     {
+        $userType = $_GET["user-type"] ?? "all";
+        $userID = $_GET["userID"] ?? 0;
+
         $subject = new Subject($this->pdo);
-        $rawData = $subject->getAllSubjects();
+        if ($userType == "all")
+            $rawData = $subject->getAllSubjects();
+        else if ($userType == "student")
+            $rawData = $subject->getSubjectsByStudentIDs(userID: $userID);
 
         $statusCode = empty($rawData) ? 404 : 200;
         $this->setHttpHeaders("application/json", $statusCode);

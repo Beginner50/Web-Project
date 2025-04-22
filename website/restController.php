@@ -97,6 +97,12 @@ switch ($resource) {
 				break;
 		}
 		break;
+	case "message":
+		switch ($action) {
+			case "list":
+				break;
+		}
+		break;
 }
 
 echo json_encode($result);

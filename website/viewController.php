@@ -32,7 +32,7 @@ function redirectAuthenticationOrRestoreSession()
     if (!isset($_SESSION['UserType']))
         header("Location: /authentication");
     else
-        header("Location: /account/" . $_SESSION["UserType"] . "/" . $_SESSION["userID"]);
+        header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
     exit;
 }
 

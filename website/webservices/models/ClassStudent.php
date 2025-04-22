@@ -12,12 +12,12 @@ class ClassStudent
         URL Query Arguments:
         userID - Single user selection
     */
-    public function getAllClassesEnrolledByStudentIDs()
+    public function getAllClassesEnrolledByStudentIDs($userID = 0)
     {
         // Get studentID(s)
         $studentIDs = array();
-        if (isset($_GET['userID']))
-            $studentIDs = [(int)$_GET['userID']];
+        if ($userID != 0)
+            $studentIDs = [$userID];
         else {
             $response = json_decode(file_get_contents("http://localhost/users?limit=999"), true);
             if (!$response["success"])
@@ -44,7 +44,7 @@ class ClassStudent
 
             return [$studentID => $classesEnrolled];
         }, $studentIDs);
-        return ["success" => 1, "data" => $result];
+        return ["success" => 1, "data" => $userID == 0 ? $result : $result[0][$userID]];
     }
 
     public function getAllStudentsEnrolledByClassIDs() {}

@@ -20,8 +20,7 @@ class Student extends User
             if (!$response["success"])
                 return ["success" => 0, "errors" => array("Could not get classes enrolled!")];
 
-            $classesEnrolledByStudentIDs = $response["data"][0];
-            $classesEnrolled = $classesEnrolledByStudentIDs[$userID];
+            $classesEnrolled = $response["data"];
             return [...$u, ...$studentData[0], "ClassesEnrolled" => $classesEnrolled];
         }, $result["data"]);
 

@@ -8,12 +8,12 @@ class ClassTeacher
         $this->pdo = $pdo;
     }
 
-    public function getAllClassesTaughtByTeacherIDs()
+    public function getAllClassesTaughtByTeacherIDs($userID = 0)
     {
         // Get teacherID(s)
         $teacherIDs = array();
-        if (isset($_GET['userID']))
-            $teacherIDs = [(int)$_GET['userID']];
+        if ($userID != 0)
+            $teacherIDs = [$userID];
         else {
             $response = json_decode(file_get_contents("http://localhost/users?limit=999"), true);
             if (!$response["success"])
@@ -41,7 +41,7 @@ class ClassTeacher
 
         return [
             "success" => 1,
-            "data" => $result
+            "data" => $userID == 0 ? $result : $result[0][$userID]
         ];
     }
 }

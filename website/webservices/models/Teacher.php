@@ -19,8 +19,7 @@ class Teacher extends User
             if (!$response["success"])
                 return ["success" => 0, "errors" => array("Could not get classes taught!")];
 
-            $classesTaughtByTeacherIDs = $response["data"][0];
-            $classesTaught = $classesTaughtByTeacherIDs[$userID];
+            $classesTaught = $response["data"];
             return [...$u, ...$teacherData[0], "ClassesTaught" => $classesTaught];
         }, $result["data"]);
 
