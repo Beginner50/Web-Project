@@ -44,4 +44,22 @@ class ClassTeacher
             "data" => $userID == 0 ? $result : $result[0][$userID]
         ];
     }
+
+    public function assignTeacher($userID, $classID)
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            $stmt = $this->pdo->prepare("UPDATE class SET TeacherID = ? WHERE ClassID = ?;");
+            $stmt->execute([$userID, $classID]);
+            $stmt->closeCursor();
+
+            $this->pdo->commit();
+            return ["success" => 1];
+        } catch (PDOException $e) {
+            if ($this->pdo->inTransaction())
+                $this->pdo->rollBack();
+            return ["success" => 0, "errors" => array($e->getMessage())];
+        }
+    }
 }

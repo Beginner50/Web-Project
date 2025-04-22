@@ -61,5 +61,30 @@ class ClassMessage
             ];
     }
 
-    public function create($userID, $message) {}
+    public function create($classID, $userID, $message)
+    {
+        $result = ["success" => 1, "errors" => array()];
+        if ($classID == NULL) $result["errors"][] = "classID cannot be empty!";
+        else if ($userID == NULL) $result["errors"][] = "userID cannot be empty!";
+        else if (sizeof($message) == 0) $result["errors"][] = "Message cannot be empty!";
+        if (count($result["errors"]) > 0) {
+            $result["success"] = 0;
+            return $result;
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+
+            $stmt = $this->pdo->prepare("INSERT INTO class_message(ClassID, UserID, DateSent, Message)
+                                         VALUES(?, ?, NOW(), ?); ");
+            $stmt->execute([$classID, $userID, $message]);
+
+            return ["success" => 1];
+            $this->pdo->commit();
+        } catch (PDOException $e) {
+            if ($this->pdo->inTransaction())
+                $this->pdo->rollBack();
+            return ["success" => 0, "errors" => array($e->getMessage())];
+        }
+    }
 }

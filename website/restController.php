@@ -23,18 +23,25 @@ switch ($resource) {
 				$userRestHandler = new UserRestHandler($pdo);
 				$result = $userRestHandler->getAllUsers();
 				break;
+			case "list-classes":
+				$userType = isset($_GET['user-type']) ?? "";
+				switch ($userType) {
+					case "student":
+						$classRestHandler = new ClassRestHandler($pdo);
+						$result = $classRestHandler->getClassesEnrolledByStudentIDs();
+						break;
+					case "teacher":
+						$classRestHandler = new ClassRestHandler($pdo);
+						$result = $classRestHandler->getClassesTaughtByTeacherIDs();
+						break;
+				}
+				break;
+			case "list-subjects":
+				$subjectRestHandler = new SubjectRestHandler($pdo);
+				$result = $subjectRestHandler->getAllSubjects();
+				break;
 			case "create":
 				if ($method == "POST") {
-					// Clean & Validate POST request
-					if (isset($_POST["admin-date-joined"])) {
-						$_POST["date-joined"] = $_POST["admin-date-joined"];
-						unset($_POST["admin-date-joined"]);
-					} else if (isset($_POST["teacher-date-joined"])) {
-						$_POST["date-joined"] = $_POST["teacher-date-joined"];
-						unset($_POST["teacher-date-joined"]);
-					}
-					$_POST["subjects"] = json_decode($_POST["subjects"], true);
-
 					$userRestHandler = new UserRestHandler($pdo);
 					$result = $userRestHandler->createUser();
 				} else {
@@ -60,21 +67,15 @@ switch ($resource) {
 	case "classes":
 		switch ($action) {
 			case "list":
-				$userType = isset($_GET['user-type']) ?? "";
-				switch ($userType) {
-					case "student":
-						$classRestHandler = new ClassRestHandler($pdo);
-						$result = $classRestHandler->getClassesEnrolledByStudentIDs();
-						break;
-					case "teacher":
-						$classRestHandler = new ClassRestHandler($pdo);
-						$result = $classRestHandler->getClassesTaughtByTeacherIDs();
-						break;
-					default:
-						$classRestHandler = new ClassRestHandler($pdo);
-						$result = $classRestHandler->getAllClasses();
-						break;
-				}
+				$classRestHandler = new ClassRestHandler($pdo);
+				$result = $classRestHandler->getAllClasses();
+				break;
+			case "list-members":
+
+				break;
+			case "list-messages":
+				$classRestHandler = new ClassRestHandler($pdo);
+				$result = $classRestHandler->getClassMessagesByClassIDs();
 				break;
 			case "enroll":
 				if ($method == "POST") {
@@ -85,7 +86,14 @@ switch ($resource) {
 					$result["errors"][] = "Invalid HTTP method!";
 				}
 				break;
-			case "teach":
+			case "assign":
+				if ($method == "POST") {
+					$classRestHandler = new ClassRestHandler($pdo);
+					$result = $classRestHandler->assignTeacher();
+				} else {
+					$result["success"] = 0;
+					$result["errors"][] = "Invalid HTTP method!";
+				}
 				break;
 		}
 		break;
@@ -99,9 +107,15 @@ switch ($resource) {
 		break;
 	case "message":
 		switch ($action) {
-			case "list":
-				$classRestHandler = new ClassRestHandler($pdo);
-				$result = $classRestHandler->getClassMessagesByClassIDs();
+
+			case "create":
+				if ($_SERVER["REQUEST_METHOD"] == "POST") {
+					$classRestHandler = new ClassRestHandler($pdo);
+					$result = $classRestHandler->postMessage();
+				} else {
+					$result["success"] = 0;
+					$result["errors"][] = "Invalid HTTP method!";
+				}
 				break;
 		}
 		break;

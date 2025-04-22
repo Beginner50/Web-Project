@@ -44,13 +44,16 @@ if (!isset($_GET['page']))
 switch ($page = $_GET['page']) {
     case "authentication":
         $errors = [];
+        // POST method is when either the login/registration form is submitted
+        // Register & Login the user accordingly
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($_GET["action"] == "login")
                 $url = "http://localhost/users/authenticate";
             else if ($_GET["action"] == "registration")
                 $url = "http://localhost/users/" . $_POST["user-type"] . "/create";
-
             $response = json_decode(sendPostRequest($url, $_POST), true);
+
+            // If validation/registration is successful, save session data & redirect to account management
             if ($response["success"]) {
                 $_SESSION = json_decode(
                     file_get_contents("http://localhost/users/" . $response["data"]["userType"] . "/" . $response["data"]["userID"]),
@@ -60,6 +63,7 @@ switch ($page = $_GET['page']) {
                 header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
                 exit;
             } else {
+                // Otherwise, display errors
                 $errors = $response["errors"];
                 require "views/partials/errorModal.php";
             }
@@ -71,16 +75,20 @@ switch ($page = $_GET['page']) {
         if (isset($_SESSION['UserType']) && $_SESSION['UserType'] == 'Admin') {
             // require 'models/adminDashboard/getListUsers.php';
             require 'views/adminDashboard/adminDashboardView.php';
-        }
+        } else
+            header("Location: /");
         break;
     case "account":
         if (isset($_SESSION['UserType'])) {
             require 'views/accountManagement/accountManagementView.php';
-        }
+        } else
+            header("Location: /");
         break;
     case "messaging":
         if (isset($_SESSION['UserType']))
             require 'views/classMessaging/classMessagingView.php';
+        else
+            header("Location: /");
         break;
     case "logout":
         foreach (array_keys($_SESSION) as $key) {

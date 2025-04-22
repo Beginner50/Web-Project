@@ -58,6 +58,43 @@ class ClassRestHandler extends SimpleRest
     }
 
     /*
+        POST:
+        { classID, userID, message }
+    */
+    public function postMessage()
+    {
+        $classID = $_POST["classID"];
+        $userID = $_POST["userID"];
+        $message = $_POST["message"];
+
+        $classMessage = new ClassMessage($this->pdo);
+        $rawData = $classMessage->create($classID, $userID, $message);
+
+        $statusCode = empty($rawData) ? 404 : 200;
+        $this->setHttpHeaders("application/json", $statusCode);
+        echo json_encode($rawData);
+        exit;
+    }
+
+    /*
+        POST:
+        {userID, classID}
+    */
+    public function assignTeacher()
+    {
+        $teacherID = $_POST["userID"];
+        $classID = $_POST["classID"];
+
+        $classTeacher = new ClassTeacher($this->pdo);
+        $rawData = $classTeacher->assignTeacher($teacherID, $classID);
+
+        $statusCode = empty($rawData) ? 404 : 200;
+        $this->setHttpHeaders("application/json", $statusCode);
+        echo json_encode($rawData);
+        exit;
+    }
+
+    /*
     URL Query Arguments:
     userID      -  Single class selection
     */

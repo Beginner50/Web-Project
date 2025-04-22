@@ -30,7 +30,7 @@ RewriteRule ^logout/$ /website/viewController.php?page=logout [L,QSA]
 RewriteRule ^account/(student|teacher|admin)/([0-9]+) /website/viewController.php?page=account&user-type=$1&userID=$2 [L,QSA]
 RewriteRule ^account/(student|teacher|admin)/([0-9]+)/ /website/viewController.php?page=account&user-type=$1&userID=$2 [L,QSA]
 
-#-------------------------------------- Users ---------------------------------------------
+#-------------------------------------- Resources ---------------------------------------------
 #  List users WITHOUT their type-specific information
 #  (Accepts limit & offset query params for pagination)
 #  Ex: 
@@ -69,8 +69,28 @@ RewriteRule ^users/authenticate/$ /website/restController.php?resource=user&acti
 RewriteRule ^users/(student|teacher|admin)/create$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
 RewriteRule ^users/(student|teacher|admin)/create/$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
 
-#-------------------------------------- CLASSES ---------------------------------------------
-#  List classes
+#  List classes enrolled/taught by students/teachers
+#  Ex: 
+# 		localhost/users/student/classes 	- Lists classes enrolled by all students, by their UserIDs
+# 		localhost/users/student/1/classes	- Lists classes enrolled by student with userID 1 
+# 
+# 		localhost/users/teacher/classes		- Lists classes taught by all teachers, by their UsersIDs
+# 		localhost/users/teacher/1/classes	- Lists classes taught by teacher with userID 1 
+RewriteRule ^users/(student|teacher)/classes$ /website/restController.php?resource=user&action=list-classes&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher)/classes/$ /website/restController.php?resource=user&action=list-classes&user-type=$1 [L,QSA]
+RewriteRule ^users/(student|teacher)/([0-9]+)/classes$ /website/restController.php?resource=user&action=list-classes&user-type=$1&userID=$2 [L,QSA]
+RewriteRule ^users/(student|teacher)/([0-9]+)/classes/$ /website/restController.php?resource=user&action=list-classes&user-type=$1&userID=$2 [L,QSA]
+
+# Lists subjects by students
+# Ex:
+# 		localhost/users/student/subjects	- Lists subjects taken by studentIds
+#		localhost/users/student/1/subjects	- Lists subjects taken by student with studentID 1
+RewriteRule ^users/student/subjects /website/restController.php?resource=user&action=list-subjects&user-type=student [L]
+RewriteRule ^users/student/subjects/ /website/restController.php?resource=user&action=list-subjects&user-type=student [L]
+RewriteRule ^users/student/([0-9]+)/subjects /website/restController.php?resource=user&action=list-subjects&user-type=student&userID=$1 [L]
+RewriteRule ^users/student/([0-9]+)/subjects/ /website/restController.php?resource=user&action=list-subjects&user-type=student&userID=$1 [L]
+
+#  List all classes
 #  (Accepts limit & offset query params for pagination)
 #  Ex:
 #		localhost/classes		-	Lists all classes
@@ -80,18 +100,6 @@ RewriteRule ^classes/$ /website/restController.php?resource=classes&action=list	
 RewriteRule ^classes/([0-9]+)$ /website/restController.php?resource=classes&action=list&classID=$1 [L]
 RewriteRule ^classes/([0-9]+)/$ /website/restController.php?resource=classes&action=list&classID=$1 [L]
 
-#  List classes enrolled/classes taught by students/teachers
-#  Ex: 
-# 		localhost/users/student/classes 	- Lists classes enrolled by all students, by their UserIDs
-# 		localhost/users/student/1/classes	- Lists classes enrolled by student with userID 1 
-# 
-# 		localhost/users/teacher/classes		- Lists classes taught by all teachers, by their UsersIDs
-# 		localhost/users/teacher/1/classes	- Lists classes taught by teacher with userID 1 
-RewriteRule ^users/(student|teacher)/classes$ /website/restController.php?resource=classes&action=list&user-type=$1 [L,QSA]
-RewriteRule ^users/(student|teacher)/classes/$ /website/restController.php?resource=classes&action=list&user-type=$1 [L,QSA]
-RewriteRule ^users/(student|teacher)/([0-9]+)/classes$ /website/restController.php?resource=classes&action=list&user-type=$1&userID=$2 [L,QSA]
-RewriteRule ^users/(student|teacher)/([0-9]+)/classes/$ /website/restController.php?resource=classes&action=list&user-type=$1&userID=$2 [L,QSA]
-
 #  Enroll a student into classes by subjects taken
 #  Ex:
 #		localhost/classes/enroll/1	- Enroll student with userID 1 in classes based on subjects selected
@@ -100,29 +108,37 @@ RewriteRule ^users/(student|teacher)/([0-9]+)/classes/$ /website/restController.
 RewriteRule ^classes/enroll/([0-9]+)$ /website/restController.php?resource=classes&action=enroll&userID=$1 [L]
 RewriteRule ^classes/enroll/([0-9]+)/$ /website/restController.php?resource=classes&action=enroll&userID=$1 [L]
 
+#  Allows a teacher to teach/occupy a class
+#  Ex:
+#		localhost/classes/2/assign/1	- Assign teacher with teacherID 1 to class with classID 2
+RewriteRule ^classes/([0-9]+)/assign/([0-9]+)$ /website/restController.php?resource=classes&action=assign&userID=$1 [L]
+RewriteRule ^classes/([0-9]+)/assign/([0-9]+)/$ /website/restController.php?resource=classes&action=assign&userID=$1 [L]
+
 #  Lists class messages
 #  (Accepts limit & offset query params for pagination)
 #  Ex:
 #		localhost/classes/messages		- Lists class messages by classIDs
 #		localhost/classes/7/messages	- Lists class messages for class with ClassID 7	
-RewriteRule ^classes/messages /website/restController.php?resource=message&action=list [L,QSA]
-RewriteRule ^classes/messages/ /website/restController.php?resource=message&action=list [L,QSA]
-RewriteRule ^classes/([0-9]+)/messages /website/restController.php?resource=message&action=list&classID=$1 [L,QSA]
-RewriteRule ^classes/([0-9]+)/messages/ /website/restController.php?resource=message&action=list&classID=$1 [L,QSA]
+RewriteRule ^classes/messages$ /website/restController.php?resource=classes&action=list-users [L,QSA]
+RewriteRule ^classes/messages/$ /website/restController.php?resource=classes&action=list-users [L,QSA]
+RewriteRule ^classes/([0-9]+)/messages$ /website/restController.php?resource=classes&action=list-users&classID=$1 [L,QSA]
+RewriteRule ^classes/([0-9]+)/messages/$ /website/restController.php?resource=classes&action=list-users&classID=$1 [L,QSA]
 
+#  Lists class members
+RewriteRule ^classes/members$ /website/restController.php?resource=classes&action=list-members [L,QSA]
+RewriteRule ^classes/members/$ /website/restController.php?resource=classes&action=list-members [L,QSA]
 
-#-------------------------------------- Subjects ---------------------------------------------
+#  Creates a messsage
+#  Ex:
+#  		localhost/classes/1/messages/create	- Posts a message to the class with ClassID 1
+#		POST:
+#		{"classID", "userID", "message"}
+RewriteRule ^classes/([0-9]+)/messages/create /website/restController.php?resource=message&action=create&classID=$1 [L]
+RewriteRule ^classes/([0-9]+)/messages/create/ /website/restController.php?resource=message&action=create&classID=$1 [L]
+
 # Lists subjects
 # Ex:
 # 		localhost/subjects
 RewriteRule ^subjects$ /website/restController.php?resource=subject&action=list [L,QSA]
 RewriteRule ^subjects/$ /website/restController.php?resource=subject&action=list [L,QSA]
 
-# Lists subjects by students/teachers
-# Ex:
-# 		localhost/users/student/subjects	- Lists subjects taken by studentIds
-#		localhost/users/student/1/subjects	- Lists subjects taken by student with studentID 1
-RewriteRule ^users/student/subjects /website/restController.php?resource=subject&action=list&user-type=student [L]
-RewriteRule ^users/student/subjects/ /website/restController.php?resource=subject&action=list&user-type=student [L]
-RewriteRule ^users/student/([0-9]+)/subjects /website/restController.php?resource=subject&action=list&user-type=student&userID=$1 [L]
-RewriteRule ^users/student/([0-9]+)/subjects/ /website/restController.php?resource=subject&action=list&user-type=student&userID=$1 [L]

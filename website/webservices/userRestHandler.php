@@ -72,6 +72,17 @@ class UserRestHandler extends SimpleRest
     public function createUser()
     {
         $result = ["success" => 1, "errors" => array()];
+
+        // Clean & Validate POST request
+        if (isset($_POST["admin-date-joined"])) {
+            $_POST["date-joined"] = $_POST["admin-date-joined"];
+            unset($_POST["admin-date-joined"]);
+        } else if (isset($_POST["teacher-date-joined"])) {
+            $_POST["date-joined"] = $_POST["teacher-date-joined"];
+            unset($_POST["teacher-date-joined"]);
+        }
+        $_POST["subjects"] = json_decode($_POST["subjects"], true);
+
         $userData = $_POST;
 
         // Route user-type

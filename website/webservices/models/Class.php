@@ -43,9 +43,6 @@ class Classroom
         }
     }
 
-    /*
-        Creates a class and returns the classID
-    */
     public function create($level, $classGroup, $subjectCode)
     {
         try {
@@ -64,6 +61,8 @@ class Classroom
             return ["success" => 0, "errors" => array("Could not create class: " . $e->getMessage())];
         }
     }
+
+    public function assignTeacher($userID, $classID) {}
 
     public function findClassID($level, $classGroup, $subjectCode)
     {
