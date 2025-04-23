@@ -165,6 +165,9 @@ class ClassRestHandler extends SimpleRest
         Enrolls students based on their subjects taken and their level & class group.
         If no class is found, create the corresponding class
 
+        URL Arguments:
+        userID
+
         POST:
         { "subjects": array }
     */
@@ -198,6 +201,23 @@ class ClassRestHandler extends SimpleRest
             echo json_encode(["success" => 0, "errors" => [...$errors]]);
         else
             echo json_encode(["success" => 1]);
+        exit;
+    }
+
+    /*
+    URL Query Arguments:
+    userID      
+    */
+    public function unenrollStudentFromClasses()
+    {
+        $studentID = $_GET["userID"];
+
+        $classStudent = new ClassStudent($this->pdo);
+        $rawData = $classStudent->unerollStudentFromClasses($studentID);
+
+        $statusCode = empty($rawData) ? 404 : 200;
+        $this->setHttpHeaders("application/json", $statusCode);
+        echo json_encode($rawData);
         exit;
     }
 }

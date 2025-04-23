@@ -28,7 +28,7 @@
             <ul>
                 <li><a href="#hidden-navigation"><i class="fa fa-user" aria-hidden="true"></i>UserID</a></li>
                 <li><a href="#userID-content"><i class="fa fa-address-card" aria-hidden="true"></i>Personal Information</a></li>
-                <li><a href="#personalinfo-savechanges" style="font-size:12px;"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Student/Teacher Information</a></li>
+                <li><a href="#personalinfo-savechanges"><i class="fa fa-graduation-cap" aria-hidden="true"></i><?php echo $_SESSION["UserType"]  ?> Information</a></li>
                 <li><a href="#loginmanagement"><i class="fa fa-key" aria-hidden="true"></i>Login Management</a></li>
                 <li><a href="#logout-content"><i class="fa fa-sign-out" aria-hidden="true"></i>Log out </a></li>
             </ul>

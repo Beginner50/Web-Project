@@ -15,14 +15,13 @@ class Student extends User
             $stmt->execute([$userID]);
             $studentData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Get student class enrolled
-            $response = file_get_contents("http://localhost/users/student/" . $userID . "/classes");
-            $response = json_decode(file_get_contents("http://localhost/users/student/" . $userID . "/classes"), true);
+            // Get student subjects
+            $response = json_decode(file_get_contents("http://localhost/users/student/" . $userID . "/subjects"), true);
             if (!$response["success"])
-                return ["success" => 0, "errors" => array("Could not get classes enrolled!")];
+                return ["success" => 0, "errors" => array("Could not get subjects!")];
 
-            $classesEnrolled = $response["data"];
-            return [...$u, ...$studentData[0], "ClassesEnrolled" => $classesEnrolled];
+            $subjects = $response["data"];
+            return [...$u, ...$studentData[0], "Subjects" => $subjects];
         }, $result["data"]);
 
         $result["data"] = $students;
@@ -31,7 +30,7 @@ class Student extends User
 
     public function create($userData, $approval = false)
     {
-        $result = $this->validateStudent($userData, $approval);
+        $result = $this->validateStudent($userData, false);
         if (!$result["success"])
             return $result;
 
@@ -59,10 +58,37 @@ class Student extends User
         return $result;
     }
 
-    public function validateStudent($userData)
+    public function edit($userData, $approval = false)
+    {
+        if ($userData["self-userID"] != $userData["userID"] && $userData["self-user-type"] != "admin")
+            return ["success" => 0, "errors" => "Not Authorised!"];
+        if (!($result = $this->validateStudent($userData, "edit"))["success"])
+            return $result;
+
+        try {
+            $this->pdo->beginTransaction();
+            User::edit($userData, approval: false);
+
+            $stmt = $this->pdo->prepare("UPDATE student SET Level = ?, ClassGroup = ?
+                                        WHERE StudentID = ?;");
+            $stmt->bindParam(1, $userData["level"]);
+            $stmt->bindParam(2, $userData["class-group"]);
+            $stmt->bindParam(3, $userData["userID"]);
+            $stmt->execute();
+
+            $this->pdo->commit();
+            return ["success" => 1];
+        } catch (PDOException $e) {
+            if ($this->pdo->inTransaction())
+                $this->pdo->rollBack();
+            return ["success" => 0, "errors" => [$e->getMessage()]];
+        }
+    }
+
+    public function validateStudent($userData, $action = "create")
     {
         $subjects = $userData["subjects"];
-        $result = User::validateUser($userData);
+        $result = User::validateUser($userData, $action);
 
         if ($result["success"] == 1) {
             $classGroup = htmlspecialchars(strtoupper($userData["class-group"] ?? ''));

@@ -21,15 +21,17 @@ class Subject
     {
         $userIDs = [];
         if ($userID == 0) {
-            $response = json_decode(
-                file_get_contents("http://localhost/users/student/" . ($userID != 0 ? $userID : "")),
-                true
-            );
+            $response = json_decode(file_get_contents("http://localhost/users"), true);
             if (!$response["success"])
                 return $response;
-            $userIDs = array_map(function ($user) {
-                return $user["UserID"];
-            }, $response["data"]);
+            $userIDs = array_filter(array_map(function ($user) {
+                if ($user["UserType"] != "Student")
+                    return 0;
+                else
+                    return $user["UserID"];
+            }, $response["data"]), function ($elem) {
+                return $elem == 0 ? false : true;
+            });
         } else
             $userIDs = [$userID];
 

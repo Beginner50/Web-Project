@@ -86,7 +86,7 @@ class User
         return $result;
     }
 
-    protected function create($userData, $approval)
+    protected function create($userData, $approval = false)
     {
         $userType = strtoupper($userData["user-type"][0]) . substr($userData["user-type"], 1, strlen($userData["user-type"]) - 1);
         try {
@@ -113,7 +113,47 @@ class User
         }
     }
 
-    public function validateUser($userData)
+    protected function edit($userData, $approval = false)
+    {
+        // Update user data
+        $stmt = $this->pdo->prepare("UPDATE user SET 
+                                     DateOfBirth = ?, FirstName = ?, LastName = ?,
+                                     Email = ?, Gender = ? ,Password = ?
+                                     WHERE UserID = ?");
+        $stmt->bindParam(1, $userData["dob"]);
+        $stmt->bindParam(2, $userData["fname"]);
+        $stmt->bindParam(3, $userData["lname"]);
+        $stmt->bindParam(4, $userData["email"]);
+        $stmt->bindParam(5, $userData["gender"]);
+        $stmt->bindParam(6, $userData["password"]);
+        $stmt->bindParam(7, $userData["userID"]);
+        $stmt->execute();
+
+        // Update approval
+        if ($approval) {
+            $stmt = $this->pdo->prepare("UPDATE approval SET AdminID = ?, IsApproved = ?
+                                        WHERE UserID = ?");
+            $stmt->bindParam(1, $userData["selfID"]);
+            $stmt->bindParam(2, $userData["is-approved"]);
+            $stmt->bindParam(3, $userData["userID"]);
+            $stmt->execute();
+        }
+    }
+
+    public function delete($userID)
+    {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM user WHERE UserID = ?");
+            $stmt->execute([$userID]);
+            $stmt->closeCursor();
+
+            return ["success" => 1];
+        } catch (PDOException $e) {
+            return ["success" => 0, "errors" => array("Could not delete user!")];
+        }
+    }
+
+    public function validateUser($userData, $action = "create")
     {
         $result = ["success" => 0, "errors" => []];
 
@@ -151,7 +191,7 @@ class User
             $result["errors"][] = "Email is required!";
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $result["errors"][] = "Invalid email format!";
-        } elseif ($this->findUserID($email)["success"]) {
+        } elseif ($action == "create" && $this->findUserID($email)["success"]) {
             $result["errors"][] = "User already exists with this email!";
         }
 
@@ -195,10 +235,12 @@ class User
             // }
         }
 
-        if (empty($repeatPassword)) {
-            $result["errors"][] = "Please repeat your password!";
-        } elseif ($password !== $repeatPassword) {
-            $result["errors"][] = "Passwords do not match!";
+        if ($action == "create") {
+            if (empty($repeatPassword)) {
+                $result["errors"][] = "Please repeat your password!";
+            } elseif ($password !== $repeatPassword) {
+                $result["errors"][] = "Passwords do not match!";
+            }
         }
 
         // Mark as successful if no errors
@@ -222,6 +264,7 @@ class User
             $userID = $result[0]["UserID"];
 
         // UserType
+        var_dump($email);
         $stmt = $this->pdo->prepare("(SELECT 'Student' AS UserType FROM student WHERE StudentID = ?)
                                          UNION
                                          (SELECT 'Teacher' AS UserType FROM teacher WHERE TeacherID = ?)
@@ -231,6 +274,6 @@ class User
         $userType = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["UserType"];
         $stmt->closeCursor();
 
-        return ["success" => 1, "data" => ["userID" => $userID, "userType" => $userType]];
+        return ["success" => 1, "data" => ["UserID" => $userID, "UserType" => $userType]];
     }
 }

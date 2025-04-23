@@ -65,4 +65,22 @@ class ClassStudent
             return ["success" => 0, "errors" => array("Could not enroll students in class: " . $e->getMessage())];
         }
     }
+
+    public function unerollStudentFromClasses($studentID)
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            $stmt = $this->pdo->prepare("DELETE FROM class_student WHERE StudentID = ?;");
+            $stmt->execute([$studentID]);
+            $stmt->closeCursor();
+
+            $this->pdo->commit();
+            return ["success" => 1];
+        } catch (PDOException $e) {
+            if ($this->pdo->inTransaction())
+                $this->pdo->rollBack();
+            return ["success" => 0, "errors" => array("Could not enroll students in class: " . $e->getMessage())];
+        }
+    }
 }

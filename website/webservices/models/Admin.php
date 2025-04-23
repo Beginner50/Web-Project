@@ -47,9 +47,34 @@ class Admin extends User
         return $result;
     }
 
-    public function validateAdmin($userData)
+    public function edit($userData, $approval = true)
     {
-        $result = User::validateUser($userData);
+        if ($userData["self-userID"] != $userData["userID"] && $userData["self-user-type"] != "admin")
+            return ["success" => 0, "errors" => "Not Authorised!"];
+        if (!($result = $this->validateAdmin($userData, "edit"))["success"])
+            return $result;
+        try {
+            $this->pdo->beginTransaction();
+            User::edit($userData, isset($userData["is-approved"]));
+
+            $stmt = $this->pdo->prepare("UPDATE administrator SET DateJoined = ?
+                                        WHERE AdminID = ?;");
+            $stmt->bindParam(1, $userData["date-joined"]);
+            $stmt->bindParam(2, $userData["userID"]);
+            $stmt->execute();
+
+            $this->pdo->commit();
+            return ["success" => 1];
+        } catch (PDOException $e) {
+            if ($this->pdo->inTransaction())
+                $this->pdo->rollBack();
+            return ["success" => 0, "errors" => [$e->getMessage()]];
+        }
+    }
+
+    public function validateAdmin($userData, $action = "create")
+    {
+        $result = User::validateUser($userData, $action);
 
         if ($result["success"] == 1) {
             $dateJoined = htmlspecialchars($userData["date-joined"] ?? '');

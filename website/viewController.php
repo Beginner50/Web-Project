@@ -50,13 +50,13 @@ switch ($page = $_GET['page']) {
             if ($_GET["action"] == "login")
                 $url = "http://localhost/users/authenticate";
             else if ($_GET["action"] == "registration")
-                $url = "http://localhost/users/" . $_POST["user-type"] . "/create";
+                $url = "http://localhost/users/create";
             $response = json_decode(sendPostRequest($url, $_POST), true);
 
             // If validation/registration is successful, save session data & redirect to account management
             if ($response["success"]) {
                 $_SESSION = json_decode(
-                    file_get_contents("http://localhost/users/" . $response["data"]["userType"] . "/" . $response["data"]["userID"]),
+                    file_get_contents("http://localhost/users/" . $response["data"]["UserType"] . "/" . $response["data"]["UserID"]),
                     true
                 )["data"][0];
 

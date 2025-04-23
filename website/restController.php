@@ -3,6 +3,7 @@ ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
 
+session_start();
 require_once("connect.php");
 require_once("webservices/userRestHandler.php");
 require_once("webservices/classRestHandler.php");
@@ -37,8 +38,13 @@ switch ($resource) {
 				}
 				break;
 			case "list-subjects":
-				$subjectRestHandler = new SubjectRestHandler($pdo);
-				$result = $subjectRestHandler->getAllSubjects();
+				if ($_GET['user-type'] == "student") {
+					$subjectRestHandler = new SubjectRestHandler($pdo);
+					$result = $subjectRestHandler->getAllSubjects();
+				} else {
+					$result["success"] = 0;
+					$result["errors"][] = "Subjects not available for user!";
+				}
 				break;
 			case "create":
 				if ($method == "POST") {
@@ -50,8 +56,20 @@ switch ($resource) {
 				}
 				break;
 			case "delete":
+				$userRestHandler = new UserRestHandler($pdo);
+				$result = $userRestHandler->deleteUser();
 				break;
 			case "update":
+				if ($method == "POST") {
+					$_POST["self-userID"] = $_SESSION["UserID"] ?? $_POST["self-userID"];
+					$_POST["self-user-type"] = $_SESSION["UserType"] ?? $_POST["self-user-type"];
+
+					$userRestHandler = new UserRestHandler($pdo);
+					$result = $userRestHandler->editUser();
+				} else {
+					$result["success"] = 0;
+					$result["errors"][] = "Invalid HTTP method!";
+				}
 				break;
 			case "authenticate":
 				if ($method == "POST") {
@@ -87,6 +105,10 @@ switch ($resource) {
 					$result["errors"][] = "Invalid HTTP method!";
 				}
 				break;
+			case "unenroll":
+				$classRestHandler = new ClassRestHandler($pdo);
+				$result = $classRestHandler->unenrollStudentFromClasses();
+				break;
 			case "assign":
 				if ($method == "POST") {
 					$classRestHandler = new ClassRestHandler($pdo);
@@ -108,9 +130,8 @@ switch ($resource) {
 		break;
 	case "message":
 		switch ($action) {
-
 			case "create":
-				if ($_SERVER["REQUEST_METHOD"] == "POST") {
+				if ($method == "POST") {
 					$classRestHandler = new ClassRestHandler($pdo);
 					$result = $classRestHandler->postMessage();
 				} else {

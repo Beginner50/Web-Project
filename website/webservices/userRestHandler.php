@@ -56,7 +56,7 @@ class UserRestHandler extends SimpleRest
     }
 
     /*
-        Validate, add and returns the userID & userType
+        Validate, add user and returns the userID & userType
 
         POST:
         {
@@ -73,32 +73,22 @@ class UserRestHandler extends SimpleRest
     {
         $result = ["success" => 1, "errors" => array()];
 
-        // Clean & Validate POST request
-        if (isset($_POST["admin-date-joined"])) {
-            $_POST["date-joined"] = $_POST["admin-date-joined"];
-            unset($_POST["admin-date-joined"]);
-        } else if (isset($_POST["teacher-date-joined"])) {
-            $_POST["date-joined"] = $_POST["teacher-date-joined"];
-            unset($_POST["teacher-date-joined"]);
-        }
-        $_POST["subjects"] = json_decode($_POST["subjects"], true);
-
+        // Clean POST data
+        $this->processPOSTData("create");
         $userData = $_POST;
 
         // Route user-type
-        switch ($_GET['user-type']) {
+        switch ($userData['user-type']) {
             case "student":
                 $student = new Student($this->pdo);
-                if (!($result = $student->findUserID($userData["email"]))["success"])
-                    break;
-                else
-                    $studentID = $result["data"]["userID"];
-
-                // Enroll student in classes based on subjects taken
-                $response = $this->sendPostRequest(
-                    "http://localhost/classes/enroll/" . $studentID,
-                    $userData['subjects']
-                );
+                if (($response = $student->create($userData))["success"]) {
+                    // Enroll student in classes based on subjects taken if student has been created successfully
+                    $studentID = $response["data"]["UserID"];
+                    $response = $this->sendPostRequest(
+                        "http://localhost/classes/enroll/" . $studentID,
+                        $userData['subjects']
+                    );
+                }
 
                 if (!$response["success"]) {
                     $result["success"] = 0;
@@ -123,9 +113,88 @@ class UserRestHandler extends SimpleRest
         exit;
     }
 
+    /*
+        Validate & edit user 
+
+        URL Arguments:
+        reset-password  - Resets user password if true
+
+        POST:
+        { 
+            "user-type", "userID", 
+            "self-userID", "self-user-type"
+        }
+    */
     public function editUser()
     {
-        // Write your code here
+        $result = ["success" => 1, "errors" => array()];
+
+        $this->processPOSTData("edit");
+        $userData = $_POST;
+
+        // Route user-type
+        switch ($_POST['user-type']) {
+            case "student":
+                $student = new Student($this->pdo);
+                $result = $student->edit($userData);
+
+                // Remove student from all classes
+                if (!($response = json_decode(
+                    file_get_contents("http://localhost/classes/unenroll/" . $userData["userID"]),
+                    true
+                ))["success"]) {
+                    $result["success"] = 0;
+                    $result["errors"] = [...$result["errors"], ...$response["errors"]];
+                    break;
+                }
+
+                // Enroll student in classes based on subjects taken
+                $response = $this->sendPostRequest(
+                    "http://localhost/classes/enroll/" . $userData["userID"],
+                    $userData['subjects']
+                );
+
+                if (!$response["success"]) {
+                    $result["success"] = 0;
+                    $result["errors"] = [...$result["errors"], ...$response["errors"]];
+                }
+                break;
+            case "teacher":
+                $teacher = new Teacher($this->pdo);
+                $result = $teacher->edit($userData);
+                break;
+            case "admin":
+                $admin = new Admin($this->pdo);
+                $result = $admin->edit($userData);
+                break;
+            default:
+                break;
+        }
+
+        $statusCode = $result["success"] == 1 ? 201 : 400;
+        $this->setHttpHeaders("application/json", $statusCode);
+        echo json_encode($result);
+        exit;
+    }
+
+    /*
+        Delete User
+
+        URL Arguments:
+        userID
+    */
+    public function deleteUser()
+    {
+        $result = ["success" => 1, "errors" => array()];
+        $userID = $_GET["userID"];
+
+        $user = new User($this->pdo);
+        $result = $user->delete($userID);
+
+        $statusCode = $result["success"] == 1 ? 201 : 400;
+        $this->setHttpHeaders("application/json", $statusCode);
+        echo json_encode($result);
+        exit;
     }
 
     /*
@@ -151,8 +220,8 @@ class UserRestHandler extends SimpleRest
         if (!$response["success"])
             $result["errors"][] = "Email does not exist!";
         else {
-            $userID = $response["data"]["userID"];
-            $userType = strtolower($response["data"]["userType"]);
+            $userID = $response["data"]["UserID"];
+            $userType = strtolower($response["data"]["UserType"]);
 
             $user = new User($this->pdo);
             $userData = $user->getAllUsers(userID: $userID)["data"][0];
@@ -166,10 +235,61 @@ class UserRestHandler extends SimpleRest
         if (sizeof($result["errors"]) > 0)
             $result["success"] = 0;
         else
-            $result["data"] = ["userID" => $userID, "userType" => $userType];
+            $result["data"] = ["UserID" => $userID, "UserType" => $userType];
 
         $this->setHttpHeaders("application/json", $result["success"] == 1 ? 200 : 401);
         echo json_encode($result);
         exit;
+    }
+
+    /*
+        Clean & Validate POST Data
+    */
+    private function processPOSTData($action)
+    {
+        if ($action == "create") {
+            if (isset($_POST["admin-date-joined"])) {
+                $_POST["date-joined"] = $_POST["admin-date-joined"];
+                unset($_POST["admin-date-joined"]);
+            } else if (isset($_POST["teacher-date-joined"])) {
+                $_POST["date-joined"] = $_POST["teacher-date-joined"];
+                unset($_POST["teacher-date-joined"]);
+            }
+
+            $_POST["subjects"] = json_decode($_POST["subjects"], true);
+        } else if ($action == "edit") {
+            $resetPassword = $_GET["reset-password"] ?? false;
+            $userID = $_POST["userID"];
+            $userType = $_POST["user-type"];
+
+            $userData = json_decode(
+                file_get_contents("http://localhost/users/" . $userType . "/" . $userID),
+                true
+            )["data"][0];
+
+            $_POST["fname"] = $_POST["fname"] ?? $userData["FirstName"];
+            $_POST["lname"] = $_POST["lname"] ?? $userData["LastName"];
+            $_POST["email"] = $_POST["email"] ?? $userData["Email"];
+            $_POST["gender"] = $_POST["gender"] ?? $userData["Gender"];
+            $_POST["dob"] = $_POST["dob"] ?? $userData["DateOfBirth"];
+            if (isset($_POST["password"])) $_POST["password"] = password_hash($_POST["password"], PASSWORD_BCRYPT);
+            $_POST["password"] = $_POST["password"] ?? ($resetPassword ? "" : $userData["Password"]);
+
+            if ($userType == "student") {
+                $_POST["class-group"] = $_POST["class-group"] ?? $userData["ClassGroup"];
+                $_POST["level"] = $_POST["level"] ?? $userData["Level"];
+                if (isset($_POST["subjects"]))
+                    $_POST["subjects"] = json_decode($_POST["subjects"], true);
+                else
+                    $_POST["subjects"] = array_map(function ($subject) {
+                        return $subject["SubjectCode"];
+                    }, $userData["Subjects"]);
+            } else if ($userType == "teacher") {
+                $_POST["subject-taught"] = $_POST["subject-taught"] ?? $userData["SubjectTaught"];
+                $_POST["date-joined"] = $_POST["date-joined"] ?? $userData["DateJoined"];
+            } else if ($userType == "admin") {
+                $_POST["date-joined"] = $_POST["date-joined"] ?? $userData["DateJoined"];
+            }
+        }
     }
 }

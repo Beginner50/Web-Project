@@ -58,16 +58,37 @@ RewriteRule ^users/authenticate/$ /website/restController.php?resource=user&acti
 
 # Creates a user of their type & returns the userID & userType
 # Ex:
-#		localhost/users/(student|teacher|admin)/create - Create a new student/teacher/admin 
+#		localhost/users/create - Create a new student/teacher/admin 
 #		POST: 
 #		{
 #			"user-type", "fname", "lname", "email", "gender", "dob", "password", "repeat-password"
-#			"class-group", "level", "subjects"
-#			"subject-taught", "teacher-date-joined"
-#			"admin-date-joined"
+#			"class-group", "level", "subjects"			(OPTIONAL)
+#			"subject-taught", "teacher-date-joined"		(OPTIONAL)
+#			"admin-date-joined"							(OPTIONAL)
 #		}
-RewriteRule ^users/(student|teacher|admin)/create$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
-RewriteRule ^users/(student|teacher|admin)/create/$ /website/restController.php?resource=user&action=create&user-type=$1 [L,QSA]
+RewriteRule ^users/create$ /website/restController.php?resource=user&action=create [L,QSA]
+RewriteRule ^users/create/$ /website/restController.php?resource=user&action=create [L,QSA]
+
+# Edits a user of their type 
+# Ex:
+#		localhost/users/edit 						- Edit a user 
+#		localhost/users/edit?reset-password=true	- Edits a user & resets their password
+#		POST: 
+#		{
+#			"user-type", "userID"
+#			"fname", "lname", "email", "gender", "dob", "password"		(OPTIONAL)
+#			"class-group", "level", "subjects"							(OPTIONAL)
+#			"subject-taught", "date-joined"								(OPTIONAL)
+#			"is-approved"												(OPTIONAL)
+#		}
+RewriteRule ^users/edit$ /website/restController.php?resource=user&action=update [L,QSA]
+RewriteRule ^users/edit/$ /website/restController.php?resource=user&action=update [L,QSA]
+
+# Deletes a user
+# Ex:
+#		localhost/users/delete/1	- Deletes a user with UserID 1
+RewriteRule ^users/delete/([0-9]+)$ /website/restController.php?resource=user&action=delete&userID=$1 [L,QSA]
+RewriteRule ^users/delete/([0-9]+)/$ /website/restController.php?resource=user&action=delete&userID=$1 [L,QSA]
 
 #  List classes enrolled/taught by students/teachers
 #  Ex: 
@@ -107,6 +128,12 @@ RewriteRule ^classes/([0-9]+)/$ /website/restController.php?resource=classes&act
 #		{ "subjects": array }
 RewriteRule ^classes/enroll/([0-9]+)$ /website/restController.php?resource=classes&action=enroll&userID=$1 [L]
 RewriteRule ^classes/enroll/([0-9]+)/$ /website/restController.php?resource=classes&action=enroll&userID=$1 [L]
+
+#  Unenroll a student from classes
+#  Ex:
+#		localhost/classes/unenroll/1	- Unenroll student with userID 1 from classes 
+RewriteRule ^classes/unenroll/([0-9]+)$ /website/restController.php?resource=classes&action=unenroll&userID=$1 [L]
+RewriteRule ^classes/unenroll/([0-9]+)/$ /website/restController.php?resource=classes&action=unenroll&userID=$1 [L]
 
 #  Allows a teacher to teach/occupy a class
 #  Ex:
