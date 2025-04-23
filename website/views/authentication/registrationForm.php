@@ -81,8 +81,9 @@
         <!-- Teacher specific attributes -->
         <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;" disabled>
             <div class="teacher input-group">
-                Subject Taught: <input id="subject-taught" class="input-box hover transparent-placeholder " name="subject-taught"
-                    type="text" required>
+                Subject Taught:
+                <select id="subject-taught" class="input-box hover transparent-placeholder " name="subject-taught" required>
+                </select>
             </div>
             <div class="teacher input-group">
                 Date Joined: <input id="teacher-date-joined" class="input-box hover transparent-placeholder " name="teacher-date-joined"

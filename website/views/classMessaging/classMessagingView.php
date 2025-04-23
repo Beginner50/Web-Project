@@ -1,14 +1,3 @@
-<?php
-$classes = [
-    "2" => [
-        ["ClassID" => 19, "Level" => 1, "ClassGroup" => "RED", "SubjectCode" => "MA102", "TeacherID" => null, "SubjectName" => "Calculus I"],
-        ["ClassID" => 67, "Level" => 1, "ClassGroup" => "RED", "SubjectCode" => "MA304", "TeacherID" => null, "SubjectName" => "Discrete Mathematics"],
-        ["ClassID" => 73, "Level" => 1, "ClassGroup" => "RED", "SubjectCode" => "CS305", "TeacherID" => null, "SubjectName" => "Computer Networks"],
-        ["ClassID" => 79, "Level" => 1, "ClassGroup" => "RED", "SubjectCode" => "CS306", "TeacherID" => null, "SubjectName" => "Artificial Intelligence"]
-    ]
-];
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,27 +9,14 @@ $classes = [
     <link rel="stylesheet" href="stylesheets/common.css">
     <link rel="stylesheet" href="stylesheets/classMessaging/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <?php require 'views/partials/navBar.php'; ?>
 
     <div class="flex-col">
-        <aside class="sidebar">
-            <h2>Classes</h2>
-            <menu id="class-menu">
-                <?php foreach ($classes["2"] as $class): ?>
-                    <li class="class-entry"
-                        data-id="<?= $class['ClassID'] ?>"
-                        data-name="<?= htmlspecialchars($class['SubjectName']) ?>"
-                        data-level="<?= $class['Level'] ?>"
-                        data-group="<?= $class['ClassGroup'] ?>"
-                        data-subject="<?= $class['SubjectCode'] ?>">
-                        <?= htmlspecialchars($class['SubjectName']) ?>
-                    </li>
-                <?php endforeach; ?>
-            </menu>
-        </aside>
+        <?php require "views/classMessaging/sidebar.php" ?>
 
         <div id="main-wrapper">
             <!-- Chat Header -->
@@ -73,53 +49,29 @@ $classes = [
         </div>
     </div>
 
+    <?php require "views/classMessaging/membersModal.php" ?>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const classEntries = document.querySelectorAll('.class-entry');
-            const header = document.getElementById('classChat-header');
-            const body = document.getElementById('classChat-body');
-            const footer = document.getElementById('classChat-footer');
-            const cover = document.getElementById('classChat-cover');
-            const description = document.getElementById('classChat-description');
+        $(document).ready(function() {
+            let selectedClassID = null;
 
-            classEntries.forEach(entry => {
-                entry.addEventListener('click', () => {
-                    const subject = entry.dataset.subject;
-                    const level = entry.dataset.level;
-                    const group = entry.dataset.group;
-                    const name = entry.dataset.name;
-
-                    // Update header
-                    description.textContent = `${name} (Level ${level} - Group ${group})`;
-
-                    // Show interface
-                    header.style.display = 'flex';
-                    body.style.display = 'block';
-                    footer.style.display = 'flex';
-                    cover.style.display = 'none';
-
-                    // Clear previous messages and simulate loading (you can fetch real messages here)
-                    body.innerHTML = `<div class='message system'>Welcome to ${name} chat.</div>`;
-                });
-            });
-
-            document.getElementById('message-form').addEventListener('submit', function(e) {
+            // Send message form
+            $('#message-form').on('submit', function(e) {
                 e.preventDefault();
-                const msg = document.getElementById('message-input').value.trim();
-                if (msg) {
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = 'message user';
-                    msgDiv.textContent = msg;
-                    body.appendChild(msgDiv);
-                    this.reset();
-                }
-            });
+                const msg = $('#message-input').val().trim();
 
-            document.getElementById('viewMembers-button').addEventListener('click', function() {
-                alert("Feature coming soon: Show class members.");
+                if (msg) {
+                    $('<div>', {
+                        class: 'message user',
+                        text: msg
+                    }).appendTo('#classChat-body');
+                    $(this)[0].reset();
+                }
             });
         });
     </script>
+
+
 </body>
 
 </html>

@@ -52,7 +52,7 @@ class ClassRestHandler extends SimpleRest
         $rawData = $classMessage->getAllMessagesByClassIDs(classID: $classID, limit: $limit, offset: $offset);
 
         $statusCode = empty($rawData) ? 404 : 200;
-        if ($classID != 0) {
+        if ($classID != 0 && !empty($rawData["data"])) {
             $rawData = [
                 "data" => $rawData["data"][0][$classID]["Messages"],
                 "pagination" => $rawData["data"][0][$classID]["pagination"]
@@ -114,6 +114,8 @@ class ClassRestHandler extends SimpleRest
         $rawData = $class->getClassMembersByClassIDs(classID: $classID);
 
         $statusCode = empty($rawData) ? 404 : 200;
+        if ($classID != 0)
+            $rawData["data"] = $rawData["data"][0][$classID];
         $this->setHttpHeaders("application/json", $statusCode);
         echo json_encode($rawData);
         exit;

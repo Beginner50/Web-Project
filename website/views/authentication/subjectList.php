@@ -27,6 +27,25 @@
                         [subject.SubjectCode]: subject.SubjectName
                     };
                 });
+
+                const selectElement = $("#subject-taught");
+                selectElement.empty(); // Clear any existing options
+
+                // Add default option
+                selectElement.append($('<option>', {
+                    value: '',
+                    text: 'Select a subject',
+                    selected: true,
+                    disabled: true
+                }));
+
+                // Add subject code options
+                response.data.forEach(subject => {
+                    selectElement.append($('<option>', {
+                        value: subject.SubjectCode,
+                        text: subject.SubjectCode
+                    }));
+                });
             },
             error: function(xhr, status, error) {}
         });
@@ -84,7 +103,7 @@
                 selectedSubjects.push(courseId);
                 populateModalCourseList();
 
-                $("#selected-subjects").val(selectedSubjects);
+                $("#selected-subjects").val(JSON.stringify(selectedSubjects));
             }
 
             if (selectedSubjects.length === maxSubjects) {

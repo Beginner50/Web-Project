@@ -26,11 +26,11 @@
         <aside class="sidebar">
             <h2>Account management</h2>
             <ul>
-                <li><a href="#hidden-navigation"><i class="fa fa-user" aria-hidden="true"></i>UserID</a></li>
-                <li><a href="#userID-content"><i class="fa fa-address-card" aria-hidden="true"></i>Personal Information</a></li>
-                <li><a href="#personalinfo-savechanges"><i class="fa fa-graduation-cap" aria-hidden="true"></i><?php echo $_SESSION["UserType"]  ?> Information</a></li>
-                <li><a href="#loginmanagement"><i class="fa fa-key" aria-hidden="true"></i>Login Management</a></li>
-                <li><a href="#logout-content"><i class="fa fa-sign-out" aria-hidden="true"></i>Log out </a></li>
+                <li><a href="#hidden-navigation" class="sidebar-link"><i class="fa fa-user"></i>UserID</a></li>
+                <li><a href="#userID-content" class="sidebar-link"><i class="fa fa-address-card"></i>Personal Information</a></li>
+                <li><a href="#personalinfo-savechanges" class="sidebar-link"><i class="fa fa-graduation-cap"></i><?php echo $_SESSION["UserType"] ?> Information</a></li>
+                <li><a href="#loginmanagement" class="sidebar-link"><i class="fa fa-key"></i>Login Management</a></li>
+                <li><a href="#logout-content" class="sidebar-link"><i class="fa fa-sign-out"></i>Log out</a></li>
             </ul>
         </aside>
 
@@ -153,6 +153,29 @@
                 </div>
             <?php endif; ?>
 
+            <?php if ($_SESSION["UserType"] == "Admin"): ?>
+                <div id="admininfo" class="admininformation-content first-column">
+                    <h2>Admin Information</h2>
+                    <div class="information description">This section shows your admin-specific information, including when you joined EduPortal.</div>
+                </div>
+                <div class="admininformation-content2 second-column">
+                    <div class="information">
+                        <div class="sub-information">Date You Joined EduPortal</div>
+                        <?php if (!empty($_SESSION['DateJoined'])): ?>
+                            <?php
+                            $dateJoined = new DateTime($_SESSION['DateJoined']);
+                            $now = new DateTime();
+                            $daysAgo = $dateJoined->diff($now)->days;
+                            ?>
+                            <div class="information-input"><?= $dateJoined->format('jS F Y') ?></div>
+                            <div class="information-input">(<?= $daysAgo ?> day<?= $daysAgo !== 1 ? 's' : '' ?> ago)</div>
+                        <?php else: ?>
+                            <div class="information-input">Not available</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <!--login management  -->
             <div id="loginmanagement" class="login-content first-column">
                 <h2>Login Management</h2>
@@ -232,6 +255,12 @@
                     }, 100);
                 }
             });
+
+            $('.sidebar ul li a').on('click', function() {
+                $('.sidebar ul li a').removeClass('active');
+                $(this).addClass('active');
+            });
+
         });
     </script>
 </body>

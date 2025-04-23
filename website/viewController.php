@@ -71,7 +71,8 @@ switch ($page = $_GET['page']) {
         break;
     case "dashboard":
         if (isset($_SESSION['UserType']) && $_SESSION['UserType'] == 'Admin') {
-            // require 'models/adminDashboard/getListUsers.php';
+
+
             require 'views/adminDashboard/adminDashboardView.php';
         } else
             header("Location: /");
@@ -83,9 +84,14 @@ switch ($page = $_GET['page']) {
             header("Location: /");
         break;
     case "messaging":
-        if (isset($_SESSION['UserType']))
+        if (isset($_SESSION['UserType'])) {
+            $classes = json_decode(
+                file_get_contents("http://localhost/users/"
+                    . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"] . "/classes"),
+                true
+            )["data"];
             require 'views/classMessaging/classMessagingView.php';
-        else
+        } else
             header("Location: /");
         break;
     case "logout":

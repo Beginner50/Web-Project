@@ -21,7 +21,7 @@ class ClassMessage
             $classIDs = [$classID];
 
 
-        $classMessagesByClassIDs = array_values(array_filter(array_map(function ($classID) use ($limit, $offset) {
+        $classMessagesByClassIDs = array_filter(array_map(function ($classID) use ($limit, $offset) {
             $stmt = $this->pdo->prepare("SELECT UserID, DateSent, Message FROM class_message
                                         WHERE ClassID = ?
                                         LIMIT ? OFFSET ?");
@@ -53,7 +53,7 @@ class ClassMessage
         }, $classIDs), function ($elem) {
             if ($elem == 0)  return false;
             return true;
-        }));
+        });
 
         return [
             "success" => 1,

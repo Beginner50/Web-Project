@@ -19,13 +19,13 @@ class Classroom
             $stmt->bindParam(1, $limit, PDO::PARAM_INT);
             $stmt->bindParam(2, $offset, PDO::PARAM_INT);
             $stmt->execute();
-            $classes = $stmt->fetchAll();
+            $classes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Get count classes
             if ($classID == 0) {
                 $countStmt = $this->pdo->prepare("SELECT COUNT(*) AS Count FROM class;");
                 $countStmt->execute();
-                $countClasses = $countStmt->fetchAll()[0]["Count"];
+                $countClasses = $countStmt->fetchAll(PDO::FETCH_ASSOC)[0]["Count"];
             }
 
             return [
@@ -55,7 +55,7 @@ class Classroom
         } else
             $classIDs = [$classID];
 
-        $classMembersByClassIDs = array_values(array_filter(array_map(function ($classID) {
+        $classMembersByClassIDs = array_filter(array_map(function ($classID) {
             $stmt = $this->pdo->prepare("(SELECT 'Student' AS UserType, StudentID AS UserID
                                      FROM class_student WHERE ClassID = ?)
                                      UNION
@@ -70,7 +70,7 @@ class Classroom
         }, $classIDs), function ($elem) {
             if ($elem == 0) return false;
             return true;
-        }));
+        });
         return ["success" => 1, "data" => $classMembersByClassIDs];
     }
 

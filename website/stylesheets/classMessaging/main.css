@@ -89,6 +89,24 @@ body {
     background-color: rgba(120, 120, 255, 0.4);
 }
 
+.class-entry.active {
+    background-color: rgba(96, 96, 255, 0.4) !important;
+    color: white;
+    font-weight: bold;
+    border-left: 4px solid #1e3c72;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        display: none;
+    }
+}
+
 /* Main Wrapper */
 #main-wrapper {
     flex-grow: 1;
@@ -268,4 +286,58 @@ body {
     justify-content: center;
     font-size: 1.5em;
     font-family: inherit;
+}
+
+.selected {
+    background-color: #d0e0ff;
+    font-weight: bold;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 400px;
+    max-height: 80%;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-content h3 {
+    margin-top: 15px;
+}
+
+.modal-content .close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.member.teacher {
+    background-color: #f0f8ff;
+    padding: 8px;
+    margin: 4px 0;
+    border-left: 5px solid #337ab7;
+}
+
+.member.student {
+    background-color: #fffaf0;
+    padding: 8px;
+    margin: 4px 0;
+    border-left: 5px solid #5cb85c;
 }

@@ -22,12 +22,17 @@ aside.sidebar {
     transition: 0.15s;
 }
 
+.sidebar ul li a.active {
+    color: hsl(256, 66%, 25%);
+    /* Indigo shade or any highlight color */
+    /* color: rgba(227, 215, 244, 0.613); */
+    font-weight: bold;
+}
+
 .sidebar ul li:hover {
-
-    background-color: hsl(256, 66%, 25%);
-    ;
+    /* background-color: hsl(273, 92%, 19%); */
+    background-color: rgba(97, 47, 177, 0.445);
     color: rgba(227, 215, 244, 0.613);
-
 }
 
 .sidebar ul li a {
