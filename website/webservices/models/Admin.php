@@ -29,14 +29,14 @@ class Admin extends User
 
         try {
             $this->pdo->beginTransaction();
-            $adminID = User::create($userData, true)["data"]["userID"];
+            $adminID = User::create($userData, true)["data"]["UserID"];
 
             $sInsertAdmin = $this->pdo->prepare('INSERT INTO administrator(AdminID, DateJoined) VALUES(?, ?);');
             $sInsertAdmin->execute([$adminID,  $userData["date-joined"]]);
             $sInsertAdmin->closeCursor();
 
             $this->pdo->commit();
-            $result["data"] = ["userID" => $adminID, "userType" => $userData["user-type"]];
+            $result["data"] = ["UserID" => $adminID, "UserType" => $userData["user-type"]];
         } catch (Exception $e) {
             var_dump($e);
             if ($this->pdo->inTransaction())

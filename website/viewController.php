@@ -61,8 +61,12 @@ switch ($page = $_GET['page']) {
                     true
                 )["data"][0];
 
-                header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
-                exit;
+                if ($_SESSION["IsApproved"]) {
+                    header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
+                    exit;
+                } else {
+                    // Please wait for approval
+                }
             } else
                 require "views/partials/errorModal.php";
         }
@@ -98,6 +102,7 @@ switch ($page = $_GET['page']) {
         foreach (array_keys($_SESSION) as $key) {
             unset($_SESSION[$key]);
         }
+        session_destroy();
         header("Location: /");
         break;
 };

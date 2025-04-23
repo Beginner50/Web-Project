@@ -22,8 +22,9 @@ class ClassMessage
 
 
         $classMessagesByClassIDs = array_filter(array_map(function ($classID) use ($limit, $offset) {
-            $stmt = $this->pdo->prepare("SELECT UserID, DateSent, Message FROM class_message
-                                        WHERE ClassID = ?
+            $stmt = $this->pdo->prepare("SELECT user.UserID, FirstName, LastName, DateSent, Message FROM class_message
+                                         INNER JOIN user ON class_message.UserID = user.UserID
+                                        WHERE ClassID = ? 
                                         LIMIT ? OFFSET ?");
             $stmt->bindParam(1, $classID, PDO::PARAM_INT);
             $stmt->bindParam(2, $limit, PDO::PARAM_INT);

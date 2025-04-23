@@ -1,92 +1,83 @@
-<aside class="sidebar">
+<link rel="stylesheet" href="stylesheets/classMessaging/sidebar.css">
+<div class="class-messaging-sidebar">
     <h2>Classes</h2>
-    <menu id="class-menu">
-        <?php foreach ($classes as $class): ?>
-            <li class="class-entry"
-                data-id="<?= $class['ClassID'] ?>"
-                data-name="<?= htmlspecialchars($class['SubjectName']) ?>"
-                data-level="<?= $class['Level'] ?>"
-                data-group="<?= $class['ClassGroup'] ?>"
-                data-subject="<?= $class['SubjectCode'] ?>">
-                <?= htmlspecialchars($class['SubjectName']) . " " . $class["ClassGroup"][0] . $class["Level"] ?>
-            </li>
-        <?php endforeach; ?>
-    </menu>
-</aside>
+    <?php if ($_SESSION["UserType"] == "Teacher"): ?>
+        <button id="add-class-btn" class="add-class-button">+ Add Class</button>
+    <?php endif; ?>
+    <div class="class-menu-container">
+        <menu id="class-menu">
+            <?php foreach ($classes as $class): ?>
+                <li class="class-entry"
+                    data-id="<?= $class['ClassID'] ?>"
+                    data-name="<?= htmlspecialchars($class['SubjectName']) ?>"
+                    data-level="<?= $class['Level'] ?>"
+                    data-group="<?= $class['ClassGroup'] ?>"
+                    data-subject="<?= $class['SubjectCode'] ?>">
+                    <?= htmlspecialchars($class['SubjectName']) . " " . $class["ClassGroup"][0] . $class["Level"] ?>
+                </li>
+            <?php endforeach; ?>
+        </menu>
+    </div>
+    <?php require "views/classMessaging/classModal.php" ?>
+</div>
 
 <script>
     $(document).ready(function() {
-
+        // --- Class selection logic ---
         $('.class-entry').on('click', function() {
-            const classId = $(this).data('id');
+            const classID = $(this).data('id');
             const subject = $(this).data('subject');
             const level = $(this).data('level');
             const group = $(this).data('group');
             const name = $(this).data('name');
 
-            selectedClassID = classId;
+            // Trigger class message & member loading
+            loadMembersForClass(classID);
+            loadMessagesForClass(classID);
 
-            // Highlight selected class
+            // Set hidden input value
+            $("#classID").val(classID);
+
+            // Highlight selected class (add CSS for .active class)
             $('.class-entry').removeClass('active');
             $(this).addClass('active');
+            $('#classChat-description').text(`${name || 'Class'} (Level ${level || '?'} - Group ${group || '?'})`);
 
-            // Update header text immediately
-            $('#classChat-description').text(`${name} (Level ${level} - Group ${group})`);
-
-            // Show the chat interface immediately
+            // Show interface elements (using previous fade-in logic)
+            $('#classChat-cover').css({
+                display: 'none',
+                opacity: 1
+            }).animate({
+                opacity: 0
+            }, 100); // Hide the "No Class Selected" cover
             $('#classChat-header').css({
                 display: 'flex',
                 opacity: 0
             }).animate({
                 opacity: 1
             }, 300);
-            $('#classChat-footer').css({
+            $('#classChat-body').css({
                 display: 'flex',
                 opacity: 0
             }).animate({
                 opacity: 1
-            }, 300);
-            $('#classChat-body').css({
-                display: 'block',
+            }, 200);
+            $('#classChat-footer').css({
+                display: 'flex',
                 opacity: 0
+            }).delay(100).animate({
+                opacity: 1
+            }, 300);
+        });
+
+        // Open modal when add class button is clicked
+        $('#add-class-btn').on('click', function() {
+            $('#add-class-modal').css({
+                display: 'flex'
             });
 
-            // Load messages via AJAX right away
-            console.log(selectedClassID);
-            $.ajax({
-                url: `http://localhost/classes/${selectedClassID}/messages`,
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.data && response.data.length > 0) {
-                        $('#classChat-body').html("");
-                        response.data.forEach(msg => {
-                            $('#classChat-body').append(`
-                        <div class="message user">
-                            <div class="msg-text">${msg.Message}</div>
-                            <div class="msg-meta">User: ${msg.UserID} • ${msg.DateSent}</div>
-                        </div>
-                    `);
-                        });
-                    } else {
-                        $('#classChat-body').html(`<div class='message system'>No messages yet for this class.</div>`);
-                    }
-
-                    // Fade in message body after messages are loaded
-                    $('#classChat-body').animate({
-                        opacity: 1
-                    }, 300);
-                },
-                error: function() {
-                    $('#classChat-body').append(`<div class='message system error'>Failed to load messages.</div>`);
-                    $('#classChat-body').animate({
-                        opacity: 1
-                    }, 300);
-                }
-            });
-
-            // Fade out the cover (after the AJAX is already running)
-            $('#classChat-cover').fadeOut(300);
+            // Load classes when modal opens
+            loadAvailableClasses(1);
         });
     });
 </script>

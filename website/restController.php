@@ -85,6 +85,11 @@ switch ($resource) {
 	case "classes":
 		switch ($action) {
 			case "list":
+				header("Access-Control-Allow-Origin: http://eduportal.net");
+				header("Content-Type: application/json");
+				header("Access-Control-Allow-Methods: GET, OPTIONS");
+				header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 				$classRestHandler = new ClassRestHandler($pdo);
 				$result = $classRestHandler->getAllClasses();
 				break;
@@ -137,6 +142,11 @@ switch ($resource) {
 		switch ($action) {
 			case "create":
 				if ($method == "POST") {
+					header("Access-Control-Allow-Origin: http://eduportal.net");
+					header("Content-Type: application/json");
+					header("Access-Control-Allow-Methods: GET, OPTIONS");
+					header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 					$classRestHandler = new ClassRestHandler($pdo);
 					$result = $classRestHandler->postMessage();
 				} else {

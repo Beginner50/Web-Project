@@ -26,87 +26,6 @@ body {
     /* ADDED: Prevent this container from scrolling, children will scroll */
 }
 
-/* Sidebar */
-.sidebar {
-    background-color: rgba(230, 230, 255, 0.7);
-    padding: 1em 0.5em;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    /* REMOVED height: 84vh !important; Height will come from align-items: stretch */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-y: auto;
-    /* Allow sidebar internal scrolling if needed */
-    overflow-x: hidden;
-    font-family: inherit;
-    width: 250px;
-    /* ADDED: Give sidebar a fixed width */
-    /* Or use flex-basis if you prefer: */
-    /* flex-basis: 250px; */
-    flex-shrink: 0;
-    /* ADDED: Prevent sidebar from shrinking */
-}
-
-.sidebar h2 {
-    margin-bottom: 1em;
-    font-family: inherit;
-}
-
-#class-menu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* This centers the .class-entry blocks */
-    width: 100%;
-    gap: 0.5em;
-    list-style: none;
-    margin-left: 20%;
-    padding-left: 0;
-    font-family: inherit;
-    /* border: 1px solid red; */
-}
-
-#class-menu .class-entry {
-    width: 90%;
-    /* Keeps the block centered horizontally via parent's align-items */
-    text-align: center;
-    /* MODIFIED: Align text *inside* the block to the center */
-    background-color: rgba(150, 150, 255, 0.2);
-    padding: 0.6em 1em;
-    /* Internal padding */
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s;
-    border: 1px solid #aaa;
-    color: white;
-    list-style: none;
-    font-family: inherit;
-    /* REMOVED: !important from text-align if it was added */
-}
-
-#class-menu .class-entry:hover {
-    background-color: rgba(120, 120, 255, 0.4);
-}
-
-.class-entry.active {
-    background-color: rgba(96, 96, 255, 0.4) !important;
-    color: white;
-    font-weight: bold;
-    border-left: 4px solid #1e3c72;
-}
-
-.fade-out {
-    animation: fadeOut 0.5s forwards;
-}
-
-@keyframes fadeOut {
-    to {
-        opacity: 0;
-        display: none;
-    }
-}
-
 /* Main Wrapper */
 #main-wrapper {
     flex-grow: 1;
@@ -197,12 +116,75 @@ body {
 }
 
 .message {
-    width: 60%;
-    border-radius: 10px;
-    background-color: rgba(222, 222, 255, 0.7);
-    margin: 0.5em 0;
-    padding: 0.6em;
-    font-family: inherit;
+    background-color: rgba(150, 150, 255, 0.15);
+    border-radius: 8px;
+    padding: 1.8em 1em 0.6em 1em;
+    margin-bottom: 1em;
+    max-width: 55%;
+    min-width: 20%;
+    /* Max width for messages, adjust as needed */
+    word-wrap: break-word;
+    font-size: 1em;
+    position: relative;
+    /* Context for absolutely positioned children */
+    /* clear: both; /* May not be needed with margin auto, test if overlap occurs */
+}
+
+/* Style for the sender's name - Default (used by .sent) */
+.message .msg-sender {
+    position: absolute;
+    top: 0.4em;
+    right: 1em;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: #555599;
+    max-width: calc(100% - 2em);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message .msg-time {
+    display: block;
+    margin-top: 0.3em;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: #666;
+    text-align: right;
+}
+
+/* --- Alignment for Sent vs Received --- */
+.message.sent {
+    margin-left: auto;
+    margin-right: 0;
+    background-color: rgba(200, 200, 255, 0.5);
+}
+
+.message.received {
+    margin-right: auto;
+    margin-left: 0;
+    background-color: rgba(240, 240, 240, 0.6);
+}
+
+/* MODIFIED: Position sender name top-left for received messages */
+.message.received .msg-sender {
+    right: auto;
+    left: 1em;
+}
+
+/* --- System Messages --- */
+.message.system {
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background-color: rgba(200, 200, 200, 0.2);
+    color: #555;
+    font-style: italic;
+    font-size: 0.9em;
+    padding: 0.5em 1em;
+    position: static;
+    /* No absolute positioning needed */
 }
 
 /* Footer */
@@ -291,53 +273,4 @@ body {
 .selected {
     background-color: #d0e0ff;
     font-weight: bold;
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    width: 400px;
-    max-height: 80%;
-    overflow-y: auto;
-    position: relative;
-}
-
-.modal-content h3 {
-    margin-top: 15px;
-}
-
-.modal-content .close {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 22px;
-    cursor: pointer;
-}
-
-.member.teacher {
-    background-color: #f0f8ff;
-    padding: 8px;
-    margin: 4px 0;
-    border-left: 5px solid #337ab7;
-}
-
-.member.student {
-    background-color: #fffaf0;
-    padding: 8px;
-    margin: 4px 0;
-    border-left: 5px solid #5cb85c;
 }

@@ -35,14 +35,14 @@ class Teacher extends User
 
         try {
             $this->pdo->beginTransaction();
-            $teacherID = User::create($userData, true)["data"]["userID"];
+            $teacherID = User::create($userData, true)["data"]["UserID"];
 
             $sInsertTeacher = $this->pdo->prepare('INSERT INTO teacher(TeacherID, SubjectTaught, DateJoined) VALUES(?, ?, ?);');
             $sInsertTeacher->execute([$teacherID, $userData["subject-taught"], $userData["date-joined"]]);
             $sInsertTeacher->closeCursor();
 
             $this->pdo->commit();
-            $result["data"] = ["userID" => $teacherID, "userType" => $userData["user-type"]];
+            $result["data"] = ["UserID" => $teacherID, "UserType" => $userData["user-type"]];
         } catch (Exception $e) {
             var_dump($e);
             if ($this->pdo->inTransaction())

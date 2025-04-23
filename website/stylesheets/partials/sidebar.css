@@ -1,10 +1,10 @@
 aside.sidebar {
-    background-color: #705ba5;
+    background-color: var(--blueOcean);
     width: 18vw;
     height: 100%;
 
     padding-left: 0px;
-    padding-right: 40px;
+    padding-right: 30px;
 }
 
 .sidebar h2 {

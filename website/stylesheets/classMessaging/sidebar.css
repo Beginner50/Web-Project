@@ -1,0 +1,139 @@
+.class-messaging-sidebar {
+    background-color: var(--blueOcean);
+    height: 100% !important;
+    padding: 1em 0.5em;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    /* Ensures items start from the top */
+    align-items: center;
+    overflow-x: hidden;
+    font-family: inherit;
+    width: 250px;
+    flex-shrink: 0;
+    height: 84vh;
+    margin-top: 0;
+}
+
+.class-messaging-sidebar h2 {
+    color: rgb(250, 250, 250);
+    padding-top: 10vh;
+    font-weight: bolder;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Class Menu Container - Scrollable Area */
+.class-menu-container {
+    width: 92%;
+    max-height: 35vh;
+    background-color: rgba(240, 240, 255, 0.8);
+    border-radius: 8px;
+    padding: 0.5em;
+    margin-left: 0;
+    margin-top: 0.5em;
+    overflow-y: auto;
+    flex-grow: 1;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+
+    /* Custom Scrollbar Styling */
+    scrollbar-width: thin;
+    /* For Firefox */
+
+    /* For Chrome, Edge, and Safari */
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    /* Track - set to transparent to remove background */
+    &::-webkit-scrollbar-track {
+        background: transparent !important;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: rgba(96, 96, 255, 0.6);
+        border-radius: 10px;
+        transition: background 0.3s ease;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(96, 96, 255, 0.8);
+    }
+}
+
+/* Add Class Button - Now with distinct style */
+.add-class-button {
+    background-color: #4CAF50;
+    /* Green color to distinguish it */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6em 1em;
+    font-weight: 600;
+    cursor: pointer;
+    width: 75%;
+    transition: all 0.3s;
+    font-family: inherit;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.add-class-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#class-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 0.5em;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    font-family: inherit;
+}
+
+#class-menu .class-entry {
+    width: 90%;
+    text-align: center;
+    background-color: rgba(150, 150, 255, 0.2);
+    padding: 0.6em 0.5em;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    border: 1px solid #aaa;
+    color: #333;
+    /* Changed to darker color for better readability */
+    list-style: none;
+    font-family: inherit;
+}
+
+#class-menu .class-entry:hover {
+    background-color: rgba(120, 120, 255, 0.4);
+    color: white;
+}
+
+.class-entry.active {
+    background-color: rgba(96, 96, 255, 0.6) !important;
+    color: white !important;
+    font-weight: bold;
+    border-left: 4px solid #1e3c72;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        display: none;
+    }
+}

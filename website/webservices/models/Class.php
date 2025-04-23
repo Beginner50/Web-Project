@@ -56,11 +56,16 @@ class Classroom
             $classIDs = [$classID];
 
         $classMembersByClassIDs = array_filter(array_map(function ($classID) {
-            $stmt = $this->pdo->prepare("(SELECT 'Student' AS UserType, StudentID AS UserID
-                                     FROM class_student WHERE ClassID = ?)
+            $stmt = $this->pdo->prepare("(SELECT 'Student' AS UserType, StudentID AS UserID,
+                                     FirstName, LastName
+                                     FROM class_student 
+                                     INNER JOIN user ON user.UserID = class_student.StudentID
+                                     WHERE ClassID = ?)
                                      UNION
-                                     (SELECT 'Teacher' AS UserType, TeacherID AS UserID
-                                      FROM class WHERE ClassID = ? AND TeacherID IS NOT NULL)");
+                                     (SELECT 'Teacher' AS UserType, TeacherID AS UserID,
+                                      FirstName, LastName
+                                      FROM class INNER JOIN user ON user.UserID = class.TeacherID
+                                      WHERE ClassID = ? AND TeacherID IS NOT NULL)");
             $stmt->execute([$classID, $classID]);
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (!empty($result))
