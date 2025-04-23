@@ -107,7 +107,7 @@ class User
                 $sInsertApproval->closeCursor();
             }
 
-            return ["success" => 1, "data" => ["userID" => $userID]];
+            return ["success" => 1, "data" => ["UserID" => $userID]];
         } catch (PDOException $e) {
             return ["success" => 0, "errors" => array($e->getMessage())];
         }
@@ -264,7 +264,6 @@ class User
             $userID = $result[0]["UserID"];
 
         // UserType
-        var_dump($email);
         $stmt = $this->pdo->prepare("(SELECT 'Student' AS UserType FROM student WHERE StudentID = ?)
                                          UNION
                                          (SELECT 'Teacher' AS UserType FROM teacher WHERE TeacherID = ?)

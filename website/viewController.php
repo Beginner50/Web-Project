@@ -54,6 +54,7 @@ switch ($page = $_GET['page']) {
             $response = json_decode(sendPostRequest($url, $_POST), true);
 
             // If validation/registration is successful, save session data & redirect to account management
+            // Otherwise, display errors
             if ($response["success"]) {
                 $_SESSION = json_decode(
                     file_get_contents("http://localhost/users/" . $response["data"]["UserType"] . "/" . $response["data"]["UserID"]),
@@ -62,11 +63,8 @@ switch ($page = $_GET['page']) {
 
                 header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
                 exit;
-            } else {
-                // Otherwise, display errors
-                $errors = $response["errors"];
+            } else
                 require "views/partials/errorModal.php";
-            }
         }
 
         require 'views/authentication/authenticationView.php';

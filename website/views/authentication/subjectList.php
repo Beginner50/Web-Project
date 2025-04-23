@@ -12,6 +12,7 @@
     </div>
 </div>
 
+
 <script>
     $(document).ready(function() {
         let courses = [];
@@ -44,10 +45,12 @@
                 populateModalCourseList();
                 subjectDialog.showModal();
             }
+            document.body.style.overflow = 'hidden';
         }
 
         function closeSubjectModal() {
             subjectDialog.close();
+            document.body.style.overflow = '';
         }
 
         function populateModalCourseList() {
@@ -80,10 +83,13 @@
                 addSubjectToList(courseId);
                 selectedSubjects.push(courseId);
                 populateModalCourseList();
+
+                $("#selected-subjects").val(selectedSubjects);
             }
 
             if (selectedSubjects.length === maxSubjects) {
                 $("#addSubject-button").hide();
+                closeSubjectModal();
             }
         }
 

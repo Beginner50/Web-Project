@@ -18,12 +18,6 @@ RewriteEngine On
 RewriteRule ^(authentication|dashboard|messaging)$ /website/viewController.php?page=$1 [L,QSA]
 RewriteRule ^(authentication|dashboard|messaging)/$ /website/viewController.php?page=$1 [L,QSA]
 
-RewriteRule ^login$ /website/viewController.php?page=authentication&action=login [L,QSA]
-RewriteRule ^login/$ /website/viewController.php?page=authentication&action=login [L,QSA]
-
-RewriteRule ^registration$ /website/viewController.php?page=authentication&action=registration [L,QSA]
-RewriteRule ^registration/$ /website/viewController.php?page=authentication&action=registration [L,QSA]
-
 RewriteRule ^logout$ /website/viewController.php?page=logout [L,QSA]
 RewriteRule ^logout/$ /website/viewController.php?page=logout [L,QSA]
 

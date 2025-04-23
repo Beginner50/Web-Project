@@ -5,21 +5,19 @@
 }
 
 #subjectDialog {
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    max-width: 90%;
-    width: 400px;
-    padding: 20px;
-    background-color: white;
     position: fixed;
-    top: 40%;
-    left: 30%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    max-height: 80vh;
-    overflow-y: auto;
-    font-family: Arial, sans-serif;
-    text-align: center;
+    margin: 0;
+    padding: 1.5rem;
+    border: none;
+    background-color: white;
+    border-radius: 8px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 90vw;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
 }
 
 #subjectDialog::backdrop {
@@ -97,7 +95,8 @@ h4 {
     margin-top: 20px;
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    flex-direction: row;
     gap: 7%;
     text-align: center;
 }

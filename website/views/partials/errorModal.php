@@ -1,4 +1,4 @@
-<?php if (!empty($errors)): ?>
+<?php if (isset($response["errors"]) && !empty($response["errors"])): ?>
     <base href="/website/">
     <link rel="stylesheet" href="stylesheets/partials/errorModal.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -6,7 +6,7 @@
         <div class="modal-box roundBorder-10">
             <h2>There were some issues:</h2>
             <ul>
-                <?php foreach ($errors as $error): ?>
+                <?php foreach ($response["errors"] as $error): ?>
                     <li><?= htmlspecialchars($error) ?></li>
                 <?php endforeach; ?>
             </ul>

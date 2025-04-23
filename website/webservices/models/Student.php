@@ -30,7 +30,7 @@ class Student extends User
 
     public function create($userData, $approval = false)
     {
-        $result = $this->validateStudent($userData, false);
+        $result = $this->validateStudent($userData, "create");
         if (!$result["success"])
             return $result;
 
@@ -38,7 +38,8 @@ class Student extends User
         try {
             $this->pdo->beginTransaction();
 
-            $studentID = User::create($userData, false)["data"]["userID"];
+            $studentID = User::create($userData, false)["data"]["UserID"];
+
 
             // Insert into student table
             $sInsertStudent = $this->pdo->prepare('INSERT INTO student(StudentID, Level, ClassGroup) VALUES(?, ?, ?);');
@@ -46,7 +47,7 @@ class Student extends User
             $sInsertStudent->closeCursor();
 
             $this->pdo->commit();
-            $result["data"] = ["userID" => $studentID, "userType" => $userData["user-type"]];
+            $result["data"] = ["UserID" => $studentID, "UserType" => $userData["user-type"]];
         } catch (Exception $e) {
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();

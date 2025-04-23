@@ -1,4 +1,4 @@
-<form id="login-form" action="/login" method="post">
+<form id="login-form" action="/authentication?action=login" method="post">
     <div class="input-group"> Email: <input id="login-email" class="input-box" type="email" name="email" required
             autocomplete="email">
     </div>

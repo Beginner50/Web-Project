@@ -81,18 +81,15 @@ class UserRestHandler extends SimpleRest
         switch ($userData['user-type']) {
             case "student":
                 $student = new Student($this->pdo);
-                if (($response = $student->create($userData))["success"]) {
+                if (($result = $student->create($userData))["success"]) {
                     // Enroll student in classes based on subjects taken if student has been created successfully
-                    $studentID = $response["data"]["UserID"];
+                    $studentID = $result["data"]["UserID"];
                     $response = $this->sendPostRequest(
                         "http://localhost/classes/enroll/" . $studentID,
                         $userData['subjects']
                     );
-                }
-
-                if (!$response["success"]) {
-                    $result["success"] = 0;
-                    $result["errors"] = [...$result["errors"], ...$response["errors"]];
+                    $result["success"] = $response["success"];
+                    $result["errors"] = [...$response["errors"]];
                 }
                 break;
             case "teacher":
@@ -255,6 +252,7 @@ class UserRestHandler extends SimpleRest
                 $_POST["date-joined"] = $_POST["teacher-date-joined"];
                 unset($_POST["teacher-date-joined"]);
             }
+            if (isset($_POST["subject-group"])) $_POST["subject-group"] = strtoupper($_POST["subject-group"]);
 
             $_POST["subjects"] = json_decode($_POST["subjects"], true);
         } else if ($action == "edit") {

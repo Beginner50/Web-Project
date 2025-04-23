@@ -200,7 +200,7 @@ class ClassRestHandler extends SimpleRest
         if (count($errors) > 0)
             echo json_encode(["success" => 0, "errors" => [...$errors]]);
         else
-            echo json_encode(["success" => 1]);
+            echo json_encode(["success" => 1, "errors" => []]);
         exit;
     }
 

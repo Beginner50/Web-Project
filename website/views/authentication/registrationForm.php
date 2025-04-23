@@ -1,5 +1,4 @@
-<form id="registration-form" action="/registration" method="post"
-    style="display: none;">
+<form id="registration-form" style="display:none;" action="/authentication?action=registration" method="post">
     <!-- User Type Fieldset (Select between different users) -->
     <fieldset id="userType-fieldset">
         <input id="student-button" class="indigoTheme active noGap" type="button" form="none"
@@ -183,7 +182,7 @@
         $("#admin-date-joined").val(window.localStorage.getItem("admin-date-joined"));
 
 
-        $("#registration-form").on("submit", function() {
+        $("#registration-form").submit(function(e) {
             const formData = new FormData(this);
 
             window.localStorage.setItem("fname", formData.get("fname"));

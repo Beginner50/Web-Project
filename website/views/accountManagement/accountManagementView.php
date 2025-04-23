@@ -141,10 +141,7 @@
                         <div class="sub-information">Subjects Taken</div>
                         <div class="subjectstaken">
                             <?php
-                            $subjects = array_map(function ($classEnrolled) {
-                                return ["SubjectCode" => $classEnrolled["SubjectCode"], "SubjectName" => $classEnrolled["SubjectName"]];
-                            }, $_SESSION["ClassesEnrolled"]);
-                            foreach ($subjects as $subject) {
+                            foreach ($_SESSION["Subjects"] as $subject) {
                                 echo '<div class="subject-item">';
                                 echo '<div class="subject-code">' . $subject['SubjectCode'] . '</div>';
                                 echo '<div class="subject-name">' . $subject['SubjectName'] . '</div>';
