@@ -138,6 +138,11 @@ switch ($resource) {
 	case "subject":
 		switch ($action) {
 			case "list":
+				header("Access-Control-Allow-Origin: http://eduportal.net");
+				header("Content-Type: application/json");
+				header("Access-Control-Allow-Methods: GET, OPTIONS");
+				header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 				$subjectRestHandler = new SubjectRestHandler($pdo);
 				$result = $subjectRestHandler->getAllSubjects();
 				break;

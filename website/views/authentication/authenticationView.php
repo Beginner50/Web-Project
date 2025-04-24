@@ -36,6 +36,7 @@
             <?php require 'views/authentication/registrationForm.php' ?>
         </div>
     </div>
+    <?php require "views/authentication/subjectModal.php" ?>
 </body>
 
 </html>

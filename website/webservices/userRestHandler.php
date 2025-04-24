@@ -27,8 +27,8 @@ class UserRestHandler extends SimpleRest
         $rawData = null;
         $userType = $_GET["user-type"] ?? "all";
         $userID = $_GET["userID"] ?? 0;
-        $limit = $_GET["limit"] ?? 25;
-        $offset = $_GET["offset"] ?? 0;
+        $limit = isset($_GET["limit"]) ? (int) $_GET["limit"] : 25;
+        $offset =  isset($_GET["offset"]) ? (int) $_GET["offset"] : 0;
 
         switch ($userType) {
             case "student":
@@ -74,7 +74,7 @@ class UserRestHandler extends SimpleRest
         $result = ["success" => 1, "errors" => array()];
 
         // Clean POST data
-        $this->processPOSTData("create");
+        $this->preprocessPOSTData("create");
         $userData = $_POST;
 
         // Route user-type
@@ -126,7 +126,7 @@ class UserRestHandler extends SimpleRest
     {
         $result = ["success" => 1, "errors" => array()];
 
-        $this->processPOSTData("edit");
+        $this->preprocessPOSTData("edit");
         $userData = $_POST;
 
         // Route user-type
@@ -242,7 +242,7 @@ class UserRestHandler extends SimpleRest
     /*
         Clean & Validate POST Data
     */
-    private function processPOSTData($action)
+    private function preprocessPOSTData($action)
     {
         if ($action == "create") {
             if (isset($_POST["admin-date-joined"])) {

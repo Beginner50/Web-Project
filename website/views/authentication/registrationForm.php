@@ -76,7 +76,11 @@
                     </select>
                 </div>
             </div>
-            <?php require 'subjectList.php'; ?>
+            <div id="bottom-section">
+                <div id="subject-list">
+                    <button id="addSubject-button" class="indigoTheme" type="button"> + </button>
+                </div>
+            </div>
         </fieldset>
         <!-- Teacher specific attributes -->
         <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;" disabled>
@@ -165,9 +169,9 @@
     });
 </script>
 
-<!-- Cookie Logic -->
 <script>
     $(document).ready(function() {
+        // Cookie Logic
         $("#fname").val(window.localStorage.getItem("fname"));
         $("#lname").val(window.localStorage.getItem("lname"));
         $("#email").val(window.localStorage.getItem("email"));
@@ -199,6 +203,37 @@
             window.localStorage.setItem("teacher-date-joined", formData.get("teacher-date-joined"));
             window.localStorage.setItem("subject-taught", formData.get("subject-taught"));
             window.localStorage.setItem("admin-date-joined", formData.get("admin-date-joined"));
+        });
+
+        /*-------------------- Event listener on subject entries -----------------------*/
+        // Open subject modal upon clicking add-subject button
+        $("#subject-list").on("click", "#addSubject-button", function() {
+            openSubjectModal();
+        });
+
+        // Animate subject list entry on hover
+        $("#subject-list").on("mouseenter mouseleave", ".subject > img", function(event) {
+            const isEnter = event.type === "mouseenter";
+            $(this).attr("src", isEnter ? "assets/backspaceRed.svg" : "assets/backspace.svg");
+            $(this).parent().css({
+                color: isEnter ? "red" : "var(--purpleVortex)",
+                borderColor: isEnter ? "red" : "var(--purpleVortex)"
+            });
+        });
+
+        // Remove the subject list entry upon clicking delete icon
+        $("#subject-list").on("click", ".subject > img", function(event) {
+            // Remove selected subject
+            let selectedSubjects = JSON.parse($('#selected-subjects').val());
+            selectedSubjects = selectedSubjects.filter((elem) => {
+                if (elem == $(this).parent().data('id'))
+                    return false;
+                return true;
+            });
+            $('#selected-subjects').val(JSON.stringify(selectedSubjects));
+
+            // Destroy element
+            $(this).parent().remove();
         });
     });
 </script>

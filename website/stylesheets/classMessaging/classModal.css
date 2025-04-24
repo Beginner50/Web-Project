@@ -53,14 +53,6 @@
      margin-bottom: 1em;
  }
 
- #class-search {
-     width: 100%;
-     padding: 0.5em;
-     border: 1px solid #ccc;
-     border-radius: 4px;
-     font-size: 1em;
- }
-
  .classes-container {
      max-height: 50vh;
      overflow-y: auto;

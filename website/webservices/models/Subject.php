@@ -8,13 +8,29 @@ class Subject
         $this->pdo = $pdo;
     }
 
-    public function getAllSubjects()
+    public function getAllSubjects($limit = 20, $offset = 0)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM subject;");
+        $stmt = $this->pdo->prepare("SELECT * FROM subject
+                                     LIMIT ? OFFSET ? ;");
+        $stmt->bindParam(1, $limit, PDO::PARAM_INT);
+        $stmt->bindParam(2, $offset, PDO::PARAM_INT);
         $stmt->execute();
         $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return ["success" => 1, "data" => $subjects];
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM subject;");
+        $stmt->execute();
+        $total = $stmt->fetchColumn(0);
+
+        return [
+            'success' => 1,
+            'data' => $subjects,
+            'pagination' => [
+                'limit' => $limit,
+                'offset' => $offset,
+                'count' => count($subjects),
+                'total' =>  $total
+            ]
+        ];
     }
 
     public function getSubjectsByStudentIDs($userID = 0)
