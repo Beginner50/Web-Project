@@ -31,8 +31,10 @@ class ClassTeacher
         }
 
         $result = array_values(array_map(function ($teacherID) {
-            $stmt = $this->pdo->prepare("SELECT ClassID, Level, ClassGroup, SubjectCode 
-                                         FROM class WHERE TeacherID = ?;");
+            $stmt = $this->pdo->prepare("SELECT ClassID, Level, ClassGroup, class.SubjectCode, SubjectName
+                                         FROM class
+                                         INNER JOIN subject ON class.SubjectCode = subject.SubjectCode
+                                         WHERE TeacherID = ?;");
             $stmt->execute([$teacherID]);
 
             $classesTaught = $stmt->fetchAll(PDO::FETCH_ASSOC);

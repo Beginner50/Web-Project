@@ -75,8 +75,6 @@ switch ($page = $_GET['page']) {
         break;
     case "dashboard":
         if (isset($_SESSION['UserType']) && $_SESSION['UserType'] == 'Admin') {
-
-
             require 'views/adminDashboard/adminDashboardView.php';
         } else
             header("Location: /");
@@ -94,6 +92,7 @@ switch ($page = $_GET['page']) {
                     . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"] . "/classes"),
                 true
             )["data"];
+
             require 'views/classMessaging/classMessagingView.php';
         } else
             header("Location: /");

@@ -151,8 +151,8 @@ class ClassRestHandler extends SimpleRest
     */
     public function assignTeacher()
     {
-        $teacherID = $_POST["userID"];
-        $classID = $_POST["classID"];
+        $teacherID = $_GET["userID"];
+        $classID = $_GET["classID"];
 
         $classTeacher = new ClassTeacher($this->pdo);
         $rawData = $classTeacher->assignTeacher($teacherID, $classID);

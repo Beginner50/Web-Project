@@ -17,7 +17,7 @@
      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
      width: 90%;
      max-width: 500px;
-     max-height: 80vh;
+     min-height: 70vh;
      padding: 1.5em;
      position: relative;
      animation: modalFadeIn 0.3s;
@@ -166,4 +166,18 @@
  .modal-pagination button[disabled] {
      background-color: #ccc;
      cursor: not-allowed;
+ }
+
+ @keyframes highlightNew {
+     0% {
+         background-color: rgba(76, 175, 80, 0.5);
+     }
+
+     100% {
+         background-color: rgba(150, 150, 255, 0.2);
+     }
+ }
+
+ .class-entry.highlight {
+     animation: highlightNew 1.5s ease-out;
  }

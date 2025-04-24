@@ -132,8 +132,9 @@ RewriteRule ^classes/unenroll/([0-9]+)/$ /website/restController.php?resource=cl
 #  Allows a teacher to teach/occupy a class
 #  Ex:
 #		localhost/classes/2/assign/1	- Assign teacher with teacherID 1 to class with classID 2
-RewriteRule ^classes/([0-9]+)/assign/([0-9]+)$ /website/restController.php?resource=classes&action=assign&userID=$1 [L]
-RewriteRule ^classes/([0-9]+)/assign/([0-9]+)/$ /website/restController.php?resource=classes&action=assign&userID=$1 [L]
+#		POST: {}						(POST used for symbolic reason)
+RewriteRule ^classes/([0-9]+)/assign/([0-9]+)$ /website/restController.php?resource=classes&action=assign&classID=$1&userID=$2 [L]
+RewriteRule ^classes/([0-9]+)/assign/([0-9]+)/$ /website/restController.php?resource=classes&action=assign&classID=$1&userID=$2 [L]
 
 #  Lists class messages
 #  (Accepts limit & offset query params for pagination)

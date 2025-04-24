@@ -13,7 +13,8 @@ class Classroom
     {
         try {
             // Get classes
-            $stmt = $this->pdo->prepare("SELECT * FROM class "
+            $stmt = $this->pdo->prepare("SELECT class.*, subject.SubjectName FROM class 
+                    INNER JOIN subject ON class.SubjectCode = subject.SubjectCode"
                 . ($classID != 0 ? ("WHERE ClassID = " . $classID) : "")
                 . " LIMIT ? OFFSET ?;");
             $stmt->bindParam(1, $limit, PDO::PARAM_INT);

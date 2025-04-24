@@ -24,7 +24,7 @@
 <script>
     $(document).ready(function() {
         // --- Class selection logic ---
-        $('.class-entry').on('click', function() {
+        $(document).on('click', '.class-entry', function() {
             const classID = $(this).data('id');
             const subject = $(this).data('subject');
             const level = $(this).data('level');

@@ -20,7 +20,6 @@
         <?php endif; ?>
     </div>
     <div id="right-section">
-        <button id="contact-button" class=" indigoTheme roundBorder shadow"> Contact Us</button>
         <button id="TOC-button" class=" indigoTheme roundBorder shadow"> Terms & Conditions</button>
     </div>
 </nav>
