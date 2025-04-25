@@ -64,8 +64,6 @@ switch ($page = $_GET['page']) {
                 if ($_SESSION["IsApproved"]) {
                     header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
                     exit;
-                } else {
-                    // Please wait for approval
                 }
             } else
                 require "views/partials/errorModal.php";

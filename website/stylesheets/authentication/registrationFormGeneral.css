@@ -1,32 +1,141 @@
+#form-wrapper #registration-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    /* Add this line */
+}
+
+#registration-form .input-group {
+    position: relative;
+    font-size: 0.9rem;
+    color: #555;
+    margin-left: 0.8rem;
+    margin-right: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    margin-bottom: 0;
+    /* Remove bottom margin from input groups */
+}
+
+#registration-form .input-box {
+    padding: 8px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    outline: none;
+    background-color: #f8f8f8;
+    height: auto;
+}
+
+#registration-form .input-box:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+#registration-form #registrationSubmit-button {
+    font-weight: 600;
+    width: 120px;
+    height: 48px;
+    border-width: 0;
+    border-radius: 6px;
+    margin-left: 41%;
+    margin-right: auto;
+    margin-bottom: 0;
+    /* Remove bottom margin from submit button */
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 18px;
+    margin-top: auto;
+    /* Push submit button to the bottom */
+}
+
+#registration-form #registrationSubmit-button:hover {
+    background-color: #0056b3;
+    background-color: #45a049;
+}
+
+#registration-form #generalAttr-fieldset {
+    display: grid;
+    grid-template-columns: 2;
+    width: 100%;
+    padding: 0px;
+    margin-top: 4%;
+    margin-left: 5%;
+    gap: 5px;
+    border: none;
+    margin-bottom: auto;
+}
+
+
+@media (width < 800px) {
+    #main-wrapper {
+        height: 65vh;
+    }
+
+    #main-wrapper #form-wrapper {
+        margin-top: 5%;
+        margin-bottom: 5%;
+        height: 65vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    #registration-form #registrationSubmit-button {
+        margin-left: 31%;
+    }
+}
+
 #registration-form #userType-fieldset {
     display: flex;
     justify-content: center;
     height: fit-content;
     padding: 0px;
     border: none;
+    margin-bottom: 15px;
 }
 
-#userType-fieldset>input {
+
+#registration-form #userType-fieldset {
+    display: flex;
+    justify-content: center;
+    height: fit-content;
+    padding: 0px;
+    border: none;
+    margin-bottom: 15px;
+}
+
+#registration-form #userType-fieldset>button {
     padding: auto;
     box-shadow: 0px 2px 4px rgb(0, 0, 0, 0.55);
     width: 75px;
     height: 1.5rem;
-    font-size: clamp(0.8rem, 0.4vw + 0.1rem, 5rem);
+    font-size: clamp(0.8rem, 0.4vw + 0.7rem, 5rem);
 }
 
-#registration-form #generalAttr-fieldset {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, min(26vw, 240px));
-    width: 90%;
-    padding: 0px;
-    margin-top: 4%;
-    margin-left: 5%;
-    gap: 0px;
-    border: none;
-}
+
+
 
 #generalAttr-fieldset select {
     width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    background-color: #f8f8f8;
+    transition: all 0.2s ease;
+    height: auto;
+}
+
+#generalAttr-fieldset select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
 #generalAttr-fieldset div:nth-child(3) {

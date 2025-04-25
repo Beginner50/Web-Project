@@ -1,10 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
 html {
     overflow-x: hidden !important;
+    margin: 0;
+    padding: 0;
 }
 
-
 body {
+    margin: 0;
+    padding: 0;
     scroll-behavior: smooth;
+    font-family: "Josefin Sans", sans-serif;
+    /* More modern font */
+    background-color: #e9ecef;
+    /* Soft background color */
 }
 
 nav {
@@ -12,21 +21,37 @@ nav {
     margin-top: 0px;
 }
 
+.card-snap-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
 #main-wrapper {
     position: relative;
-    width: min(100%, 800px);
-    min-height: 640px;
-    height: 95%;
-    margin-top: 100px;
-    margin-bottom: 100px;
+    width: 70%;
+    /* min-height: 640px; */
+    height: 95vh;
+    margin-bottom: 15px;
+    margin-top: 15px;
     margin-left: auto;
     margin-right: auto;
-    background-color: var(--orchid);
+    background-color: #ffffff;
+    /* Clean white background */
+    border-radius: 12px;
+    /* Add border radius for a softer look */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    /* Subtle shadow */
 }
 
 #main-wrapper #callToAction-wrapper {
     position: absolute;
-    border-radius: 15px;
+    border-radius: 12px;
+    /* Consistent border radius */
     margin-left: 60%;
     height: 100%;
     width: 40%;
@@ -34,28 +59,38 @@ nav {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(to top right, hsl(218, 51%, 75%), hsl(276, 97%, 36%));
+    /* background: linear-gradient(to top right, hsl(218, 51%, 75%), hsl(276, 97%, 36%)); */
+    /* Original gradient - you can keep or change */
+    background: linear-gradient(to top right, #6ab7ff, #8e44ad);
+    /* Updated gradient */
 }
 
 #callToAction-wrapper button.callToAction {
-    height: 40px;
-    width: 90px;
+    height: 48px;
+    /* Slightly larger button */
+    width: 120px;
+    /* Slightly wider button */
     font-size: 18px;
     font-weight: 600;
-    font-family: Arial, Helvetica, sans-serif;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-family: "Josefin Sans", sans-serif;
     color: white;
     background-color: transparent;
     border: 2px solid white;
-    border-radius: 5px;
+    border-radius: 6px;
+    /* More rounded corners */
     cursor: pointer;
     margin-left: auto;
     margin-right: auto;
+    transition: all 0.3s ease;
+    /* Add smooth transition */
 }
 
 #callToAction-wrapper button.callToAction:hover {
-    color: var(--blueOcean);
-    background-color: white;
-    transition: background-color 0.3s;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Slightly transparent white on hover */
+    border-color: #ffffff;
 }
 
 #callToAction-wrapper button.callToAction>a {
@@ -65,16 +100,23 @@ nav {
 
 #callToAction-wrapper button.callToAction:hover>a {
     text-decoration: none;
-    color: var(--purpleVortex);
+    color: #ffffff;
+    /* Keep link color white on hover */
 }
 
 #callToAction-wrapper h1.callToAction {
-    font-size: clamp(1rem, 1vw + 1rem, 5rem);
-    font-weight: bolder;
-    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(2rem, 2vw + 1rem, 2.5rem);
+    /* Adjusted font size */
+    font-weight: bold;
+    /* Use bold instead of bolder */
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-family: "Josefin Sans", sans-serif;
     color: white;
     text-align: center;
-    margin-bottom: 10%;
+    margin-bottom: 8%;
+    /* Slightly reduced margin */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    /* Add text shadow for better readability */
 }
 
 #main-wrapper #form-wrapper {
@@ -94,100 +136,64 @@ nav {
 }
 
 #login-form .input-group {
-    font-size: 18px;
-    color: rgb(82, 79, 79);
-
-    border-radius: 10px;
+    font-size: 16px;
+    /* Slightly smaller font size */
+    color: #555;
+    /* Darker gray for better contrast */
+    border-radius: 8px;
     margin-left: 2rem;
     margin-right: 30px;
     margin-top: 10px;
     margin-bottom: 10px;
-
     display: flex;
     flex-direction: column;
     width: min(53vw, 120%);
 }
 
 #login-form .input-box {
-    padding-left: 0.2rem;
+    padding: 10px;
+    /* More consistent padding */
     font-size: 0.9rem;
-    padding-top: 0.15rem;
-    padding-bottom: 0.2rem;
-
-    border-style: solid;
-    border-width: 1px;
-    border-color: rgb(114, 113, 113);
-    border-radius: 3px;
-    transition: all 0.15s;
+    border: 1px solid #ddd;
+    /* Lighter border */
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    /* Add transition for focus effect */
+    outline: none;
+    /* Remove default outline */
+    background-color: #f8f8f8;
+    /* Light background for input fields */
 }
+
+#login-form .input-box:focus {
+    border-color: #4CAF50;
+    /* Highlight on focus */
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    /* Add focus shadow */
+}
+
 
 #login-form #loginSubmit-button {
     font-weight: 600;
     margin-top: 35px;
-    width: 100px;
-    height: 40px;
-    border-width: 2px;
+    width: 120px;
+    /* Wider button */
+    height: 48px;
+    /* Taller button */
+    border-width: 0;
+    /* Remove border */
+    border-radius: 6px;
     margin-left: 40%;
     margin-right: 40%;
+    background-color: #4CAF50;
+    /* Green submit button */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 18px;
 }
 
-/* Common attributes for registration form */
-/* View registrationFormGeneral.css & registrationFormSpecific.css */
-#form-wrapper #registration-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-}
-
-#registration-form .input-group {
-    position: relative;
-    font-size: clamp(0.7rem, 0.1vw + 0.1rem, 5rem);
-    color: rgb(82, 79, 79);
-    margin-left: 0.8rem;
-    margin-right: 2.5rem;
-    display: flex;
-    flex-direction: column;
-    padding: 0px;
-}
-
-#registration-form .input-box {
-    padding-left: 0.2rem;
-    font-size: 0.9rem;
-    padding-top: 0.15rem;
-    padding-bottom: 0.2rem;
-
-    border-style: solid;
-    border-width: 1px;
-    border-color: rgb(114, 113, 113);
-    border-radius: 3px;
-    transition: all 0.15s;
-}
-
-#registration-form #registrationSubmit-button {
-    font-weight: 600;
-    width: 100px;
-    height: 40px;
-    border-width: 2px;
-    margin-left: 41%;
-    margin-right: auto;
-    margin-bottom: 10%;
-}
-
-@media (width < 800px) {
-    #main-wrapper {
-        height: 65vh;
-    }
-
-    #main-wrapper #form-wrapper {
-        margin-top: 5%;
-        margin-bottom: 5%;
-        height: 65vh;
-        overflow-y: scroll;
-        overflow-x: hidden;
-    }
-
-    #registration-form #registrationSubmit-button {
-        margin-left: 31%;
-    }
+#login-form #loginSubmit-button:hover {
+    background-color: #45a049;
+    /* Darker green on hover */
 }

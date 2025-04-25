@@ -2,9 +2,10 @@
 School Website Application for Web Centric Computing Assignment of the BSc(Hons) Computer Science degree offered by the University
 of Mauritius (UoM). Initial development of this project began as from July 2024.
 
-![web1](https://github.com/user-attachments/assets/1d00bea9-d277-48d0-b74b-958d006b088b)
-![web2](https://github.com/user-attachments/assets/26789fd5-5c1b-4e3d-831f-84e11877327a)
-![web3](https://github.com/user-attachments/assets/d6b292aa-3c86-4d30-9370-bbc4ef50b5ae)
+![image](https://github.com/user-attachments/assets/70efa3db-a61f-41c0-a7d0-908462f15652)
+![image](https://github.com/user-attachments/assets/3e733404-cc50-4275-b900-6738d6102ef1)
+![image](https://github.com/user-attachments/assets/bc71512e-1442-4478-a5c3-55eba87fddca)
+
 
 ## Project Specifications
 The portable document file (pdf) on the Project Specifications is available under the Releases section on this github page.

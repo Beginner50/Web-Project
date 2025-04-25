@@ -42,27 +42,10 @@
     scrollbar-width: thin;
     /* For Firefox */
 
-    /* For Chrome, Edge, and Safari */
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
+}
 
-    /* Track - set to transparent to remove background */
-    &::-webkit-scrollbar-track {
-        background: transparent !important;
-    }
-
-    /* Handle */
-    &::-webkit-scrollbar-thumb {
-        background: rgba(96, 96, 255, 0.6);
-        border-radius: 10px;
-        transition: background 0.3s ease;
-    }
-
-    /* Handle on hover */
-    &::-webkit-scrollbar-thumb:hover {
-        background: rgba(96, 96, 255, 0.8);
-    }
+.class-menu-container::-webkit-scrollbar {
+    display: none;
 }
 
 /* Add Class Button - Now with distinct style */

@@ -21,7 +21,7 @@ class ClassMessage
             $classIDs = [$classID];
 
 
-        $classMessagesByClassIDs = array_filter(array_map(function ($classID) use ($limit, $offset) {
+        $classMessagesByClassIDs = array_values(array_filter(array_map(function ($classID) use ($limit, $offset) {
             $stmt = $this->pdo->prepare("SELECT user.UserID, FirstName, LastName, DateSent, Message FROM class_message
                                          INNER JOIN user ON class_message.UserID = user.UserID
                                         WHERE ClassID = ? 
@@ -54,7 +54,7 @@ class ClassMessage
         }, $classIDs), function ($elem) {
             if ($elem == 0)  return false;
             return true;
-        });
+        }));
 
         return [
             "success" => 1,

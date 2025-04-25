@@ -1,10 +1,10 @@
 <form id="registration-form" style="display:none;" action="/authentication?action=registration" method="post">
     <!-- User Type Fieldset (Select between different users) -->
     <fieldset id="userType-fieldset">
-        <input id="student-button" class="indigoTheme active noGap" type="button" form="none"
-            value="student">
-        <input id="teacher-button" class="indigoTheme noGap" type="button" form="none" value="teacher">
-        <input id="admin-button" class="indigoTheme noGap" type="button" form="none" value="admin">
+        <button id="student-button" class="indigoTheme active noGap" type="button" form="none"
+            value="student"> Student </button>
+        <button id="teacher-button" class="indigoTheme noGap" type="button" form="none" value="teacher"> Teacher </button>
+        <button id="admin-button" class="indigoTheme noGap" type="button" form="none" value="admin"> Admin </button>
     </fieldset>
 
     <!-- Hidden input to store the user type (Triggered by above inputs) -->
@@ -231,6 +231,10 @@
                 return true;
             });
             $('#selected-subjects').val(JSON.stringify(selectedSubjects));
+
+            // Reveal add button if selected subjects < 5
+            if (selectedSubjects.length < 5)
+                $('#addSubject-button').show();
 
             // Destroy element
             $(this).parent().remove();
