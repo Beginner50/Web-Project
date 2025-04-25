@@ -22,14 +22,12 @@
     <div class="card-snap-wrapper">
         <?php require 'views/authentication/cardContainer.php' ?>
 
-        <!-- Main Wrapper -->
         <div id="main-wrapper" class="roundBorder-15">
-            <!-- Call To Action Wrapper (Switches between Login & Registration Forms)-->
             <div id="callToAction-wrapper" class="registrationCTA">
+                <!-- Call To Action (Switches between Login & Registration Forms)-->
                 <?php require 'views/authentication/CTAComponent.php' ?>
             </div>
 
-            <!-- Form Wrapper -->
             <div id="form-wrapper">
                 <h1>Sign In</h1>
 
