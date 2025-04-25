@@ -110,6 +110,10 @@
             selectedSubjects.push(subjectCode);
             $('#selected-subjects').val(JSON.stringify(selectedSubjects));
 
+            // Hide button if selected subjects is 5
+            if (selectedSubjects.length == 5)
+                $('#addSubject-button').hide(0);
+
             // Add the subject to the list & move addSubject-button 
             const addSubjectButton = $("#addSubject-button").detach();
             $("#subject-list").append(`

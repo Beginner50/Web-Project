@@ -86,7 +86,7 @@
                 // Fade in animation for registration form
                 setTimeout(function() {
                     loginForm.css("display", "none");
-                    registrationForm.css("display", "block");
+                    registrationForm.css("display", "flex");
                 }, 250);
 
                 CTAH1.text("Already Registered?");

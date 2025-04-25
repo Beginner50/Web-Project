@@ -1,12 +1,12 @@
-<Files website/webservices/adminDashboard>
-	Deny from all
-	Allow from 127.0.0.1
-</Files>
-
-<Files website/views/adminDashboard>
-	Deny from all
-	Allow from 127.0.0.1
-</Files>
+#<Files website/webservices/adminDashboard>
+#	Deny from all
+#	Allow from 127.0.0.1
+#</Files>
+#
+#<Files website/views/adminDashboard>
+#	Deny from all
+#	Allow from 127.0.0.1
+#</Files>
 
 <Files website>
 	Allow from all
