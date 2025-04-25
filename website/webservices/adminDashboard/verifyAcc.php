@@ -1,21 +1,24 @@
 <?php
-  session_start();
-  //TO CODE THE CHECKING WHETHER IT IS A STUDENT OR NOT
-  
-  $approve=1;
-  require_once '../connect.php';
+session_start();
+require_once '../../connect.php';
 
-  $adminID = $_SESSION['UserID'];
+if (isset($_GET['userID']) && isset($_SESSION['UserID'])) {
+    $targetUserID = $_GET['userID']; // the user being verified
+    $adminID = $_SESSION['UserID'];  // the admin performing verification
 
-  $stmt = $pdo -> prepare('UPDATE approval SET AdminID = ?,IsApproved=? WHERE UserId =?');
-  if ($stmt -> execute([$adminID,$approve,$_SESSION['UserID-Clicked']])){
+    $stmt = $pdo->prepare('UPDATE approval SET AdminID = ?, IsApproved = ? WHERE UserID = ?');
+    $success = $stmt->execute([$adminID, 1, $targetUserID]);
 
-    $_SESSION['verifyAccStatus']='Account has been verified';
-  }else{
-    $_SESSION['verifyAccStatus']='Something went wrong while verifying account';
-  }
+    if ($success) {
+        $_SESSION['verifyStatus'] = "User successfully verified.";
+    } else {
+        $_SESSION['verifyStatus'] = "Failed to verify user.";
+    }
+} else {
+    $_SESSION['verifyStatus'] = "Missing data to verify.";
+}
 
-  header('Location: adminPage.php');
-  exit();
-  
+// Redirect back to the admin dashboard
+header("Location: /dashboard");
+exit();
 ?>

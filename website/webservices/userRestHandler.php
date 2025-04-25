@@ -125,54 +125,59 @@ class UserRestHandler extends SimpleRest
     public function editUser()
     {
         $result = ["success" => 1, "errors" => array()];
-
-        $this->preprocessPOSTData("edit");
+ 
+        $this->preprocessPOSTData("edit"); 
         $userData = $_POST;
-
-        // Route user-type
-        switch ($_POST['user-type']) {
-            case "student":
-                $student = new Student($this->pdo);
-                $result = $student->edit($userData);
-
-                // Remove student from all classes
-                if (!($response = json_decode(
-                    file_get_contents("http://localhost/classes/unenroll/" . $userData["userID"]),
-                    true
-                ))["success"]) {
-                    $result["success"] = 0;
-                    $result["errors"] = [...$result["errors"], ...$response["errors"]];
+    
+       
+        $user = new User($this->pdo);
+        $result = $user->edit($userData);  
+    
+        if ($result["success"] == 1) {
+           
+            switch ($_POST['user-type']) {
+                case "student":
+                    $student = new Student($this->pdo);
+                    $result = $student->edit($userData);  
+    
+                    // 🔁 Unenroll and re-enroll
+                    $response = json_decode(
+                        file_get_contents("http://localhost/classes/unenroll/" . $userData["userID"]),
+                        true
+                    );
+                    if (!$response["success"]) {
+                        $result["success"] = 0;
+                        $result["errors"] = [...$result["errors"], ...$response["errors"]];
+                        break;
+                    }
+    
+                    $response = $this->sendPostRequest(
+                        "http://localhost/classes/enroll/" . $userData["userID"],
+                        $userData['subjects']
+                    );
+                    if (!$response["success"]) {
+                        $result["success"] = 0;
+                        $result["errors"] = [...$result["errors"], ...$response["errors"]];
+                    }
                     break;
-                }
-
-                // Enroll student in classes based on subjects taken
-                $response = $this->sendPostRequest(
-                    "http://localhost/classes/enroll/" . $userData["userID"],
-                    $userData['subjects']
-                );
-
-                if (!$response["success"]) {
-                    $result["success"] = 0;
-                    $result["errors"] = [...$result["errors"], ...$response["errors"]];
-                }
-                break;
-            case "teacher":
-                $teacher = new Teacher($this->pdo);
-                $result = $teacher->edit($userData);
-                break;
-            case "admin":
-                $admin = new Admin($this->pdo);
-                $result = $admin->edit($userData);
-                break;
-            default:
-                break;
+    
+                case "teacher":
+                    $teacher = new Teacher($this->pdo);
+                    $result = $teacher->edit($userData); // updates subject-taught, date-joined, etc.
+                    break;
+    
+                case "admin":
+                    $admin = new Admin($this->pdo);
+                    $result = $admin->edit($userData); // updates date-joined or admin-specific stuff
+                    break;
+            }
         }
-
+     
         $statusCode = $result["success"] == 1 ? 201 : 400;
-        $this->setHttpHeaders("application/json", $statusCode);
-        echo json_encode($result);
-        exit;
+        return $result;
+
     }
+    
 
     /*
         Delete User
@@ -265,8 +270,9 @@ class UserRestHandler extends SimpleRest
                 true
             )["data"][0];
 
-            $_POST["fname"] = $_POST["fname"] ?? $userData["FirstName"];
-            $_POST["lname"] = $_POST["lname"] ?? $userData["LastName"];
+          // Support both "firstname" and "fname"
+            $_POST["fname"] = $_POST["fname"] ?? $_POST["firstname"] ?? $userData["FirstName"];
+            $_POST["lname"] = $_POST["lname"] ?? $_POST["lastname"] ?? $userData["LastName"];
             $_POST["email"] = $_POST["email"] ?? $userData["Email"];
             $_POST["gender"] = $_POST["gender"] ?? $userData["Gender"];
             $_POST["dob"] = $_POST["dob"] ?? $userData["DateOfBirth"];

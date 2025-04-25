@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
-$user = "prashant";
+$user = "umair";
 $db = "web_project";
-$pass = "";
+$pass = "umair1108";
 
 // Creates a new pdo object
 $pdo = new PDO(

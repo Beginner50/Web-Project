@@ -66,6 +66,13 @@ switch ($resource) {
 
 					$userRestHandler = new UserRestHandler($pdo);
 					$result = $userRestHandler->editUser();
+
+
+					if ($result["success"] == 1) {
+						 
+						header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
+						exit;
+					}
 				} else {
 					$result["success"] = 0;
 					$result["errors"][] = "Invalid HTTP method!";

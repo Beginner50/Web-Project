@@ -1,33 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-  <?php
+ <?php
+require_once '../../connect.php';
 
-    require_once '../connect.php';
-    session_start();
+if (isset($_GET['userID'])) {
+    $userID = $_GET['userID'];
 
-    $password=password_hash('$1lent.k',PASSWORD_DEFAULT);
-    
-    $stmt = $pdo -> prepare("UPDATE user SET Password = ? Where UserID = ? ");
-    if($stmt -> execute([$password,$_SESSION['UserID-Clicked']])){
+    // Set default password (e.g., "$1lent.k") hashed
+    $defaultPassword = password_hash('pass1234',  PASSWORD_BCRYPT);
 
-      $_SESSION['PassChange'] = 'Password has been reset';
-
-    }else{
-      $_SESSION['PassChange'] = 'Something went wrong';
+    $stmt = $pdo->prepare("UPDATE user SET Password = ? WHERE UserID = ?");
+    if ($stmt->execute([$defaultPassword, $userID])) {
+        header("Location: /dashboard?message=Password reset successfully");
+        exit();
+    } else {
+        echo "Error resetting password.";
     }
-
-    header('Location: adminPage.php');
-    exit();
-
-    
-
-  ?>
-</body>
-</html>
+} else {
+    echo "Missing userID.";
+}
+?>

@@ -56,7 +56,8 @@
                 <div class="information description">This is your private general information that is stored and will be used only for educative purposes.</div>
             </div>
             <div class="personalinfo-content2  second-column">
-                <form id="personalinfo-form" class="personalinfo-grid" method="post" action="models/AccountManagement/personalinfo.php">
+                <form id="personalinfo-form" class="personalinfo-grid" method="post" action="/users/edit">
+
                     <div class="information">
                         <label class="sub-information">First Name: </label>
                         <input class="information-input" type="text" id="firstname" name="firstname" value="<?php echo $_SESSION['FirstName']; ?>">
@@ -80,6 +81,9 @@
                         <label class="sub-information" for="email">Email: </label>
                         <input class="information-input" type="email" id="email" name="email" value="<?php echo $_SESSION['Email']; ?>" style="width:300px;">
                     </div>
+                    
+                    <input type="hidden" name="userID" value="<?php echo $_SESSION['UserID']; ?>">
+                    <input type="hidden" name="user-type" value="<?php echo strtolower($_SESSION['UserType']); ?>">
 
                     <button type="submit" id="personalinfo-savechanges" name="personalinfo-savechanges" class="indigoTheme roundBorder savebutton" form="personalinfo-form">Save Changes</button>
                 </form>

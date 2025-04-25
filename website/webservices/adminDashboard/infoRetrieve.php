@@ -1,82 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+session_start();
+require_once '../../connect.php';
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+header('Content-Type: application/json');
 
-<body>
+if (!isset($_GET['userID']) || !isset($_GET['userType'])) {
+    echo json_encode(['error' => 'Missing userID or userType']);
+    exit;
+}
 
-    <?php
+$userID = $_GET['userID'];
+$userType = $_GET['userType'];
 
-    require_once '../connect.php';
-    session_start();
+$response = [
+    'UserID' => $userID,
+    'UserType' => $userType
+];
 
-    $_SESSION['UserID-Clicked'] = 3;
-    $_SESSION['UserType'] = 'Student';
-    $_SESSION['Name'] = 'abc Deez';
-    $_SESSION['FirstName'] = 'abc';
-    $_SESSION['LastName'] = 'Deez';
+// Common user data
+$stmt = $pdo->prepare('SELECT * FROM user WHERE UserID = ?');
+$stmt->execute([$userID]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $_SESSION['DateJoined'] = NULL;
-    $_SESSION['Authorisation'] = NULL;
+if (!$user) {
+    echo json_encode(['error' => 'User not found']);
+    exit;
+}
 
+$response['FirstName'] = $user['FirstName'];
+$response['LastName'] = $user['LastName'];
+$response['Email'] = $user['Email'];
+$response['Gender'] = $user['Gender'];
+$response['DateOfBirth'] = $user['DateOfBirth'];
 
-    $stmt = $pdo->prepare('SELECT * FROM user WHERE UserID = ?');
-    $stmt->execute([$_SESSION['UserID-Clicked']]);
-    $User = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($userType == 'Student') {
+    $stmt = $pdo->prepare("SELECT Level, ClassGroup FROM student WHERE StudentID=?");
+    $stmt->execute([$userID]);
+    $student = $stmt->fetch(PDO::FETCH_ASSOC);
+    $response['Level'] = $student['Level'] ?? '';
+    $response['ClassGroup'] = $student['ClassGroup'] ?? '';
 
-    $_SESSION['Gender'] = $User['Gender'];
-    $_SESSION['DateOfBirth'] = $User['DateOfBirth'];
-    $_SESSION['Email'] = $User['Email'];
+    $stmt = $pdo->prepare("SELECT s.Subjectname, s.SubjectCode FROM subject s 
+        JOIN class c ON s.SubjectCode = c.SubjectCode 
+        JOIN class_student cs ON cs.ClassId = c.ClassID 
+        WHERE cs.StudentID=?");
+    $stmt->execute([$userID]);
+    $response['Subjects'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} elseif ($userType == 'Teacher') {
+    $stmt = $pdo->prepare("SELECT SubjectTaught, DateJoined FROM teacher WHERE TeacherID=?");
+    $stmt->execute([$userID]);
+    $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
+    $response['SubjectTaught'] = $teacher['SubjectTaught'] ?? '';
+    $response['DateJoined'] = $teacher['DateJoined'] ?? '';
+}
 
-
-    // If user is a student, query the student table using UserID to get additional data.
-    if ($_SESSION['UserType'] == 'Student') {
-
-        $stmt = $pdo->prepare("SELECT Level, ClassGroup FROM student WHERE StudentID=?;");
-        $stmt->bindParam(1, $_SESSION['UserID-Clicked']);
-        $stmt->execute();
-        $student = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $_SESSION['Level'] = $student['Level'];
-        $_SESSION['ClassGroup'] = $student['ClassGroup'];
-
-        // Retrieve subjects taken by the student
-        $stmt = $pdo->prepare("  SELECT s.Subjectname, s.SubjectCode FROM subject s 
-                                INNER JOIN class c ON s.SubjectCode = c.SubjectCode
-                                INNER JOIN class_student cs ON cs.ClassId = c.ClassID
-                                WHERE cs.StudentID= ?;");
-
-        $stmt->bindParam(1, $_SESSION['UserID-Clicked']);
-        $stmt->execute();
-        $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (!empty($subjects)) {
-            $_SESSION['Subjects'] = $subjects;
-        } else {
-            echo "No subjects found for this student.";
-        }
-    }
-    // Else if user is a teacher
-    else if ($_SESSION['UserType'] == 'Teacher') {
-
-        $stmt = $pdo->prepare("SELECT SubjectTaught, DateJoined FROM teacher WHERE TeacherID=?;");
-        $stmt->bindParam(1, $_SESSION['UserID-Clicked']);
-        $stmt->execute();
-        $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($teacher) {
-            $_SESSION['SubjectTaught'] = $teacher['SubjectTaught'];
-            $_SESSION['DateJoined'] = $teacher['DateJoined'];
-        }
-    }
-
-    header("Location: adminPage.php");
-    exit();
-    ?>
-</body>
-
-</html>
+echo json_encode($response);
+exit;

@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
   <base href="/website/">
   <link rel="stylesheet" href="stylesheets/common.css">
   <link rel="stylesheet" href="stylesheets/adminDashboard/adminPage.css">
@@ -16,16 +13,13 @@
   <title>Admin Page</title>
 </head>
 
-<?php
-include 'views/partials/navBar.php';
-?>
+<?php include 'views/partials/navBar.php'; ?>
 
 <body>
   <div class="main-content">
     <!-- DISPLAYING STATISTICS -->
     <div class="school-stats">
       <?php
-
       $stmt = $pdo->prepare('SELECT COUNT(StudentID) from student');
       $stmt->execute();
       $_SESSION['StudentCount'] = $stmt->fetch(PDO::FETCH_NUM)[0];
@@ -57,7 +51,6 @@ include 'views/partials/navBar.php';
           <div><?php echo $_SESSION['StudentCount'] ?></div>
           <div class="stats-information" style="font-size:20px;">Total Students</div>
         </div>
-
       </div>
 
       <div class="stats-container total-teachers">
@@ -75,14 +68,12 @@ include 'views/partials/navBar.php';
           <div class="stats-information" style="font-size:20px;">Total Users</div>
         </div>
       </div>
-
     </div>
-    <!-- DISPLAYING USER CLICKED INFORMATION -->
-    <div class="user-information">
 
+    <!-- DISPLAYING USER TABLE -->
+    <div class="user-information">
       <div class="search-box"></div>
       <div class="user-list-container">
-        <!-- DISPLAYING TABLE OF USERS -->
         <table class="user-list">
           <tr>
             <th>ID</th>
@@ -91,197 +82,277 @@ include 'views/partials/navBar.php';
             <th>Authorisation</th>
           </tr>
           <?php
-          // require '../../models/adminDashboard/getListUsers.php';
           foreach ($users as $user) {
-            echo '<tr>' .
+            echo '<tr class="user-row" style="cursor:pointer;" data-user-id="' . $user['UserID'] . '" data-user-type="' . $user['UserType'] . '">' .
               '<td>' . $user['UserID'] . '</td>' .
               '<td>' . $user['UserType'] . '</td>' .
-              '<td>' . $user['Name'] . '</td>' .
-              '<td>' . $user['Authorisation'] . '</td>' .
+              '<td>' . $user['FirstName'] . " " . $user['LastName'] . '</td>' .
+              '<td>' . (isset($user['IsApproved']) && $user['IsApproved'] ? 'Approved' : 'Pending') . '</td>' .
               '</tr>';
           }
           ?>
         </table>
 
-        <div class="userinfo-container" style='display: none;'>
-          <button class="backButton indigoTheme roundBorder "> Back</button>
+        <!-- Dynamic Details Displayed via JSON -->
+        <div class="user-details userinfo-container" style="display:none; margin-top:20px;">
+
           <div class="userinfo-container alter-account">
 
             <button class="userinfo-button resetPass indigoTheme roundBorder" onclick="redirectToresetPass()">Reset Password</button>
             <button class="userinfo-button verifyAcc indigoTheme roundBorder" onclick="redirectToverifyAcc()">Verify Account</button>
-            <button class="userinfo-button deleteAcc indigoTheme roundBorder">Delete Account</button>
+            <button class="userinfo-button deleteAcc indigoTheme roundBorder"  onclick="redirectToDeleteAcc()">Delete Account</button>
 
             <div class="buttoninfo">
-
               <div class="information">
-                <div class="information-input">Reset the password to default for this user. Default Password: $1lent.k</div>
+                <div class="information-input">Reset the password to default for this user. Default Password: pass1234</div>
               </div>
-
-              <div class="information" style="background-color: #70ecb2; ">
+              <div class="information" style="background-color: #70ecb2;">
                 <div class="information-input">Verify this user as a teacher or an admin.</div>
               </div>
-
-              <div class="information" style="background-color: palevioletred; ">
+              <div class="information" style="background-color: palevioletred;">
                 <div class="information-input">Delete the account of this user</div>
               </div>
-
             </div>
 
-            <?php
-
-            if (isset($_SESSION['PassChange'])) {
-
-              echo '<div class="success-container" >' . $_SESSION['PassChange'] . '</div>';
-              unset($_SESSION['PassChange']);
-            }
-
-
-            if (isset($_SESSION['verifyAccStatus'])) {
-
-              echo '<div class="success-container" >' . $_SESSION['verifyAccStatus'] . '</div>';
-              unset($_SESSION['verifyAccStatus']);
-            }
-
-            ?>
-
-          </div>
-          <!-- DISPLAYING USER SUBJECTS -->
-          <div class="userinfo-container ">
-            <form class="update-subjects" id="subjectchange-admin" action="AdminPage/subjectChange.php" method="POST">
-              <div class="information">
-                <label class="sub-information">Level</label>
-                <input class="information-input" type="text" id="level" name="level" value="<?php echo $_SESSION['Level']; ?>">
-              </div>
-
-              <div class="information">
-                <div class="sub-information">Class Group</div>
-                <input class="information-input" type="text" id="classgroup" name="classgroup" value="<?php echo $_SESSION['ClassGroup']; ?>">
-              </div>
-
-              <div class="information studentinfo-grid">
-                <div class="sub-information">Subjects Taken</div>
-
-                <div class="subjectstaken">
-
-                  <?php
-                  foreach ($_SESSION['Subjects'] as $Subjects) {
-                    echo '<div class="subject-item">';
-
-                    echo '<input class="subject-code" type="text" name= "' . $Subjects['SubjectCode'] . '" id="' . $Subjects['SubjectCode'] . '" value="' . $Subjects['SubjectCode'] . '">';
-                    echo '<input class="subject-name" type="text" name="' . $Subjects['Subjectname'] . '" id="' . $Subjects['Subjectname'] . '" value="' . $Subjects['Subjectname'] . '">';
-                  ?>
-                    <form id="subjectDeleteForm" action="subjectDelete.php" method="POST">
-
-                      <input type="hidden" name="delete-subjectCode" value="<?php echo $Subjects['SubjectCode']; ?>">
-                      <div><?php echo $Subjects['SubjectCode']; ?></div>
-                      <button type="submit" name="deleteButton" class="remove-subject indigoTheme roundBorder" form="subjectDeleteForm"> Delete </button>
-
-                    </form>
-
-                  <?php
-                    echo '</div>';
-                  }
-
-                  if (isset($_SESSION['subjectDeletStatus'])) {
-
-                    echo '<div class="">' . $_SESSION['subjectDeletStatus'] . ' </div>';
-                    unset($_SESSION['subjectDeletStatus']);
-                  }
-                  ?>
-
-
-                </div>
-
-              </div>
-            </form>
           </div>
 
-          <!-- DISPLAYING GENERAL INFORMATION-->
+
           <div class="userinfo-container">
-            <form id="admin-update-personalinfo" class="update-personalinfo" method="POST" action="../AccountManagement/personalinfo.php">
-
-              <div class="information">
-                <div class="sub-information">UserID</div>
-                <div class="information-input"> <?php echo $_SESSION['UserID-Clicked']; ?> </div>
-              </div>
-
-              <div class="information">
-                <label class="sub-information">First Name: </label>
-                <input class="information-input" type="text" id="firstname" name="firstname" value="<?php echo $_SESSION['FirstName']; ?>">
-              </div>
-
-              <div class="information">
-                <label class="sub-information" for="lastname">Last Name: </label>
-                <input class="information-input" type="text" id="lastname" name="lastname" value="<?php echo $_SESSION['LastName']; ?>">
-              </div>
-
-              <div class="information">
-                <label class="sub-information" for="gender">Gender: </label>
-                <input class="information-input" type="text" id="gender" name="gender" value="<?php echo $_SESSION['Gender']; ?>"> <!-- must do a dropdown menu like in register -->
-
-              </div>
-
-              <div class="information">
-                <label class="sub-information" for="dateofbirth">Date Of Birth: </label>
-                <input class="information-input" type="date" id="dateofbirth" name="dateofbirth" value="<?php echo date('Y-m-d', strtotime($_SESSION['DateOfBirth'])); ?>"> <!-- Formats date in proper format -->
-
-              </div>
-
-              <div class="information personalinfo-email">
-                <label class="sub-information" for="email">Email: </label>
-                <input class="information-input" type="email" id="email" name="email" value="<?php echo $_SESSION['Email']; ?>" style="width:300px;">
-              </div>
-
-
-              <button type="submit" id="personalinfo-savechanges-admin" name="personalinfo-savechanges-admin" form="admin-update-personalinfo" class="indigoTheme roundBorder" style="width:150px; height:50px; margin:10px;border-width:2px;"> Save</button>
-
-
+           <form id="user-specific-detail-form" class="update-subjects student-extra " style="display:none;" >
+ 
+            <div class="information">
+              <label class="sub-information">Level</label>
+              <input class="information-input" type="text" id="json-level" name="level" />
+            </div>
+            <div class="information">
+              <div class="sub-information">Class Group</div>
+              <input class="information-input"type="text" id="json-classgroup" name="classgroup" />
+            </div>
+            <div class="information">
+              <div class="sub-information">Subjects Taken</div>
+              <div  class="subjectstaken" id="json-subjects-container"></div>
+            </div>
+            
             </form>
-            <?php
 
-            // Check if there are any errors in the session
-            if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])) {
-
-              foreach ($_SESSION['errors'] as $error) {
-                echo '<div class="error-container">' . $error . '</div>'; // Display each error
-              }
-
-              // Unset the errors after displaying them
-              unset($_SESSION['errors']);
-            }
-
-            if (isset($_SESSION['Success'])) {
-
-              echo '<div class="success-container" >' . $_SESSION['Success'] . '</div>';
-              unset($_SESSION['Success']);
-            }
-            ?>
           </div>
+        
+          <div class="userinfo-container">
+           <form id="personalinfo-savechanges-admin" class="update-personalinfo ">
+
+            <div class="information">
+              <div class="sub-information">UserID</div>
+              <input type="text" class="information-input" id="json-userid" name="userID" readonly />
+            </div>
+
+            <div class="information">
+              <label class="sub-information">User Type: </label>
+              <input type="text" class="information-input" id="json-usertype" name="user-type" readonly />
+            </div>
+
+            <div class="information">
+              <label class="sub-information">First Name: </label>
+              <input type="text" class="information-input" id="json-firstname" name="firstname" />
+            </div>
+
+            <div class="information">
+              <label class="sub-information">Last Name: </label>
+              <input type="text" class="information-input" id="json-lastname" name="lastname" />
+            </div>
+
+            <div class="information">
+              <label class="sub-information">Email: </label>
+              <input type="email" class="information-input" id="json-email" name="email" />
+            </div>
+
+            <div class="information">
+              <label class="sub-information">Gender: </label>
+              <input type="text" class="information-input" id="json-gender" name="gender" />
+            </div>
+
+            <div class="information">
+              <label class="sub-information">Date of Birth: </label>
+              <input type="date" class="information-input" id="json-dob" name="dateofbirth" />
+            </div>
+
+            <button type="submit" id="personalinfo-savechanges-admin1" name="personalinfo-savechanges-admin1" form="personalinfo-savechanges-admin" class="indigoTheme roundBorder" style="width:150px; height:50px; margin:10px;border-width:2px;"> Save</button>
+            </form>
+          </div>
+        
+          <button onclick="goBack()" class="indigoTheme roundBorder" style="padding: 10px 20px;">Back to List</button>
         </div>
       </div>
+      
     </div>
-
   </div>
-  <script>
-    function redirectToresetPass() {
 
-      window.location.href = "../AdminPage/resetPass.php";
+  <script>
+    document.querySelectorAll('.user-row').forEach(row => {
+      row.addEventListener('click', async function () {
+        const userId = this.dataset.userId;
+        const userType = this.dataset.userType;
+
+        try {
+          const response = await fetch(`/website/webservices/adminDashboard/infoRetrieve.php?userID=${userId}&userType=${userType}`);
+          const data = await response.json();
+
+          if (data.error) {
+            alert("Error: " + data.error);
+            return;
+          }
+
+          // Show detail view
+          document.querySelector('.user-list').style.display = 'none';
+          document.querySelector('.user-details').style.display = 'block';
+
+          // Populate general info
+          document.getElementById('json-userid').value = data.UserID;
+          document.getElementById('json-usertype').value = data.UserType;
+          document.getElementById('json-firstname').value = data.FirstName;
+          document.getElementById('json-lastname').value = data.LastName;
+          document.getElementById('json-email').value = data.Email;
+          document.getElementById('json-gender').value = data.Gender;
+          document.getElementById('json-dob').value = new Date(data.DateOfBirth).toISOString().split('T')[0];
+
+          // If student, show extra section
+          if (data.UserType === 'Student') {
+            document.querySelector('.student-extra').style.display = 'block';
+            document.getElementById('json-level').value = data.Level;
+            document.getElementById('json-classgroup').value = data.ClassGroup;
+
+            const subjectContainer = document.getElementById('json-subjects-container');
+            subjectContainer.innerHTML = '';
+
+            if (data.Subjects && data.Subjects.length > 0) {
+              data.Subjects.forEach(sub => {
+
+                const div = document.createElement('div');
+                div.className = 'subject-item';
+
+                const userId = document.getElementById('json-userid').value;
+                div.innerHTML = `
+                  <input class="subject-code" type="text" value="${sub.SubjectCode}" readonly />
+                  <input class="subject-name" type="text" value="${sub.Subjectname}" readonly />
+                  <form action="/website/webservices/adminDashboard/subjectDelete.php" method="POST" style="display:inline;">
+                    <input type="hidden" name="subjectCode" value="${sub.SubjectCode}">
+                    <input type="hidden" name="userID" value="${userId}">
+                    <button type="submit" class="remove-subject indigoTheme roundBorder" style="margin-left: 10px;">Delete</button>
+                  </form>
+                `;
+
+                subjectContainer.appendChild(div);
+              });
+            } else {
+              subjectContainer.innerHTML = '<div>No subjects assigned.</div>';
+            }
+          } else {
+            document.querySelector('.student-extra').style.display = 'none';
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Failed to fetch user data.');
+        }
+      });
+    });
+
+    function goBack() {
+      document.querySelector('.user-list').style.display = 'table';
+      document.querySelector('.user-details').style.display = 'none';
+    }
+
+    document.getElementById("personalinfo-savechanges-admin").addEventListener("submit", async function (e) {
+      e.preventDefault();  
+
+      const form = e.target;
+      const formData = new FormData(form);  
+
+      // For student-specific subjects (if needed)
+      if (form.querySelector("#json-usertype")?.value === "Student") {
+        const subjects = [];
+        document.querySelectorAll(".subject-item").forEach(div => {
+          const subjectCode = div.querySelector(".subject-code")?.value;
+          if (subjectCode) subjects.push(subjectCode);
+        });
+        formData.append("subjects", JSON.stringify(subjects));
+      }
+
+      try {
+        const response = await fetch("/users/edit", {
+          method: "POST",
+          body: formData
+        });
+
+ 
+        const resultText = await response.text();
+
+        if (response.ok) {
+          alert("User information updated successfully!");
+          window.location.href = "/dashboard";
+        } else {
+          alert("Server returned an error. See console for more details.");
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        alert("Something went wrong while calling update API.");
+      }
+
+    });
+
+    function redirectToresetPass() {
+      const userId = document.getElementById("json-userid").value;
+ 
+      const confirmReset = confirm("Are you sure you want to reset the password for this user?");
+      if (!confirmReset) return;
+
+      // Redirect to the reset password PHP handler
+      window.location.href = `/website/webservices/adminDashboard/resetPass.php?userID=${encodeURIComponent(userId)}`;
+      alert("Password changed to: pass1234");
     }
 
     function redirectToverifyAcc() {
+      const userId = document.getElementById("json-userid").value;
 
-      window.location.href = "../AdminPage/verifyAcc.php";
+      // Optional confirmation
+      const confirmVerify = confirm("Are you sure you want to verify this account?");
+      if (!confirmVerify) return;
+
+      // Redirect to verification handler
+      window.location.href = `/website/webservices/adminDashboard/verifyAcc.php?userID=${encodeURIComponent(userId)}`;
     }
 
-    let userList = document.querySelector('.user-list');
-    userList.addEventListener('mousedown', event => {
-      userList.childNodes.forEach(child => {
-        if (child == event.target)
-          window.location.href = "infoRetrieve.php";
-        document.querySelector('.userinfo-container').style.display = "";
-        userList.style.display = "none";
-      });
-    });
+    function redirectToDeleteAcc() {
+      const userId = document.getElementById("json-userid").value;
+
+      const confirmDelete = confirm("Are you sure you want to delete this user?");
+      if (!confirmDelete) return;
+
+      fetch(`/website/?resource=user&action=delete&userID=${encodeURIComponent(userId)}`)
+        .then(async res => {
+          const text = await res.text();
+          console.log("Raw response:", text); // 👀 LOG IT
+
+          try {
+            const data = JSON.parse(text);
+            if (data.success) {
+              alert("User successfully deleted.");
+              window.location.href = "/dashboard";
+            } else {
+              alert("Failed to delete user: " + (data.errors || []).join(", "));
+            }
+          } catch (e) {
+            console.error("Error parsing JSON:", e);
+            alert("Something went wrong. Raw server reply:\n" + text);
+          }
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+          alert("Something went wrong during deletion.");
+        });
+    }
+
+
+
+
   </script>
 </body>
 

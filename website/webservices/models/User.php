@@ -113,32 +113,41 @@ class User
         }
     }
 
-    protected function edit($userData, $approval = false)
+    public function edit($userData, $approval = false)
     {
-        // Update user data
-        $stmt = $this->pdo->prepare("UPDATE user SET 
-                                     DateOfBirth = ?, FirstName = ?, LastName = ?,
-                                     Email = ?, Gender = ? ,Password = ?
-                                     WHERE UserID = ?");
-        $stmt->bindParam(1, $userData["dob"]);
-        $stmt->bindParam(2, $userData["fname"]);
-        $stmt->bindParam(3, $userData["lname"]);
-        $stmt->bindParam(4, $userData["email"]);
-        $stmt->bindParam(5, $userData["gender"]);
-        $stmt->bindParam(6, $userData["password"]);
-        $stmt->bindParam(7, $userData["userID"]);
-        $stmt->execute();
-
-        // Update approval
-        if ($approval) {
-            $stmt = $this->pdo->prepare("UPDATE approval SET AdminID = ?, IsApproved = ?
-                                        WHERE UserID = ?");
-            $stmt->bindParam(1, $userData["selfID"]);
-            $stmt->bindParam(2, $userData["is-approved"]);
-            $stmt->bindParam(3, $userData["userID"]);
-            $stmt->execute();
+        try {
+         
+            $stmt = $this->pdo->prepare("UPDATE user SET 
+                                         DateOfBirth = ?, FirstName = ?, LastName = ?,
+                                         Email = ?, Gender = ?, Password = ?
+                                         WHERE UserID = ?");
+            $stmt->execute([
+                $userData["dateofbirth"],
+                $userData["fname"],
+                $userData["lname"],
+                $userData["email"],
+                $userData["gender"],
+                $userData["password"],
+                $userData["userID"]
+            ]);
+    
+            
+            if ($approval) {
+                $stmt = $this->pdo->prepare("UPDATE approval SET AdminID = ?, IsApproved = ? WHERE UserID = ?");
+                $stmt->execute([
+                    $userData["selfID"],
+                    $userData["is-approved"],
+                    $userData["userID"]
+                ]);
+            }
+    
+            return ["success" => 1];   
+    
+        } catch (PDOException $e) {
+            return ["success" => 0, "errors" => [$e->getMessage()]];  
         }
     }
+    
 
     public function delete($userID)
     {
