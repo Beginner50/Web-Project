@@ -67,7 +67,8 @@ class User
                 'offset' => $offset,
                 'count' => count($users),
                 'total' => ($userID == 0 ? $this->getTotalUsersCount($userType) : 1)
-            ]
+            ],
+            "errors" => []
         ];
     }
 
@@ -116,7 +117,7 @@ class User
                 $sInsertApproval->closeCursor();
             }
 
-            return ["success" => 1, "data" => ["UserID" => $userID]];
+            return ["success" => 1, "data" => ["UserID" => $userID], "errors" => []];
         } catch (PDOException $e) {
             return ["success" => 0, "errors" => array($e->getMessage())];
         }
@@ -149,7 +150,7 @@ class User
                 ]);
             }
 
-            return ["success" => 1];
+            return ["success" => 1, "errors" => []];
         } catch (PDOException $e) {
             return ["success" => 0, "errors" => [$e->getMessage()]];
         }
@@ -162,7 +163,7 @@ class User
             $stmt->execute([$userID]);
             $stmt->closeCursor();
 
-            return ["success" => 1];
+            return ["success" => 1, "errors" => []];
         } catch (PDOException $e) {
             return ["success" => 0, "errors" => array("Could not delete user!")];
         }
@@ -190,7 +191,7 @@ class User
         $userType = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["UserType"];
         $stmt->closeCursor();
 
-        return ["success" => 1, "data" => ["UserID" => $userID, "UserType" => $userType]];
+        return ["success" => 1, "data" => ["UserID" => $userID, "UserType" => $userType], "errors" => []];
     }
 
     protected function validateUser($schemaData, $userData)
@@ -203,8 +204,6 @@ class User
         $validator = new Validator();
         $result = $validator->validate((object) $userData, $schemaData);
 
-        // Additional checks for user credentials
-        $user = new User($this->pdo);
         if ($result->isValid()) {
             return ["success" => 1, "errors" => []];
         } else {

@@ -17,11 +17,11 @@ class Teacher extends User
 
             // Get teacher class taught
             $response = json_decode(file_get_contents("http://localhost/users/teacher/" . $userID . "/classes"), true);
-            if (!$response["success"])
-                return ["success" => 0, "errors" => array("Could not get classes taught!")];
-
-            $classesTaught = $response["data"];
-            return [...$u, ...$teacherData[0], "ClassesTaught" => $classesTaught];
+            if ($response["success"]) {
+                $classesTaught = $response["data"];
+                return [...$u, ...$teacherData[0], "ClassesTaught" => $classesTaught];
+            }
+            return [...$u, ...$teacherData[0], "ClassesTaught" => []];
         }, $result["data"]);
 
         $result["data"] = $teachers;
@@ -56,7 +56,7 @@ class Teacher extends User
     public function edit($userData, $approval = true)
     {
         if ($userData["self-userID"] != $userData["userID"] && $userData["self-user-type"] != "admin")
-            return ["success" => 0, "errors" => "Not Authorised!"];
+            return ["success" => 0, "errors" => ["Not Authorised!"]];
 
         try {
             $this->pdo->beginTransaction();
@@ -70,7 +70,7 @@ class Teacher extends User
             $stmt->execute();
 
             $this->pdo->commit();
-            return ["success" => 1];
+            return ["success" => 1, "errors" => []];
         } catch (PDOException $e) {
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();

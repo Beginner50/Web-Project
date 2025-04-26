@@ -51,7 +51,7 @@ class Admin extends User
     public function edit($userData, $approval = true)
     {
         if ($userData["self-userID"] != $userData["userID"] && $userData["self-user-type"] != "admin")
-            return ["success" => 0, "errors" => "Not Authorised!"];
+            return ["success" => 0, "errors" => ["Not Authorised!"]];
 
         try {
             $this->pdo->beginTransaction();
@@ -64,7 +64,7 @@ class Admin extends User
             $stmt->execute();
 
             $this->pdo->commit();
-            return ["success" => 1];
+            return ["success" => 1, "errors" => []];
         } catch (PDOException $e) {
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();

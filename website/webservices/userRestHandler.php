@@ -151,98 +151,81 @@ class UserRestHandler extends SimpleRest
     {
         $result = ["success" => 1, "errors" => array()];
 
-        // Invalid data if userID is not set
-        if (!isset($_POST["userID"]) || $_POST["userID"] == "") {
-            $this->setHttpHeaders("application/json", 400);
-            echo json_encode(["success" => 0, "errors" => array("UserID has not been set!")]);
-            exit;
+        // Validate Edit & new Email
+        $result = $this->validateEdit($_POST);
+        if (isset($_POST["email"])) {
+            $user = new User($this->pdo);
+            $userID = $user->findUserID($_POST["email"])["data"]["UserID"];
+            if ($userID != $_POST["userID"])
+                $result["errors"][] = "Email already exists!";
         }
 
-        // Verify existence of new email if set
-        $user = new User($this->pdo);
-        if (isset($_POST["email"]) && ($response = $user->findUserID($_POST["email"]))["success"]) {
-            if ($response["data"]["UserID"] != $_POST["userID"]) {
-                $result = ["success" => 0, "errors" => ["Email already exists!"]];
+        if ($result["success"]) {
+            switch ($_POST['user-type']) {
+                case "student":
+                    $student = new Student($this->pdo);
 
-                $this->setHttpHeaders("application/json", 400);
-                echo json_encode($result);
-                exit;
+                    // Validate student
+                    if (!($result = $student->getAllStudents(userID: $_POST['userID']))["success"])
+                        break;
+
+                    $this->formatUserData($_POST, $result["data"][0]);
+                    if (!($result = $student->validateStudent($_POST))["success"])
+                        break;
+
+                    // Edit student
+                    $result = $student->edit($_POST);
+
+                    // Unenroll and re-enroll in classes
+                    $response = json_decode(
+                        file_get_contents("http://localhost/classes/unenroll/" . $_POST["userID"]),
+                        true
+                    );
+                    if (!$response["success"]) {
+                        $result["errors"] = [...$result["errors"], ...$response["errors"]];
+                        break;
+                    }
+                    $response = $this->sendPostRequest(
+                        "http://localhost/classes/enroll/" . $_POST["userID"],
+                        $_POST['subjects']
+                    );
+                    if (!$response["success"])
+                        $result["errors"] = [...$result["errors"], ...$response["errors"]];
+
+                    break;
+                case "teacher":
+                    $teacher = new Teacher($this->pdo);
+
+                    // Validate teacher
+                    if (!($result = $teacher->getAllTeachers(userID: $_POST['userID']))["success"])
+                        break;
+
+                    $this->formatUserData($_POST, $result["data"][0]);
+                    if (!($result = $teacher->validateTeacher($_POST))["success"])
+                        break;
+
+                    // Edit teacher
+                    $result = $teacher->edit($_POST);
+                    break;
+                case "admin":
+                    $admin = new Admin($this->pdo);
+
+                    // Validate admin
+                    if (!($result = $admin->getAllAdmins(userID: $_POST['userID']))["success"])
+                        break;
+
+                    $this->formatUserData($_POST, $result["data"][0]);
+                    if (!($result = $admin->validateAdmin($_POST))["success"])
+                        break;
+
+                    // Edit admin
+                    $result = $admin->edit($_POST);
+                    break;
             }
         }
 
-        switch ($_POST['user-type']) {
-            case "student":
-                $student = new Student($this->pdo);
-
-                // Validate student
-                $getStudents = $student->getAllStudents(userID: $_POST['userID']);
-                if (!$getStudents["success"]) {
-                    $result["success"] = 0;
-                    $result["errors"][] = "User is not a student!";
-                    break;
-                }
-                $this->formatUserData($_POST, $getStudents["data"][0]);
-                if (!($result = $student->validateStudent($_POST))["success"])
-                    break;
-
-                // Edit student
-                $result = $student->edit($_POST);
-
-                // Unenroll and re-enroll in classes
-                $response = json_decode(
-                    file_get_contents("http://localhost/classes/unenroll/" . $_POST["userID"]),
-                    true
-                );
-                if (!$response["success"]) {
-                    $result["success"] = 0;
-                    $result["errors"] = [...$result["errors"], ...$response["errors"]];
-                    break;
-                }
-                $response = $this->sendPostRequest(
-                    "http://localhost/classes/enroll/" . $_POST["userID"],
-                    $_POST['subjects']
-                );
-                if (!$response["success"]) {
-                    $result["success"] = 0;
-                    $result["errors"] = [...$result["errors"], ...$response["errors"]];
-                }
-                break;
-            case "teacher":
-                $teacher = new Teacher($this->pdo);
-
-                // Validate teacher
-                $getTeachers = $teacher->getAllTeachers(userID: $_POST['userID']);
-                if (!$getTeachers["success"]) {
-                    $result["success"] = 0;
-                    $result["errors"][] = "User is not a teacher!";
-                    break;
-                }
-                $this->formatUserData($_POST, $getTeachers["data"][0]);
-                if (!($result = $teacher->validateTeacher($_POST))["success"])
-                    break;
-
-                // Edit teacher
-                $result = $teacher->edit($_POST);
-                break;
-            case "admin":
-                $admin = new Admin($this->pdo);
-
-                // Validate admin
-                $getAdmins = $admin->getAllAdmins(userID: $_POST['userID']);
-                if (!$getAdmins["success"]) {
-                    $result["success"] = 0;
-                    $result["errors"][] = "User is not an admin!";
-                    break;
-                }
-                $this->formatUserData($_POST, $getAdmins["data"][0]);
-                if (!($result = $admin->validateAdmin($_POST))["success"])
-                    break;
-
-                // Edit admin
-                $result = $admin->edit($_POST);
-                break;
-        }
-
+        if (isset($result["errors"]) && is_array($result["errors"]) && count($result["errors"]) > 0)
+            $result["success"] = 0;
         $statusCode = $result["success"] == 1 ? 201 : 400;
         $this->setHttpHeaders("application/json", $statusCode);
         echo json_encode($result);

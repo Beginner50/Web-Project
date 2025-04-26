@@ -61,14 +61,8 @@ switch ($resource) {
 				break;
 			case "update":
 				if ($method == "POST") {
-					$_POST["self-userID"] = $_SESSION["UserID"] ?? ($_POST["self-userID"] ?? null);
-					$_POST["self-user-type"] = $_SESSION["UserType"] ?? ($_POST["self-user-type"] ?? null);
-
-					if ($_POST['self-userID'] == null || $_POST['self-user-type'] == null) {
-						$result["success"] = 0;
-						$result["errors"][] = "Could not authorize user action!";
-						break;
-					}
+					$_POST["self-userID"] = $_SESSION["UserID"] ?? ($_POST["self-userID"] ?? "");
+					$_POST["self-user-type"] = $_SESSION["UserType"] ?? ($_POST["self-user-type"] ?? "");
 
 					$userRestHandler = new UserRestHandler($pdo);
 					$result = $userRestHandler->editUser();

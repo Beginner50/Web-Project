@@ -1,9 +1,14 @@
 <?php
+
+use Opis\JsonSchema\Validator;
+use Opis\JsonSchema\Errors\ErrorFormatter;
+
 /*
 A simple RESTful webservices base class
 Use this as a template and build upon it
 Reference : https://phppot.com/php/php-restful-web-service/
 */
+
 class SimpleRest
 {
 
@@ -89,5 +94,20 @@ class SimpleRest
 			$context
 		), true);
 		return $response;
+	}
+
+	public function validateEdit($data)
+	{
+		$schemaData = json_decode(file_get_contents("schemas/editSchema.json"));
+
+		// Validate the data against the schema
+		$validator = new Validator();
+		$result = $validator->validate((object) $data, $schemaData);
+
+		if ($result->isValid()) {
+			return ["success" => 1, "errors" => []];
+		} else {
+			return ["success" => 0, "errors" => [...array_values((new ErrorFormatter())->format($result->error()))][0]];
+		}
 	}
 }
