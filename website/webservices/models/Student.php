@@ -40,7 +40,6 @@ class Student extends User
 
             $studentID = User::create($userData, false)["data"]["UserID"];
 
-
             // Insert into student table
             $sInsertStudent = $this->pdo->prepare('INSERT INTO student(StudentID, Level, ClassGroup) VALUES(?, ?, ?);');
             $sInsertStudent->execute([$studentID, $userData["level"], $userData["class-group"]]);
@@ -63,8 +62,6 @@ class Student extends User
     {
         if ($userData["self-userID"] != $userData["userID"] && $userData["self-user-type"] != "admin")
             return ["success" => 0, "errors" => "Not Authorised!"];
-        if (!($result = $this->validateStudent($userData, "edit"))["success"])
-            return $result;
 
         try {
             $this->pdo->beginTransaction();
@@ -86,38 +83,16 @@ class Student extends User
         }
     }
 
-    public function validateStudent($userData, $action = "create")
+    public function validateStudent($userData)
     {
-        $subjects = $userData["subjects"];
-        $result = User::validateUser($userData, $action);
-
-        if ($result["success"] == 1) {
-            $classGroup = htmlspecialchars(strtoupper($userData["class-group"] ?? ''));
-            $level = htmlspecialchars($userData["level"] ?? '');
-            if ($subjects == NULL || empty($subjects))
-                $result["errors"][] = "No subjects selected!";
-
-            if (empty($classGroup)) {
-                $result["errors"][] = "Class group cannot be blank!";
-            }
-            if (empty($level)) {
-                $result["errors"][] = "Level cannot be blank!";
-            } elseif (!filter_var($level, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
-                $result["errors"][] = "Level must be a positive integer!";
-            }
-            if (count($subjects) < 5) {
-                $result["errors"][] = "You must select at least 5 subjects!";
-            } else {
-                $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM subject WHERE SubjectCode IN (?, ?, ?, ?, ?)");
-                $stmt->execute([...$subjects]);
-                $count = $stmt->fetchAll(PDO::FETCH_NUM)[0][0];
-
-                if ($count != count($subjects))
-                    $result["errors"][] = "Invalid subjects selected!";
-            }
-        }
-        if (count($result["errors"]) > 0)
-            $result["success"] = 0;
-        return $result;
+        $schemaData = json_decode(file_get_contents("schemas/studentSchema.json"));
+        $subjects = array_values(array_map(
+            function ($subject) {
+                return $subject["SubjectCode"];
+            },
+            json_decode(file_get_contents("http://localhost/subjects"), true)["data"],
+        ));
+        $schemaData->properties->subjects->items->enum = $subjects;
+        return $this->validateUser($schemaData, $userData);
     }
 }

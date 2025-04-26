@@ -1,0 +1,62 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "user-type",
+        "fname",
+        "lname",
+        "email",
+        "gender",
+        "dob",
+        "password",
+        "date-joined"
+    ],
+    "properties": {
+        "user-type": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "teacher",
+                "student"
+            ]
+        },
+        "fname": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 64
+        },
+        "lname": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 64
+        },
+        "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 6,
+            "maxLength": 128
+        },
+        "gender": {
+            "type": "string",
+            "enum": [
+                "M",
+                "F"
+            ]
+        },
+        "dob": {
+            "type": "string",
+            "format": "date",
+            "minLength": 8
+        },
+        "password": {
+            "type": "string",
+            "minLength": 5,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$"
+        },
+        "date-joined": {
+            "type": "string",
+            "format": "date"
+        }
+    },
+    "additionalProperties": true
+}

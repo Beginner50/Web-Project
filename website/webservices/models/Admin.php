@@ -3,7 +3,7 @@ require_once "User.php";
 
 class Admin extends User
 {
-    public function getAllAdmins($userID, $limit, $offset)
+    public function getAllAdmins($userID, $limit = 10, $offset = 0)
     {
         $result = $this->getAllUsers(userType: "admin", userID: $userID, limit: $limit, offset: $offset);
         $admins = array_map(function ($u) {
@@ -51,8 +51,7 @@ class Admin extends User
     {
         if ($userData["self-userID"] != $userData["userID"] && $userData["self-user-type"] != "admin")
             return ["success" => 0, "errors" => "Not Authorised!"];
-        if (!($result = $this->validateAdmin($userData, "edit"))["success"])
-            return $result;
+
         try {
             $this->pdo->beginTransaction();
             User::edit($userData, isset($userData["is-approved"]));
@@ -72,21 +71,12 @@ class Admin extends User
         }
     }
 
-    public function validateAdmin($userData, $action = "create")
+    public function validateAdmin($userData)
     {
-        $result = User::validateUser($userData, $action);
-
-        if ($result["success"] == 1) {
-            $dateJoined = htmlspecialchars($userData["date-joined"] ?? '');
-
-            if (empty($dateJoined)) {
-                $result["errors"][] = "Date joined cannot be blank!";
-            } elseif (!strtotime($dateJoined)) {
-                $result["errors"][] = "Invalid date format!";
-            }
+        if (isset($userData['date-joined'])) {
+            $userData['date-joined'] = str_replace('/', '-', $userData['date-joined']);
         }
-        if (count($result["errors"]) > 0)
-            $result["success"] = 0;
-        return $result;
+        $schemaData = json_decode(file_get_contents("schemas/adminSchema.json"));
+        return $this->validateUser($schemaData, $userData);
     }
 }

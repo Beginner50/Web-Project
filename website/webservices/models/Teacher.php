@@ -57,8 +57,6 @@ class Teacher extends User
     {
         if ($userData["self-userID"] != $userData["userID"] && $userData["self-user-type"] != "admin")
             return ["success" => 0, "errors" => "Not Authorised!"];
-        if (!($result = $this->validateTeacher($userData, "edit"))["success"])
-            return $result;
 
         try {
             $this->pdo->beginTransaction();
@@ -80,25 +78,12 @@ class Teacher extends User
         }
     }
 
-    public function validateTeacher($userData, $action = "create")
+    public function validateTeacher($userData)
     {
-        $result = User::validateUser($userData, $action);
-
-        if ($result["success"] == 1) {
-            $subjectTaught = htmlspecialchars($userData["subject-taught"] ?? '');
-            $dateJoined = htmlspecialchars($userData["date-joined"] ?? '');
-
-            if (empty($subjectTaught)) {
-                $result["errors"][] = "Subject taught cannot be blank!";
-            }
-            if (empty($dateJoined)) {
-                $result["errors"][] = "Date joined cannot be empty!";
-            } elseif (!strtotime($dateJoined)) {
-                $result["errors"][] = "Invalid date format!";
-            }
+        if (isset($userData['date-joined'])) {
+            $userData['date-joined'] = str_replace('/', '-', $userData['date-joined']);
         }
-        if (sizeof($result["errors"]) > 0)
-            $result["success"] = 0;
-        return $result;
+        $schemaData = json_decode(file_get_contents("schemas/teacherSchema.json"));
+        return $this->validateUser($schemaData, $userData);
     }
 }

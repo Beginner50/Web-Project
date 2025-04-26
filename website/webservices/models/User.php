@@ -1,4 +1,10 @@
 <?php
+require '../vendor/autoload.php';
+
+use Opis\JsonSchema\Errors\ErrorFormatter;
+use Opis\JsonSchema\Schema;
+use Opis\JsonSchema\SchemaLoader;
+use Opis\JsonSchema\Validator;
 
 class User
 {
@@ -116,13 +122,12 @@ class User
     public function edit($userData, $approval = false)
     {
         try {
-         
             $stmt = $this->pdo->prepare("UPDATE user SET 
                                          DateOfBirth = ?, FirstName = ?, LastName = ?,
                                          Email = ?, Gender = ?, Password = ?
                                          WHERE UserID = ?");
             $stmt->execute([
-                $userData["dateofbirth"],
+                $userData["dob"],
                 $userData["fname"],
                 $userData["lname"],
                 $userData["email"],
@@ -130,24 +135,22 @@ class User
                 $userData["password"],
                 $userData["userID"]
             ]);
-    
-            
+
+
             if ($approval) {
                 $stmt = $this->pdo->prepare("UPDATE approval SET AdminID = ?, IsApproved = ? WHERE UserID = ?");
                 $stmt->execute([
-                    $userData["selfID"],
+                    $userData["self-userID"],
                     $userData["is-approved"],
                     $userData["userID"]
                 ]);
             }
-    
-            return ["success" => 1];   
-    
+
+            return ["success" => 1];
         } catch (PDOException $e) {
-            return ["success" => 0, "errors" => [$e->getMessage()]];  
+            return ["success" => 0, "errors" => [$e->getMessage()]];
         }
     }
-    
 
     public function delete($userID)
     {
@@ -160,104 +163,6 @@ class User
         } catch (PDOException $e) {
             return ["success" => 0, "errors" => array("Could not delete user!")];
         }
-    }
-
-    public function validateUser($userData, $action = "create")
-    {
-        $result = ["success" => 0, "errors" => []];
-
-        // Early return if empty user data
-        if (empty($userData)) {
-            $result["errors"][] = "Empty/Invalid Form submission!";
-            return $result;
-        }
-
-        // Validate user type
-        $userType = htmlspecialchars($userData["user-type"] ?? '');
-        if (empty($userType)) {
-            $result["errors"][] = "User Type is required!";
-        }
-
-        // Validate general attributes
-        $firstName = htmlspecialchars($userData["fname"] ?? '');
-        if (empty($firstName)) {
-            $result["errors"][] = "First Name is required!";
-        } elseif (!preg_match('/^[a-zA-Z \-]+$/', $firstName)) {
-            $result["errors"][] = "First Name contains invalid characters!";
-        }
-
-        $lastName = htmlspecialchars($userData["lname"] ?? '');
-        if (empty($lastName)) {
-            $result["errors"][] = "Last Name is required!";
-        }
-        //  elseif (!preg_match('/^[a-zA-Z \-]+$/', $lastName)) {
-        //     $result["errors"][] = "Last Name contains invalid characters!";
-        // }
-
-        // Email validation
-        $email = htmlspecialchars($userData["email"] ?? '');
-        if (empty($email)) {
-            $result["errors"][] = "Email is required!";
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $result["errors"][] = "Invalid email format!";
-        } elseif ($action == "create" && $this->findUserID($email)["success"]) {
-            $result["errors"][] = "User already exists with this email!";
-        }
-
-        $gender = htmlspecialchars($userData["gender"] ?? '');
-        if (empty($gender)) {
-            $result["errors"][] = "Gender is required!";
-        } elseif (!in_array($gender, ['M', 'F', 'Other'])) {
-            $result["errors"][] = "Invalid gender selection!";
-        }
-
-        $dateOfBirth = htmlspecialchars($userData["dob"] ?? '');
-        if (empty($dateOfBirth)) {
-            $result["errors"][] = "Date of Birth is required!";
-        } elseif (!strtotime($dateOfBirth)) {
-            $result["errors"][] = "Invalid Date of Birth format!";
-        } elseif (strtotime($dateOfBirth) > strtotime('-13 years')) {
-            $result["errors"][] = "You must be at least 13 years old!";
-        }
-
-        // Password validation
-        $password = $userData["password"] ?? '';
-        $repeatPassword = $userData["repeat-password"] ?? '';
-
-        if (empty($password)) {
-            $result["errors"][] = "Password is required!";
-        } else {
-            if (strlen($password) < 5) {
-                $result["errors"][] = "Password must be at least 5 characters!";
-            }
-            if (!preg_match('/[A-Z]/', $password)) {
-                $result["errors"][] = "Password must contain at least 1 uppercase letter!";
-            }
-            if (!preg_match('/[a-z]/', $password)) {
-                $result["errors"][] = "Password must contain at least 1 lowercase letter!";
-            }
-            if (!preg_match('/[0-9]/', $password)) {
-                $result["errors"][] = "Password must contain at least 1 number!";
-            }
-            // if (!preg_match('/[^A-Za-z0-9]/', $password)) {
-            //     $result["errors"][] = "Password must contain at least 1 special character!";
-            // }
-        }
-
-        if ($action == "create") {
-            if (empty($repeatPassword)) {
-                $result["errors"][] = "Please repeat your password!";
-            } elseif ($password !== $repeatPassword) {
-                $result["errors"][] = "Passwords do not match!";
-            }
-        }
-
-        // Mark as successful if no errors
-        if (empty($result["errors"])) {
-            $result["success"] = 1;
-        }
-
-        return $result;
     }
 
     public function findUserID($email)
@@ -283,5 +188,20 @@ class User
         $stmt->closeCursor();
 
         return ["success" => 1, "data" => ["UserID" => $userID, "UserType" => $userType]];
+    }
+
+    protected function validateUser($schemaData, $userData)
+    {
+        // Validate the data against the schema
+        $validator = new Validator();
+        $result = $validator->validate((object) $userData, $schemaData);
+
+        // Additional checks for user credentials
+        $user = new User($this->pdo);
+        if ($result->isValid()) {
+            return ["success" => 1, "errors" => []];
+        } else {
+            return ["success" => 0, "errors" => [...array_values((new ErrorFormatter())->format($result->error()))][0]];
+        }
     }
 }
