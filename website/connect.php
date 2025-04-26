@@ -1,8 +1,12 @@
 <?php
+ini_set('display_startup_errors', 1);
+ini_set('display_errors', 1);
+error_reporting(-1);
 $host = "localhost";
 $user = "umair";
 $db = "web_project";
 $pass = "umair1108";
+
 
 // Creates a new pdo object
 $pdo = null;

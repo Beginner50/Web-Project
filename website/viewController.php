@@ -1,8 +1,4 @@
 <?php
-ini_set('display_startup_errors', 1);
-ini_set('display_errors', 1);
-error_reporting(-1);
-
 session_start();
 require_once 'connect.php';
 
@@ -57,11 +53,11 @@ switch ($page = $_GET['page']) {
             // Otherwise, display errors
             if ($response["success"]) {
                 $_SESSION = json_decode(
-                    file_get_contents("http://localhost/users/" . $response["data"]["UserType"] . "/" . $response["data"]["UserID"]),
+                    file_get_contents("http://localhost/users/" . strtolower($response["data"]["UserType"]) . "/" . $response["data"]["UserID"]),
                     true
                 )["data"][0];
 
-                if ($_SESSION["IsApproved"]) {
+                if ($_SESSION["IsApproved"] != 0) {
                     header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
                     exit;
                 }
@@ -88,6 +84,22 @@ switch ($page = $_GET['page']) {
 
     case "account":
         if (isset($_SESSION['UserType'])) {
+            // If POST request (Change user information)
+            if ($_SERVER["REQUEST_METHOD"] === "POST") {
+                $_POST["self-userID"] = $_POST["userID"];
+                $_POST["self-user-type"] = $_POST["user-type"];
+
+                // Edit the user using form data
+                if ($_GET["action"] == "edit-user") {
+                    $response = sendPostRequest("http://localhost/users/edit", $_POST);
+                }
+
+                // Reload session with new data
+                $_SESSION = json_decode(
+                    file_get_contents("http://localhost/users/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]),
+                    true
+                )["data"][0];
+            }
             require 'views/accountManagement/accountManagementView.php';
         } else
             header("Location: /");

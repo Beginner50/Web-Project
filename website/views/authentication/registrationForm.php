@@ -84,7 +84,7 @@
         </fieldset>
 
         <input id="date-joined" class="input-box hover transparent-placeholder " name="date-joined"
-            type="date" required hidden>
+            type="date" hidden>
 
         <!-- Teacher specific attributes -->
         <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;" disabled>

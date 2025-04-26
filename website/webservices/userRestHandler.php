@@ -276,14 +276,14 @@ class UserRestHandler extends SimpleRest
             $result["errors"][] = "Email does not exist!";
         else {
             $userID = $response["data"]["UserID"];
-            $userType = strtolower($response["data"]["UserType"]);
+            $userType = $response["data"]["UserType"];
 
             $user = new User($this->pdo);
-            $_POST = $user->getAllUsers(userID: $userID)["data"][0];
+            $userData = $user->getAllUsers(userID: $userID)["data"][0];
 
-            if (!password_verify($_POST["password"], $_POST["Password"]))
+            if (!password_verify($_POST["password"], $userData["Password"]))
                 $result["errors"][] = "Invalid password!";
-            if (!$_POST["IsApproved"])
+            if (!$userData["IsApproved"])
                 $result["errors"][] = "User is not authorised!";
         }
 

@@ -39,7 +39,6 @@ class Admin extends User
             $this->pdo->commit();
             $result["data"] = ["UserID" => $adminID, "UserType" => $userData["user-type"]];
         } catch (Exception $e) {
-            var_dump($e);
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();
             $result["success"] = 0;

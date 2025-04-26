@@ -1,9 +1,4 @@
 <?php
-ini_set('display_startup_errors', 1);
-ini_set('display_errors', 1);
-error_reporting(-1);
-
-session_start();
 require_once("connect.php");
 require_once("webservices/userRestHandler.php");
 require_once("webservices/classRestHandler.php");
@@ -61,18 +56,8 @@ switch ($resource) {
 				break;
 			case "update":
 				if ($method == "POST") {
-					$_POST["self-userID"] = $_SESSION["UserID"] ?? ($_POST["self-userID"] ?? "");
-					$_POST["self-user-type"] = $_SESSION["UserType"] ?? ($_POST["self-user-type"] ?? "");
-
 					$userRestHandler = new UserRestHandler($pdo);
 					$result = $userRestHandler->editUser();
-
-
-					if ($result["success"] == 1) {
-
-						header("Location: /account/" . strtolower($_SESSION["UserType"]) . "/" . $_SESSION["UserID"]);
-						exit;
-					}
 				} else {
 					$result["success"] = 0;
 					$result["errors"][] = "Invalid HTTP method!";

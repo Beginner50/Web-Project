@@ -9,6 +9,9 @@
         "user-type": {
             "type": "string",
             "enum": [
+                "Admin",
+                "Teacher",
+                "Student",
                 "admin",
                 "teacher",
                 "student"
@@ -20,6 +23,9 @@
         "self-user-type": {
             "type": "string",
             "enum": [
+                "Admin",
+                "Teacher",
+                "Student",
                 "admin",
                 "teacher",
                 "student"

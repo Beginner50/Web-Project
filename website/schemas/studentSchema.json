@@ -6,6 +6,9 @@
         "user-type": {
             "type": "string",
             "enum": [
+                "Admin",
+                "Teacher",
+                "Student",
                 "admin",
                 "teacher",
                 "student"
