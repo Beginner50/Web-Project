@@ -6,6 +6,7 @@ class Teacher extends User
     public function getAllTeachers($userID = 0, $limit = 25, $offset = 0)
     {
         $result = $this->getAllUsers(userType: "teacher", userID: $userID, limit: $limit, offset: $offset);
+        if (!$result["success"]) return $result;
         $teachers = array_map(function ($u) {
             $userID = $u["UserID"];
 
@@ -44,7 +45,6 @@ class Teacher extends User
             $this->pdo->commit();
             $result["data"] = ["UserID" => $teacherID, "UserType" => $userData["user-type"]];
         } catch (Exception $e) {
-            var_dump($e);
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();
             $result["success"] = 0;

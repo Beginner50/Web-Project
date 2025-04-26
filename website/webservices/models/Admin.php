@@ -6,6 +6,7 @@ class Admin extends User
     public function getAllAdmins($userID, $limit = 10, $offset = 0)
     {
         $result = $this->getAllUsers(userType: "admin", userID: $userID, limit: $limit, offset: $offset);
+        if (!$result["success"]) return $result;
         $admins = array_map(function ($u) {
             $userID = $u["UserID"];
 

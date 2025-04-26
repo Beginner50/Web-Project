@@ -73,16 +73,19 @@ switch ($page = $_GET['page']) {
         break;
     case "dashboard":
         if (isset($_SESSION['UserType']) && $_SESSION['UserType'] == 'Admin') {
-            require_once 'webservices/models/User.php';
-            $userModel = new User($pdo);
-            $users = $userModel->getAllUsers(limit: 100)["data"];  
+            // json consumption at php level
+            $users = json_decode(
+                file_get_contents("http://localhost/users?limit=100"),
+                true
+            )["data"];
+
             require 'views/adminDashboard/adminDashboardView.php';
         } else {
             header("Location: /");
             exit;
         }
         break;
-        
+
     case "account":
         if (isset($_SESSION['UserType'])) {
             require 'views/accountManagement/accountManagementView.php';

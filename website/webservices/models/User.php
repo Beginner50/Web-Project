@@ -23,14 +23,14 @@ class User
                 SELECT 'Student' AS UserType, user.UserID, DateOfBirth, FirstName, LastName, Email, Gender, " . ($userID != 0 ? "Password," : "")  . "1 AS IsApproved
                 FROM user 
                 INNER JOIN student ON user.UserID = student.StudentID "
-                . ($userID != 0 ? "WHERE user.UserID = " . $userID : "") .
+                . ($userID != 0 ? "WHERE user.UserID = " .  $userID : "") .
                 " LIMIT ? OFFSET ?;",
             'teacher' => "
                 SELECT 'Teacher' AS UserType, user.UserID, DateOfBirth, FirstName, LastName, Email, Gender, " . ($userID != 0 ? "Password," : "") . "approval.IsApproved 
                 FROM user 
                 INNER JOIN teacher ON user.UserID = teacher.TeacherID
                 LEFT JOIN approval ON user.UserID = approval.UserID "
-                . ($userID != 0 ? "WHERE user.UserID = " . $userID : "") .
+                . ($userID != 0 ? "WHERE user.UserID = " .  $userID : "") .
                 " LIMIT ? OFFSET ?;
             ",
             'admin' => "
@@ -38,7 +38,7 @@ class User
                 FROM user 
                 INNER JOIN administrator ON user.UserID = administrator.AdminID
                 LEFT JOIN approval ON user.UserID = approval.UserID "
-                . ($userID != 0 ? "WHERE user.UserID = " . $userID : "") .
+                . ($userID != 0 ? "WHERE user.UserID = " .  $userID : "") .
                 " LIMIT ? OFFSET ?;
             "
         ];
@@ -55,6 +55,9 @@ class User
             $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (!empty($res)) array_push($users, ...$res);
         }
+
+        if (empty($users))
+            return ["success" => 0, "errors" => ["Could not find user(s)!"]];
 
         return [
             'success' => 1,
@@ -192,6 +195,10 @@ class User
 
     protected function validateUser($schemaData, $userData)
     {
+        if (isset($userData['dob'])) {
+            $userData['dob'] = str_replace('/', '-', $userData['dob']);
+        }
+
         // Validate the data against the schema
         $validator = new Validator();
         $result = $validator->validate((object) $userData, $schemaData);

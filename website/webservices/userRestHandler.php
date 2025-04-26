@@ -151,6 +151,13 @@ class UserRestHandler extends SimpleRest
     {
         $result = ["success" => 1, "errors" => array()];
 
+        // Invalid data if userID is not set
+        if (!isset($_POST["userID"]) || $_POST["userID"] == "") {
+            $this->setHttpHeaders("application/json", 400);
+            echo json_encode(["success" => 0, "errors" => array("UserID has not been set!")]);
+            exit;
+        }
+
         // Verify existence of new email if set
         $user = new User($this->pdo);
         if (isset($_POST["email"]) && ($response = $user->findUserID($_POST["email"]))["success"]) {
@@ -168,8 +175,13 @@ class UserRestHandler extends SimpleRest
                 $student = new Student($this->pdo);
 
                 // Validate student
-                $userDataOld = $student->getAllStudents($_POST['userID'])['data'][0];
-                $this->formatUserData($_POST, $userDataOld);
+                $getStudents = $student->getAllStudents(userID: $_POST['userID']);
+                if (!$getStudents["success"]) {
+                    $result["success"] = 0;
+                    $result["errors"][] = "User is not a student!";
+                    break;
+                }
+                $this->formatUserData($_POST, $getStudents["data"][0]);
                 if (!($result = $student->validateStudent($_POST))["success"])
                     break;
 
@@ -199,8 +211,13 @@ class UserRestHandler extends SimpleRest
                 $teacher = new Teacher($this->pdo);
 
                 // Validate teacher
-                $userDataOld = $teacher->getAllTeachers($_POST['userID'])['data'][0];
-                $this->formatUserData($_POST, $userDataOld);
+                $getTeachers = $teacher->getAllTeachers(userID: $_POST['userID']);
+                if (!$getTeachers["success"]) {
+                    $result["success"] = 0;
+                    $result["errors"][] = "User is not a teacher!";
+                    break;
+                }
+                $this->formatUserData($_POST, $getTeachers["data"][0]);
                 if (!($result = $teacher->validateTeacher($_POST))["success"])
                     break;
 
@@ -211,8 +228,13 @@ class UserRestHandler extends SimpleRest
                 $admin = new Admin($this->pdo);
 
                 // Validate admin
-                $userDataOld = $admin->getAllAdmins($_POST['userID'])['data'][0];
-                $this->formatUserData($_POST, $userDataOld);
+                $getAdmins = $admin->getAllAdmins(userID: $_POST['userID']);
+                if (!$getAdmins["success"]) {
+                    $result["success"] = 0;
+                    $result["errors"][] = "User is not an admin!";
+                    break;
+                }
+                $this->formatUserData($_POST, $getAdmins["data"][0]);
                 if (!($result = $admin->validateAdmin($_POST))["success"])
                     break;
 
@@ -309,7 +331,7 @@ class UserRestHandler extends SimpleRest
 
         if ($userType == "student") {
             $userData["class-group"] = $userData["class-group"] ?? $userDataOld["ClassGroup"];
-            $userData["level"] = $userData["level"] ?? $userDataOld["Level"];
+            $userData["level"] = $userData["level"] ?? (string) $userDataOld["Level"];
             if (isset($userData["subjects"]))
                 $userData["subjects"] = json_decode($userData["subjects"], true);
             else

@@ -7,6 +7,7 @@ class Student extends User
     public function getAllStudents($userID = 0, $limit = 50, $offset = 0)
     {
         $result = $this->getAllUsers(userType: "student", userID: $userID, limit: $limit, offset: $offset);
+        if (!$result["success"]) return $result;
         $students = array_map(function ($u) {
             $userID = $u["UserID"];
 
@@ -30,11 +31,7 @@ class Student extends User
 
     public function create($userData, $approval = false)
     {
-        $result = $this->validateStudent($userData, "create");
-        if (!$result["success"])
-            return $result;
-
-        // Create student if not found
+        $result = ["success" => 1, "errors" => array()];
         try {
             $this->pdo->beginTransaction();
 
@@ -83,8 +80,11 @@ class Student extends User
         }
     }
 
-    public function validateStudent($userData)
+    public function validateStudent(&$userData)
     {
+        if (isset($userData["subjects"]) && is_string($userData["subjects"]))
+            $userData["subjects"] = json_decode($userData["subjects"], true);
+
         $schemaData = json_decode(file_get_contents("schemas/studentSchema.json"));
         $subjects = array_values(array_map(
             function ($subject) {

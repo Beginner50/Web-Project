@@ -45,6 +45,7 @@
             "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$"
         },
         "subject-taught": {
+            "maxLength": 5,
             "type": "string"
         },
         "date-joined": {
