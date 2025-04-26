@@ -326,7 +326,7 @@
       const confirmDelete = confirm("Are you sure you want to delete this user?");
       if (!confirmDelete) return;
 
-      fetch(`/website/?resource=user&action=delete&userID=${encodeURIComponent(userId)}`)
+      fetch(`/users/delete/${encodeURIComponent(userId)}`)
         .then(async res => {
           const text = await res.text();
           console.log("Raw response:", text); // 👀 LOG IT
