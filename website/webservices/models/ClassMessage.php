@@ -25,6 +25,7 @@ class ClassMessage
             $stmt = $this->pdo->prepare("SELECT user.UserID, FirstName, LastName, DateSent, Message FROM class_message
                                          INNER JOIN user ON class_message.UserID = user.UserID
                                         WHERE ClassID = ? 
+                                        ORDER BY DateSent ASC
                                         LIMIT ? OFFSET ?");
             $stmt->bindParam(1, $classID, PDO::PARAM_INT);
             $stmt->bindParam(2, $limit, PDO::PARAM_INT);
