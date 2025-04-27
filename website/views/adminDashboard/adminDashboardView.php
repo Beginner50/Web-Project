@@ -88,7 +88,7 @@
 
           <div class="userinfo-container alter-account">
 
-            <button class="userinfo-button resetPass indigoTheme roundBorder" onclick="redirectToresetPass()">Reset Password</button>
+            <button class="userinfo-button resetPass indigoTheme roundBorder" onclick="redirectToresetPass(document.getElementById('json-userid').value)">Reset Password</button>
             <button class="userinfo-button verifyAcc indigoTheme roundBorder" onclick="redirectToverifyAcc()">Verify Account</button>
             <button class="userinfo-button deleteAcc indigoTheme roundBorder" onclick="redirectToDeleteAcc()">Delete Account</button>
 
