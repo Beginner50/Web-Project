@@ -90,7 +90,7 @@
 
             <button class="userinfo-button resetPass indigoTheme roundBorder" onclick="redirectToresetPass()">Reset Password</button>
             <button class="userinfo-button verifyAcc indigoTheme roundBorder" onclick="redirectToverifyAcc()">Verify Account</button>
-            <button class="userinfo-button deleteAcc indigoTheme roundBorder"  onclick="redirectToDeleteAcc()">Delete Account</button>
+            <button class="userinfo-button deleteAcc indigoTheme roundBorder" onclick="redirectToDeleteAcc()">Delete Account</button>
 
             <div class="buttoninfo">
               <div class="information">
@@ -126,53 +126,53 @@
             </form>
 
           </div>
-        
+
           <div class="userinfo-container">
-           <form id="personalinfo-savechanges-admin" class="update-personalinfo ">
+            <form id="personalinfo-savechanges-admin" class="update-personalinfo ">
 
-            <div class="information">
-              <div class="sub-information">UserID</div>
-              <input type="text" class="information-input" id="json-userid" name="userID" readonly />
-            </div>
+              <div class="information">
+                <div class="sub-information">UserID</div>
+                <input type="text" class="information-input" id="json-userid" name="userID" readonly />
+              </div>
 
-            <div class="information">
-              <label class="sub-information">User Type: </label>
-              <input type="text" class="information-input" id="json-usertype" name="user-type" readonly />
-            </div>
+              <div class="information">
+                <label class="sub-information">User Type: </label>
+                <input type="text" class="information-input" id="json-usertype" name="user-type" readonly />
+              </div>
 
-            <div class="information">
-              <label class="sub-information">First Name: </label>
-              <input type="text" class="information-input" id="json-firstname" name="firstname" />
-            </div>
+              <div class="information">
+                <label class="sub-information">First Name: </label>
+                <input type="text" class="information-input" id="json-firstname" name="fname" />
+              </div>
 
-            <div class="information">
-              <label class="sub-information">Last Name: </label>
-              <input type="text" class="information-input" id="json-lastname" name="lastname" />
-            </div>
+              <div class="information">
+                <label class="sub-information">Last Name: </label>
+                <input type="text" class="information-input" id="json-lastname" name="lname" />
+              </div>
 
-            <div class="information">
-              <label class="sub-information">Email: </label>
-              <input type="email" class="information-input" id="json-email" name="email" />
-            </div>
+              <div class="information">
+                <label class="sub-information">Email: </label>
+                <input type="email" class="information-input" id="json-email" name="email" />
+              </div>
 
-            <div class="information">
-              <label class="sub-information">Gender: </label>
-              <input type="text" class="information-input" id="json-gender" name="gender" />
-            </div>
+              <div class="information">
+                <label class="sub-information">Gender: </label>
+                <input type="text" class="information-input" id="json-gender" name="gender" />
+              </div>
 
-            <div class="information">
-              <label class="sub-information">Date of Birth: </label>
-              <input type="date" class="information-input" id="json-dob" name="dateofbirth" />
-            </div>
+              <div class="information">
+                <label class="sub-information">Date of Birth: </label>
+                <input type="date" class="information-input" id="json-dob" name="dob" />
+              </div>
 
-            <button type="submit" id="personalinfo-savechanges-admin1" name="personalinfo-savechanges-admin1" form="personalinfo-savechanges-admin" class="indigoTheme roundBorder" style="width:150px; height:50px; margin:10px;border-width:2px;"> Save</button>
+              <button type="submit" id="personalinfo-savechanges-admin1" name="personalinfo-savechanges-admin1" form="personalinfo-savechanges-admin" class="indigoTheme roundBorder" style="width:150px; height:50px; margin:10px;border-width:2px;"> Save</button>
             </form>
           </div>
-        
+
           <button onclick="goBack()" class="indigoTheme roundBorder" style="padding: 10px 20px;">Back to List</button>
         </div>
       </div>
-      
+
     </div>
   </div>
 
@@ -315,11 +315,12 @@
       document.querySelector('.pagination-controls').style.display = 'block';
     }
 
-    document.getElementById("personalinfo-savechanges-admin").addEventListener("submit", async function (e) {
-      e.preventDefault();  
+    document.getElementById("personalinfo-savechanges-admin").addEventListener("submit", async function(e) {
+      e.preventDefault();
 
       const form = e.target;
-      const formData = new FormData(form);  
+      const formData = new FormData(form);
+      console.log(formData);
 
       // For student-specific subjects (if needed)
       if (form.querySelector("#json-usertype")?.value === "Student") {
@@ -337,7 +338,6 @@
           body: formData
         });
 
- 
         const resultText = await response.text();
 
         if (response.ok) {

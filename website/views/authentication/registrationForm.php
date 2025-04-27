@@ -82,6 +82,10 @@
                 </div>
             </div>
         </fieldset>
+
+        <input id="date-joined" class="input-box hover transparent-placeholder " name="date-joined"
+            type="date" hidden>
+
         <!-- Teacher specific attributes -->
         <fieldset id="specificAttr-fieldset-teacher" class="no-border" style="display:none;" disabled>
             <div class="teacher input-group">
@@ -90,14 +94,12 @@
                 </select>
             </div>
             <div class="teacher input-group">
-                Date Joined: <input id="teacher-date-joined" class="input-box hover transparent-placeholder " name="teacher-date-joined"
-                    type="date" required>
+                <label for="date-joined"> Date Joined </label>
             </div>
         </fieldset>
         <fieldset id="specificAttr-fieldset-admin" class="no-border" style="display:none;" disabled>
             <div class="admin input-group">
-                Date Joined <input id="admin-date-joined" class="input-box hover transparent-placeholder " name="admin-date-joined"
-                    type="date" required>
+                <label for="date-joined"> Date Joined </label>
             </div>
         </fieldset>
     </fieldset>
@@ -150,6 +152,15 @@
         document.getElementById("user-type").value = userType;
     }
 
+    function showRoleFields(role) {
+        $(`#specificAttr-fieldset-${role}`).show().prop("disabled", false);
+
+        // Find the correct input-group div, and append #date-joined into it
+        let targetGroup = $(`#specificAttr-fieldset-${role} .input-group:has(label[for='date-joined'])`);
+        targetGroup.append($("#date-joined").prop("hidden", false));
+    }
+
+
     $(document).ready(() => {
         /*
           When user clicks on a userType button, get the index of the button clicked and update
@@ -162,6 +173,8 @@
                 });
                 updateUserTab(currentTab);
                 updateUserTypeInput(button.value);
+                if (button.value == "admin" || button.value == "teacher")
+                    showRoleFields(button.value);
             });
         });
 
@@ -171,6 +184,21 @@
 
 <script>
     $(document).ready(function() {
+        // Populate subject dropdown
+        $.ajax({
+            url: "http://localhost/subjects?limit=999",
+            "method": "GET",
+            "dataType": "json",
+            "success": function(response) {
+                if (response.success && response.data)
+                    response.data.forEach(function(subject) {
+                        $("#subject-taught").append(
+                            `<option value=${subject.SubjectCode}> ${subject.SubjectName} </option>`
+                        );
+                    });
+            }
+        })
+
         // Cookie Logic
         $("#fname").val(window.localStorage.getItem("fname"));
         $("#lname").val(window.localStorage.getItem("lname"));

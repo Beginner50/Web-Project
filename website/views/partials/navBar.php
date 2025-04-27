@@ -19,7 +19,7 @@
             </div>
         <?php endif; ?>
     </div>
-    <div id="right-section">
+    <!-- <div id="right-section">
         <button id="TOC-button" class=" indigoTheme roundBorder shadow"> Terms & Conditions</button>
-    </div>
+    </div> -->
 </nav>

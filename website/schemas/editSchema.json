@@ -1,0 +1,41 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+        "userID": {
+            "minLength": 1,
+            "type": "string"
+        },
+        "user-type": {
+            "type": "string",
+            "enum": [
+                "Admin",
+                "Teacher",
+                "Student",
+                "admin",
+                "teacher",
+                "student"
+            ]
+        },
+        "self-userID": {
+            "type": "string"
+        },
+        "self-user-type": {
+            "type": "string",
+            "enum": [
+                "Admin",
+                "Teacher",
+                "Student",
+                "admin",
+                "teacher",
+                "student"
+            ]
+        }
+    },
+    "required": [
+        "userID",
+        "user-type",
+        "self-userID",
+        "self-user-type"
+    ]
+}

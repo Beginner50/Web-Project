@@ -6,6 +6,7 @@ class Teacher extends User
     public function getAllTeachers($userID = 0, $limit = 25, $offset = 0)
     {
         $result = $this->getAllUsers(userType: "teacher", userID: $userID, limit: $limit, offset: $offset);
+        if (!$result["success"]) return $result;
         $teachers = array_map(function ($u) {
             $userID = $u["UserID"];
 
@@ -16,11 +17,11 @@ class Teacher extends User
 
             // Get teacher class taught
             $response = json_decode(file_get_contents("http://localhost/users/teacher/" . $userID . "/classes"), true);
-            if (!$response["success"])
-                return ["success" => 0, "errors" => array("Could not get classes taught!")];
-
-            $classesTaught = $response["data"];
-            return [...$u, ...$teacherData[0], "ClassesTaught" => $classesTaught];
+            if ($response["success"]) {
+                $classesTaught = $response["data"];
+                return [...$u, ...$teacherData[0], "ClassesTaught" => $classesTaught];
+            }
+            return [...$u, ...$teacherData[0], "ClassesTaught" => []];
         }, $result["data"]);
 
         $result["data"] = $teachers;
@@ -44,7 +45,6 @@ class Teacher extends User
             $this->pdo->commit();
             $result["data"] = ["UserID" => $teacherID, "UserType" => $userData["user-type"]];
         } catch (Exception $e) {
-            var_dump($e);
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();
             $result["success"] = 0;
@@ -56,9 +56,7 @@ class Teacher extends User
     public function edit($userData, $approval = true)
     {
         if ($userData["self-userID"] != $userData["userID"] && $userData["self-user-type"] != "admin")
-            return ["success" => 0, "errors" => "Not Authorised!"];
-        if (!($result = $this->validateTeacher($userData, "edit"))["success"])
-            return $result;
+            return ["success" => 0, "errors" => ["Not Authorised!"]];
 
         try {
             $this->pdo->beginTransaction();
@@ -72,7 +70,7 @@ class Teacher extends User
             $stmt->execute();
 
             $this->pdo->commit();
-            return ["success" => 1];
+            return ["success" => 1, "errors" => []];
         } catch (PDOException $e) {
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();
@@ -80,25 +78,12 @@ class Teacher extends User
         }
     }
 
-    public function validateTeacher($userData, $action = "create")
+    public function validateTeacher($userData)
     {
-        $result = User::validateUser($userData, $action);
-
-        if ($result["success"] == 1) {
-            $subjectTaught = htmlspecialchars($userData["subject-taught"] ?? '');
-            $dateJoined = htmlspecialchars($userData["date-joined"] ?? '');
-
-            if (empty($subjectTaught)) {
-                $result["errors"][] = "Subject taught cannot be blank!";
-            }
-            if (empty($dateJoined)) {
-                $result["errors"][] = "Date joined cannot be empty!";
-            } elseif (!strtotime($dateJoined)) {
-                $result["errors"][] = "Invalid date format!";
-            }
+        if (isset($userData['date-joined'])) {
+            $userData['date-joined'] = str_replace('/', '-', $userData['date-joined']);
         }
-        if (sizeof($result["errors"]) > 0)
-            $result["success"] = 0;
-        return $result;
+        $schemaData = json_decode(file_get_contents("schemas/teacherSchema.json"));
+        return $this->validateUser($schemaData, $userData);
     }
 }

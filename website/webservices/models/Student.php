@@ -7,6 +7,7 @@ class Student extends User
     public function getAllStudents($userID = 0, $limit = 50, $offset = 0)
     {
         $result = $this->getAllUsers(userType: "student", userID: $userID, limit: $limit, offset: $offset);
+        if (!$result["success"]) return $result;
         $students = array_map(function ($u) {
             $userID = $u["UserID"];
 
@@ -30,16 +31,11 @@ class Student extends User
 
     public function create($userData, $approval = false)
     {
-        $result = $this->validateStudent($userData, "create");
-        if (!$result["success"])
-            return $result;
-
-        // Create student if not found
+        $result = ["success" => 1, "errors" => array()];
         try {
             $this->pdo->beginTransaction();
 
             $studentID = User::create($userData, false)["data"]["UserID"];
-
 
             // Insert into student table
             $sInsertStudent = $this->pdo->prepare('INSERT INTO student(StudentID, Level, ClassGroup) VALUES(?, ?, ?);');
@@ -62,9 +58,7 @@ class Student extends User
     public function edit($userData, $approval = false)
     {
         if ($userData["self-userID"] != $userData["userID"] && $userData["self-user-type"] != "admin")
-            return ["success" => 0, "errors" => "Not Authorised!"];
-        if (!($result = $this->validateStudent($userData, "edit"))["success"])
-            return $result;
+            return ["success" => 0, "errors" => ["Not Authorised!"]];
 
         try {
             $this->pdo->beginTransaction();
@@ -78,7 +72,7 @@ class Student extends User
             $stmt->execute();
 
             $this->pdo->commit();
-            return ["success" => 1];
+            return ["success" => 1, "errors" => []];
         } catch (PDOException $e) {
             if ($this->pdo->inTransaction())
                 $this->pdo->rollBack();
@@ -86,39 +80,20 @@ class Student extends User
         }
     }
 
-    public function validateStudent($userData, $action = "create")
+    public function validateStudent(&$userData)
     {
-        $subjects = $userData["subjects"];
-        $result = User::validateUser($userData, $action);
+        if (isset($userData["subjects"]) && is_string($userData["subjects"]))
+            $userData["subjects"] = json_decode($userData["subjects"], true);
 
-        if ($result["success"] == 1) {
-            $classGroup = htmlspecialchars(strtoupper($userData["class-group"] ?? ''));
-            $level = htmlspecialchars($userData["level"] ?? '');
-            if ($subjects == NULL || empty($subjects))
-                $result["errors"][] = "No subjects selected!";
-
-            if (empty($classGroup)) {
-                $result["errors"][] = "Class group cannot be blank!";
-            }
-            if (empty($level)) {
-                $result["errors"][] = "Level cannot be blank!";
-            } elseif (!filter_var($level, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
-                $result["errors"][] = "Level must be a positive integer!";
-            }
-            if (count($subjects) < 5) {
-                $result["errors"][] = "You must select at least 5 subjects!";
-            } else {
-                $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM subject WHERE SubjectCode IN (?, ?, ?, ?, ?)");
-                $stmt->execute([...$subjects]);
-                $count = $stmt->fetchAll(PDO::FETCH_NUM)[0][0];
-
-                if ($count != count($subjects))
-                    $result["errors"][] = "Invalid subjects selected!";
-            }
-        }
-        if (count($result["errors"]) > 0)
-            $result["success"] = 0;
-        return $result;
+        $schemaData = json_decode(file_get_contents("schemas/studentSchema.json"));
+        $subjects = array_values(array_map(
+            function ($subject) {
+                return $subject["SubjectCode"];
+            },
+            json_decode(file_get_contents("http://localhost/subjects"), true)["data"],
+        ));
+        $schemaData->properties->subjects->items->enum = $subjects;
+        return $this->validateUser($schemaData, $userData);
     }
 
     public function deleteSubject($studentID, $subjectCode)
