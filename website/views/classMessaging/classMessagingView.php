@@ -38,7 +38,10 @@
                 </form>
             </div>
 
-            <div id="classChat-cover">No Class Selected</div>
+            <div id="classChat-cover">
+                <div class="cover-text">No Class selected!</div>
+            </div>
+
         </div>
     </div>
 
@@ -174,6 +177,7 @@
             });
         });
     </script>
+
 </body>
 
 </html>

@@ -1,9 +1,9 @@
 :root {
-    --blueOcean: #6535ec;
-    --paleSky: #ececfa;
-    --purpleVortex: #2c166b;
-    --duskSky: #b7a7e2;
-    --orchid: #f0eafa;
+    --blueOcean: hsl(251, 85%, 52%);
+    --paleSky: hsl(240, 100%, 97%);
+    --purpleVortex: hsl(250, 55%, 26%);
+    --duskSky: hsl(239, 45%, 73%);
+    --orchid: hsl(265, 80%, 93%);
     font-family: sans-serif;
 }
 
