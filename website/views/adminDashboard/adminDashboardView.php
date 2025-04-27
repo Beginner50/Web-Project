@@ -326,8 +326,13 @@
           const subjectCode = div.querySelector(".subject-code")?.value;
           if (subjectCode) subjects.push(subjectCode);
         });
-        formData.append("subjects", JSON.stringify(subjects));
-
+        console.log(subjects.length);
+        if (subjects.length == 5)
+          formData.append("subjects", JSON.stringify(subjects));
+        else {
+          alert("Student has less than 5 subjects selected initially! Invalid data!");
+          return;
+        }
       }
 
       try {
@@ -340,7 +345,7 @@
           body: formData
         });
 
-        const resultText = await response.text();
+        const resultText = await response.json();
 
         if (response.ok) {
           alert("User information updated successfully!");

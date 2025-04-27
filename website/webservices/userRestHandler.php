@@ -372,7 +372,7 @@ class UserRestHandler extends SimpleRest
     public function deleteStudentSubject()
     {
         $result = ["success" => 1, "errors" => array()];
-        
+
         $subjectCode = $_POST['subjectCode'] ?? null;
         $studentID = $_POST['userID'] ?? null;
 
@@ -388,6 +388,4 @@ class UserRestHandler extends SimpleRest
         echo json_encode($result);
         exit;
     }
-
-
 }
