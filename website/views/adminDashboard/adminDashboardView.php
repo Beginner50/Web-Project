@@ -74,26 +74,16 @@
     <div class="user-information">
       <div class="search-box"></div>
       <div class="user-list-container">
-        <table class="user-list">
-          <tr>
-            <th>ID</th>
-            <th>UserType</th>
-            <th>Name</th>
-            <th>Authorisation</th>
-          </tr>
-          <?php
-          foreach ($users as $user) {
-            echo '<tr class="user-row" style="cursor:pointer;" data-user-id="' . $user['UserID'] . '" data-user-type="' . $user['UserType'] . '">' .
-              '<td>' . $user['UserID'] . '</td>' .
-              '<td>' . $user['UserType'] . '</td>' .
-              '<td>' . $user['FirstName'] . " " . $user['LastName'] . '</td>' .
-              '<td>' . (isset($user['IsApproved']) && $user['IsApproved'] ? 'Approved' : 'Pending') . '</td>' .
-              '</tr>';
-          }
-          ?>
-        </table>
 
-        <!-- Dynamic Details Displayed via JSON -->
+        <table class="user-list">
+          <!--  populated by the function loadUsersPage() -->
+        </table>
+        
+        <div class=" pagination-controls" style="margin-top: 20px; text-align: center;">
+          <button id="prevPageBtn" class="indigoTheme roundBorder" style="margin-right: 10px;">Previous</button>
+          <button id="nextPageBtn" class="indigoTheme roundBorder">Next</button>
+        </div>
+ 
         <div class="user-details userinfo-container" style="display:none; margin-top:20px;">
 
           <div class="userinfo-container alter-account">
@@ -117,7 +107,7 @@
           </div>
 
 
-          <div class="userinfo-container">
+          <div class="userinfo-container student-form">
            <form id="user-specific-detail-form" class="update-subjects student-extra " style="display:none;" >
  
             <div class="information">
@@ -187,77 +177,142 @@
   </div>
 
   <script>
-    document.querySelectorAll('.user-row').forEach(row => {
-      row.addEventListener('click', async function () {
-        const userId = this.dataset.userId;
-        const userType = this.dataset.userType;
 
-        try {
-          const response = await fetch(`/website/webservices/adminDashboard/infoRetrieve.php?userID=${userId}&userType=${userType}`);
-          const data = await response.json();
+    let currentPage = 0;     
+    const limitPerPage = 10;  
+    let totalUsers = 0;     
+    let currentUserType = "student";  // default to "student"
 
-          if (data.error) {
-            alert("Error: " + data.error);
-            return;
-          }
 
-          // Show detail view
-          document.querySelector('.user-list').style.display = 'none';
-          document.querySelector('.user-details').style.display = 'block';
+    async function loadUsersPage(page) {
+      try {
+        const offset = page * limitPerPage;
+        const response = await fetch(`/users/?limit=${limitPerPage}&offset=${offset}`);
+        const result = await response.json();
 
-          // Populate general info
-          document.getElementById('json-userid').value = data.UserID;
-          document.getElementById('json-usertype').value = data.UserType;
-          document.getElementById('json-firstname').value = data.FirstName;
-          document.getElementById('json-lastname').value = data.LastName;
-          document.getElementById('json-email').value = data.Email;
-          document.getElementById('json-gender').value = data.Gender;
-          document.getElementById('json-dob').value = new Date(data.DateOfBirth).toISOString().split('T')[0];
+        const userList = document.querySelector('.user-list');
+        userList.innerHTML = `
+          <tr>
+            <th>ID</th>
+            <th>UserType</th>
+            <th>Name</th>
+            <th>Authorisation</th>
+          </tr>
+        `;
 
-          // If student, show extra section
-          if (data.UserType === 'Student') {
-            document.querySelector('.student-extra').style.display = 'block';
-            document.getElementById('json-level').value = data.Level;
-            document.getElementById('json-classgroup').value = data.ClassGroup;
+        const users = result.data || [];
+        totalUsers = result.pagination?.total || 0;
 
-            const subjectContainer = document.getElementById('json-subjects-container');
-            subjectContainer.innerHTML = '';
+        users.forEach(user => {
+          const row = document.createElement('tr');
+          row.className = 'user-row';
+          row.dataset.userId = user.UserID;
+          row.dataset.userType = user.UserType;
+          row.style.cursor = 'pointer';
+          row.innerHTML = `
+            <td>${user.UserID}</td>
+            <td>${user.UserType}</td>
+            <td>${user.FirstName} ${user.LastName}</td>
+            <td>${(user.IsApproved ? 'Approved' : 'Pending')}</td>
+          `;
+          userList.appendChild(row);
+        });
 
-            if (data.Subjects && data.Subjects.length > 0) {
-              data.Subjects.forEach(sub => {
+        attachRowClickHandlers();  // Reattach click events after refreshing table
 
-                const div = document.createElement('div');
-                div.className = 'subject-item';
+        // Disable/enable Prev/Next buttons
+        document.getElementById('prevPageBtn').disabled = (currentPage === 0);
+        document.getElementById('nextPageBtn').disabled = ((currentPage + 1) * limitPerPage >= totalUsers);
 
-                const userId = document.getElementById('json-userid').value;
-                div.innerHTML = `
-                  <input class="subject-code" type="text" value="${sub.SubjectCode}" readonly />
-                  <input class="subject-name" type="text" value="${sub.Subjectname}" readonly />
-                  <form action="/website/webservices/adminDashboard/subjectDelete.php" method="POST" style="display:inline;">
-                    <input type="hidden" name="subjectCode" value="${sub.SubjectCode}">
-                    <input type="hidden" name="userID" value="${userId}">
-                    <button type="submit" class="remove-subject indigoTheme roundBorder" style="margin-left: 10px;">Delete</button>
-                  </form>
-                `;
+      } catch (err) {
+        console.error(err);
+        alert('Failed to load users.');
+      }
+    }
 
-                subjectContainer.appendChild(div);
-              });
-            } else {
-              subjectContainer.innerHTML = '<div>No subjects assigned.</div>';
+    function attachRowClickHandlers() {
+      document.querySelectorAll('.user-row').forEach(row => {
+        row.addEventListener('click', async function () {
+          const userId = this.dataset.userId;
+          const userType = this.dataset.userType;
+
+          try {
+            const response = await fetch(`/users/${userType.toLowerCase()}/${userId}`);
+            const result = await response.json();
+            const data = result.data?.[0];
+            
+            if (!data) {
+              alert("No user data found.");
+              return;
             }
-          } else {
-            document.querySelector('.student-extra').style.display = 'none';
+
+            // Show detail view
+            document.querySelector('.user-list').style.display = 'none';
+            document.querySelector('.pagination-controls').style.display = 'none'; 
+            document.querySelector('.user-details').style.display = 'block';
+
+            // Populate fields
+            document.getElementById('json-userid').value = data.UserID;
+            document.getElementById('json-usertype').value = data.UserType;
+            document.getElementById('json-firstname').value = data.FirstName;
+            document.getElementById('json-lastname').value = data.LastName;
+            document.getElementById('json-email').value = data.Email;
+            document.getElementById('json-gender').value = data.Gender;
+            document.getElementById('json-dob').value = new Date(data.DateOfBirth).toISOString().split('T')[0];
+
+            if (data.UserType === 'Student') {
+              document.querySelector('.student-extra').style.display = 'block';
+              document.getElementById('json-level').value = data.Level ?? '';
+              document.getElementById('json-classgroup').value = data.ClassGroup ?? '';
+
+              const subjectContainer = document.getElementById('json-subjects-container');
+              subjectContainer.innerHTML = '';
+              if (data.Subjects && data.Subjects.length > 0) {
+                data.Subjects.forEach(sub => {
+                  const div = document.createElement('div');
+                  div.className = 'subject-item';
+                  div.innerHTML = `
+                    <input class="subject-code" type="text" value="${sub.SubjectCode}" readonly />
+                    <input class="subject-name" type="text" value="${sub.SubjectName}" readonly />
+                    <button type="button" onclick="deleteSubject('${sub.SubjectCode}', '${userId}')" class="remove-subject indigoTheme roundBorder" style="margin-left: 10px;">Delete</button>
+                  `;
+
+                  subjectContainer.appendChild(div);
+                });
+              } else {
+                subjectContainer.innerHTML = '<div>No subjects assigned.</div>';
+              }
+            } else {
+              document.querySelector('.student-form').style.display = 'none';
+            }
+          } catch (err) {
+            console.error(err);
+            alert('Failed to fetch user data.');
           }
-        } catch (err) {
-          console.error(err);
-          alert('Failed to fetch user data.');
-        }
+        });
       });
+    }
+
+    document.getElementById('prevPageBtn').addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        loadUsersPage(currentPage);
+      }
     });
+
+    document.getElementById('nextPageBtn').addEventListener('click', () => {
+      if ((currentPage + 1) * limitPerPage < totalUsers) {
+        currentPage++;
+        loadUsersPage(currentPage);
+      }
+    });
+
+
 
     function goBack() {
       document.querySelector('.user-list').style.display = 'table';
       document.querySelector('.user-details').style.display = 'none';
+      document.querySelector('.pagination-controls').style.display = 'block';
     }
 
     document.getElementById("personalinfo-savechanges-admin").addEventListener("submit", async function (e) {
@@ -298,26 +353,66 @@
 
     });
 
-    function redirectToresetPass() {
-      const userId = document.getElementById("json-userid").value;
- 
-      const confirmReset = confirm("Are you sure you want to reset the password for this user?");
-      if (!confirmReset) return;
+    async function redirectToresetPass(userID) {
+      if (!confirm('Are you sure you want to reset the password for this user?')) {
+        return;
+      }
 
-      // Redirect to the reset password PHP handler
-      window.location.href = `/website/webservices/adminDashboard/resetPass.php?userID=${encodeURIComponent(userId)}`;
-      alert("Password changed to: pass1234");
+      try {
+        const response = await fetch('/users/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            userID: userID
+          })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          alert("Password reset successfully to default!");
+        } else {
+          alert("Failed to reset password: " + result.errors.join(", "));
+        }
+      } catch (error) {
+        console.error('Reset error:', error);
+        alert('An error occurred.');
+      }
     }
 
-    function redirectToverifyAcc() {
+    async function redirectToverifyAcc() {
       const userId = document.getElementById("json-userid").value;
+      const adminId = localStorage.getItem("adminID") || sessionStorage.getItem("adminID");  
 
-      // Optional confirmation
+      if (!userId || !adminId) {
+        alert("Missing user or admin ID!");
+        return;
+      }
+
       const confirmVerify = confirm("Are you sure you want to verify this account?");
       if (!confirmVerify) return;
 
-      // Redirect to verification handler
-      window.location.href = `/website/webservices/adminDashboard/verifyAcc.php?userID=${encodeURIComponent(userId)}`;
+      try {
+        const response = await fetch('/website/users/verify', {   
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            adminID: adminId,
+            userID: userId
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert("Account verified successfully!");
+          window.location.href = "/dashboard";  
+        } else {
+          alert("Failed to verify account: " + (result.errors || []).join(", "));
+        }
+      } catch (error) {
+        console.error("Verification error:", error);
+        alert("An error occurred while verifying the account.");
+      }
     }
 
     function redirectToDeleteAcc() {
@@ -329,7 +424,7 @@
       fetch(`/users/delete/${encodeURIComponent(userId)}`)
         .then(async res => {
           const text = await res.text();
-          console.log("Raw response:", text); // 👀 LOG IT
+          console.log("Raw response:", text);  
 
           try {
             const data = JSON.parse(text);
@@ -350,8 +445,36 @@
         });
     }
 
+    async function deleteSubject(subjectCode, studentID) {
+      if (!confirm(`Are you sure you want to delete subject ${subjectCode} for this student?`)) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/users/student/subject/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            subjectCode: subjectCode,
+            userID: studentID
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert(`Subject ${subjectCode} deleted successfully!`);
+          location.reload(); // Reload the page to reflect changes
+        } else {
+          alert(`Error deleting subject: ${data.errors.join(', ')}`);
+        }
+      } catch (error) {
+        console.error('Error deleting subject:', error);
+        alert('Something went wrong.');
+      }
+    }
 
 
+  loadUsersPage(currentPage); // load page 0 at first
 
   </script>
 </body>

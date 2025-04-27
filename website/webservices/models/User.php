@@ -161,6 +161,35 @@ class User
             return ["success" => 0, "errors" => array("Could not delete user!")];
         }
     }
+    
+    public function verifyUser($adminID, $targetUserID)
+    {
+        try {
+            $stmt = $this->pdo->prepare('UPDATE approval SET AdminID = ?, IsApproved = 1 WHERE UserID = ?');
+            $stmt->execute([$adminID, $targetUserID]);
+            $stmt->closeCursor();
+    
+            return ["success" => 1];
+        } catch (PDOException $e) {
+            return ["success" => 0, "errors" => ["Could not verify user: " . $e->getMessage()]];
+        }
+    }
+    
+    public function resetPassword($userID, $newPassword = 'pass1234')
+    {
+        try {
+            $passwordHash = password_hash($newPassword, PASSWORD_BCRYPT);
+
+            $stmt = $this->pdo->prepare("UPDATE user SET Password = ? WHERE UserID = ?");
+            $stmt->execute([$passwordHash, $userID]);
+            $stmt->closeCursor();
+
+            return ["success" => 1];
+        } catch (PDOException $e) {
+            return ["success" => 0, "errors" => ["Could not reset password: " . $e->getMessage()]];
+        }
+    }
+
 
     public function validateUser($userData, $action = "create")
     {

@@ -73,9 +73,9 @@ switch ($page = $_GET['page']) {
         break;
     case "dashboard":
         if (isset($_SESSION['UserType']) && $_SESSION['UserType'] == 'Admin') {
-            require_once 'webservices/models/User.php';
-            $userModel = new User($pdo);
-            $users = $userModel->getAllUsers(limit: 100)["data"];  
+            // require_once 'webservices/models/User.php';
+            // $userModel = new User($pdo);
+            // $users = $userModel->getAllUsers(limit: 100)["data"];  
             require 'views/adminDashboard/adminDashboardView.php';
         } else {
             header("Location: /");

@@ -243,6 +243,46 @@ class UserRestHandler extends SimpleRest
         echo json_encode($result);
         exit;
     }
+    // approves a user (admin functionality)
+    public function verifyUser()
+    {
+        $result = ["success" => 1, "errors" => array()];
+
+        $adminID = $_POST['adminID'] ?? null;
+        $targetUserID = $_POST['userID'] ?? null;
+
+        if (!$adminID || !$targetUserID) {
+            $result["success"] = 0;
+            $result["errors"][] = "Missing adminID or userID!";
+        } else {
+            $user = new User($this->pdo);
+            $result = $user->verifyUser($adminID, $targetUserID);
+        }
+
+        $this->setHttpHeaders("application/json", $result["success"] == 1 ? 200 : 400);
+        echo json_encode($result);
+        exit;
+    }
+
+    // reset password of a user
+    public function resetPassword()
+    {
+        $result = ["success" => 1, "errors" => array()];
+
+        $userID = $_POST['userID'] ?? null;
+
+        if (!$userID) {
+            $result["success"] = 0;
+            $result["errors"][] = "Missing userID!";
+        } else {
+            $user = new User($this->pdo);
+            $result = $user->resetPassword($userID);  // Calls your new model function
+        }
+
+        $this->setHttpHeaders("application/json", $result["success"] == 1 ? 200 : 400);
+        echo json_encode($result);
+        exit;
+    }
 
     /*
         Clean & Validate POST Data
@@ -296,4 +336,26 @@ class UserRestHandler extends SimpleRest
             }
         }
     }
+
+    public function deleteStudentSubject()
+    {
+        $result = ["success" => 1, "errors" => array()];
+        
+        $subjectCode = $_POST['subjectCode'] ?? null;
+        $studentID = $_POST['userID'] ?? null;
+
+        if (!$subjectCode || !$studentID) {
+            $result["success"] = 0;
+            $result["errors"][] = "Missing subjectCode or userID!";
+        } else {
+            $student = new Student($this->pdo);
+            $result = $student->deleteSubject($studentID, $subjectCode);
+        }
+
+        $this->setHttpHeaders("application/json", $result["success"] == 1 ? 200 : 400);
+        echo json_encode($result);
+        exit;
+    }
+
+
 }

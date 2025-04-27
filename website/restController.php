@@ -87,6 +87,35 @@ switch ($resource) {
 					$result["errors"][] = "Invalid HTTP method!";
 				}
 				break;
+			case "delete-subject":
+				if ($method == "POST") {
+					$userRestHandler = new UserRestHandler($pdo);
+					$result = $userRestHandler->deleteStudentSubject();
+				} else {
+					$result["success"] = 0;
+					$result["errors"][] = "Invalid HTTP method!";
+				}
+				break;
+			
+			case "verify":
+				if ($method == "POST") {
+					$userRestHandler = new UserRestHandler($pdo);
+					$result = $userRestHandler->verifyUser();
+				} else {
+					$result["success"] = 0;
+					$result["errors"][] = "Invalid HTTP method!";
+				}
+				break;
+			case "reset-password":
+				if ($method == "POST") {
+					$userRestHandler = new UserRestHandler($pdo);
+					$result = $userRestHandler->resetPassword();
+				} else {
+					$result["success"] = 0;
+					$result["errors"][] = "Invalid HTTP method!";
+				}
+				break;
+				
 		}
 		break;
 	case "classes":

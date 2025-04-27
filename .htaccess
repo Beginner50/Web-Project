@@ -78,6 +78,18 @@ RewriteRule ^users/create/$ /website/restController.php?resource=user&action=cre
 RewriteRule ^users/edit$ /website/restController.php?resource=user&action=update [L,QSA]
 RewriteRule ^users/edit/$ /website/restController.php?resource=user&action=update [L,QSA]
 
+# Verifies (approves) a user
+# Ex:
+#   localhost/users/verify
+RewriteRule ^users/verify$ /website/restController.php?resource=user&action=verify [L,QSA]
+RewriteRule ^users/verify/$ /website/restController.php?resource=user&action=verify [L,QSA]
+
+# Resets a user's password to default
+# Ex:
+#   localhost/users/reset-password
+RewriteRule ^users/reset-password$ /website/restController.php?resource=user&action=reset-password [L,QSA]
+RewriteRule ^users/reset-password/$ /website/restController.php?resource=user&action=reset-password [L,QSA]
+
 # Deletes a user
 # Ex:
 #		localhost/users/delete/1	- Deletes a user with UserID 1
@@ -104,6 +116,12 @@ RewriteRule ^users/student/subjects /website/restController.php?resource=user&ac
 RewriteRule ^users/student/subjects/ /website/restController.php?resource=user&action=list-subjects&user-type=student [L]
 RewriteRule ^users/student/([0-9]+)/subjects /website/restController.php?resource=user&action=list-subjects&user-type=student&userID=$1 [L]
 RewriteRule ^users/student/([0-9]+)/subjects/ /website/restController.php?resource=user&action=list-subjects&user-type=student&userID=$1 [L]
+
+# Deletes a subject enrolled by a student
+# Ex:
+#   localhost/users/student/subject/delete - Deletes a student's subject
+RewriteRule ^users/student/subject/delete$ /website/restController.php?resource=user&action=delete-subject [L,QSA]
+RewriteRule ^users/student/subject/delete/$ /website/restController.php?resource=user&action=delete-subject [L,QSA]
 
 #  List all classes
 #  (Accepts limit & offset query params for pagination)

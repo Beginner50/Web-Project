@@ -120,4 +120,23 @@ class Student extends User
             $result["success"] = 0;
         return $result;
     }
+
+    public function deleteSubject($studentID, $subjectCode)
+    {
+        try {
+            $stmt = $this->pdo->prepare('DELETE cs FROM class_student cs
+                                        JOIN class c ON cs.ClassID = c.ClassID
+                                        WHERE c.SubjectCode = ? AND cs.StudentID = ?');
+            $stmt->execute([$subjectCode, $studentID]);
+
+            if ($stmt->rowCount() > 0) {
+                return ["success" => 1];
+            } else {
+                return ["success" => 0, "errors" => ["No matching subject found for this student."]];
+            }
+        } catch (PDOException $e) {
+            return ["success" => 0, "errors" => ["Database error: " . $e->getMessage()]];
+        }
+    }
+
 }
