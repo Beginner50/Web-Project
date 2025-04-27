@@ -111,8 +111,12 @@
             $('#selected-subjects').val(JSON.stringify(selectedSubjects));
 
             // Hide button if selected subjects is 5
-            if (selectedSubjects.length == 5)
+            if (selectedSubjects.length == 5) {
                 $('#addSubject-button').hide(0);
+                $('#add-subject-modal').css({
+                    display: 'none'
+                });
+            }
 
             // Add the subject to the list & move addSubject-button 
             const addSubjectButton = $("#addSubject-button").detach();
@@ -126,10 +130,7 @@
                 `);
             addSubjectButton.appendTo("#subject-list");
 
-            // Close the modal
-            $('#add-subject-modal').css({
-                display: 'none'
-            });
+            $(this).addClass("selected").prop("disabled", true).text("Selected");
         });
     }
 
