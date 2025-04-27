@@ -4,7 +4,8 @@ of Mauritius (UoM). Initial development of this project began as from July 2024.
 
 ![image](https://github.com/user-attachments/assets/70efa3db-a61f-41c0-a7d0-908462f15652)
 ![image](https://github.com/user-attachments/assets/3e733404-cc50-4275-b900-6738d6102ef1)
-![image](https://github.com/user-attachments/assets/bc71512e-1442-4478-a5c3-55eba87fddca)
+![image](https://github.com/user-attachments/assets/c801c60c-a05e-4b87-938f-4103fef4cee8)
+
 
 
 ## Project Specifications
