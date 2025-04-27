@@ -33,7 +33,6 @@ body {
     margin-right: 50px;
     height: 88.7svh;
     overflow-y: auto;
-
     display: grid;
     grid-template-columns: 1fr 1.5fr;
     grid-row-gap: 15px;
@@ -46,37 +45,39 @@ body {
 }
 
 .wrapper .main-content .first-column {
-
     padding: 40px 45px;
-
-    background-color: #b7a7e2;
-
+    background: linear-gradient(to top right, #e0defd, #d1c4e9);
+    color: #2d3748;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px 0 0 8px;
 }
 
 .wrapper .main-content .second-column {
-
     padding: 40px 45px;
-    background-color: #ccbbfb;
+    background-color: rgb(223, 223, 223);
+    color: #2d3748;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 8px 8px 0;
 }
 
 .information {
-    color: rgb(28, 28, 28);
+    color: #2d3748;
     font-size: 12px;
     font-weight: bold;
     margin-top: 15px;
-    background-color: #ececfa;
+    background-color: #fff;
     padding: 8px;
     border-radius: 7px;
     border: 2px solid transparent;
-    /* Default border */
     transition: border 0.3s ease;
-    /* Smooth transition for border change */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .wrapper .main-content .description {
-
-    background-color: #5d4d8749;
-    color: rgb(44, 44, 44)
+    background-color: rgba(237, 242, 247, 0.7);
+    color: #2d3748;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .information-input {
@@ -86,53 +87,50 @@ body {
     font-size: 15px;
     padding-top: 7px;
     margin-right: 20px;
+    color: #2d3748;
 }
-
 
 .wrapper .main-content .information:focus-within {
-    border: 2px solid;
-    color: hsl(256, 66%, 25%);
-}
-
-
-.wrapper .main-content .personalinfo-grid {
-
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-
+    border: 2px solid #a0aec0;
+    color: #2d3748;
 }
 
 .wrapper .main-content .savebutton {
-    margin-top: 15px;
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: 0;
     text-decoration: none;
-    border-width: 2px;
-    padding: 5px 13px;
+    border: none;
+    padding: 10px 20px;
     font-weight: bold;
+    background-color: #48bb78;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.wrapper .main-content .savebutton:hover {
+    background-color: #38a169;
 }
 
 .sub-information {
-
-    color: var(--purpleVortex);
+    color: #718096;
     padding-bottom: 10px;
 }
 
 .personalinfo-email {
-
     grid-column: span 2;
 }
 
 .studentinfo-grid {
-
     grid-column: span 2;
 }
 
 .wrapper .main-content .studentinformation-content2 {
-
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
-
 }
 
 .login-passwordbox {
@@ -155,49 +153,43 @@ body {
 }
 
 .login-password input {
-
-
     padding: 20px 15px;
-    border: 2px solid var(--purpleVortex);
+    border: 2px solid #a0aec0;
     border-radius: 5px;
     width: 250px;
-
-    color: hsl(256, 66%, 25%);
+    color: #2d3748;
     outline: none;
-
+    background-color: #fff;
 }
 
 .login-password label {
     position: absolute;
     top: 50%;
     left: 15px;
-
     transform: translateY(-50%);
     font-size: 15px;
     font-weight: bold;
     border-radius: 3px;
-    color: var(--purpleVortex);
+    color: #a0aec0;
     pointer-events: none;
     transition: 0.25s;
+    background-color: #fff;
+    padding: 0 2px;
 }
 
 input:focus~label,
 input:not(:placeholder-shown)~label {
-
     top: 0;
     left: 15px;
     font-size: 10px;
     padding: 0 2px;
-
-    background: #ccbbfb;
-
-
+    background: #fff;
+    color: #2d3748;
 }
 
 .subjectstaken {
     display: flex;
     flex-direction: column;
-
 }
 
 .subject-item {
@@ -205,41 +197,35 @@ input:not(:placeholder-shown)~label {
     justify-content: flex-start;
     align-items: center;
     padding: 6px 10px;
-
 }
 
 .subject-code {
-    background-color: #2c166b;
-    color: white;
-
+    background-color: #e2e8f0;
+    color: #2d3748;
     padding: 8px 10px;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
-
     font-weight: bold;
     width: 75px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .subject-name {
-    background-color: #705ba5;
-    color: white;
+    background-color: #f7fafc;
+    color: #2d3748;
     padding: 8px 10px;
-
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-
     width: 325px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .error-container {
-
     margin-top: 10px;
-    background-color: #f8d7da;
-    color: #721c24;
-
+    background-color: #fee2e2;
+    color: #dc2626;
     padding: 12px 3px;
-    border: 2px solid #ba4e59;
-
+    border: 2px solid #dc2626;
     text-align: center;
     font-weight: bolder;
     border-radius: 5px;
@@ -248,17 +234,23 @@ input:not(:placeholder-shown)~label {
 }
 
 .success-container {
-
     margin-top: 10px;
-    background-color: #d7f8de;
-    color: #1c7247;
-
+    background-color: #f0fdf4;
+    color: #15803d;
     padding: 12px 3px;
-    border: 2px solid #4eba55;
-
+    border: 2px solid #15803d;
     text-align: center;
     font-weight: bolder;
     border-radius: 5px;
     margin-bottom: 20px;
     font-size: 18px;
+}
+
+.wrapper .main-content .studentinformation-content2 .subject-item:nth-child(odd) {
+    background-color: #e0defd;
+    border-radius: 8px 0 0 8px;
+}
+
+.wrapper .main-content .studentinformation-content2 .subject-item:nth-child(even) {
+    border-radius: 0 8px 8px 0;
 }

@@ -72,18 +72,17 @@
 
     <!-- DISPLAYING USER TABLE -->
     <div class="user-information">
-      <div class="search-box"></div>
       <div class="user-list-container">
 
         <table class="user-list">
           <!--  populated by the function loadUsersPage() -->
         </table>
-        
+
         <div class=" pagination-controls" style="margin-top: 20px; text-align: center;">
-          <button id="prevPageBtn" class="indigoTheme roundBorder" style="margin-right: 10px;">Previous</button>
-          <button id="nextPageBtn" class="indigoTheme roundBorder">Next</button>
+          <button id="prevPageBtn" class="roundBorder" style="margin-right: 10px;">Previous</button>
+          <button id="nextPageBtn" class="roundBorder">Next</button>
         </div>
- 
+
         <div class="user-details userinfo-container" style="display:none; margin-top:20px;">
 
           <div class="userinfo-container alter-account">
@@ -108,21 +107,21 @@
 
 
           <div class="userinfo-container student-form">
-           <form id="user-specific-detail-form" class="update-subjects student-extra " style="display:none;" >
- 
-            <div class="information">
-              <label class="sub-information">Level</label>
-              <input class="information-input" type="text" id="json-level" name="level" />
-            </div>
-            <div class="information">
-              <div class="sub-information">Class Group</div>
-              <input class="information-input"type="text" id="json-classgroup" name="classgroup" />
-            </div>
-            <div class="information">
-              <div class="sub-information">Subjects Taken</div>
-              <div  class="subjectstaken" id="json-subjects-container"></div>
-            </div>
-            
+            <form id="user-specific-detail-form" class="update-subjects student-extra " style="display:none;">
+
+              <div class="information">
+                <label class="sub-information">Level</label>
+                <input class="information-input" type="text" id="json-level" name="level" />
+              </div>
+              <div class="information">
+                <div class="sub-information">Class Group</div>
+                <input class="information-input" type="text" id="json-classgroup" name="classgroup" />
+              </div>
+              <div class="information">
+                <div class="sub-information">Subjects Taken</div>
+                <div class="subjectstaken" id="json-subjects-container"></div>
+              </div>
+
             </form>
 
           </div>
@@ -177,11 +176,10 @@
   </div>
 
   <script>
-
-    let currentPage = 0;     
-    const limitPerPage = 10;  
-    let totalUsers = 0;     
-    let currentUserType = "student";  // default to "student"
+    let currentPage = 0;
+    const limitPerPage = 3;
+    let totalUsers = 0;
+    let currentUserType = "student"; // default to "student"
 
 
     async function loadUsersPage(page) {
@@ -218,11 +216,11 @@
           userList.appendChild(row);
         });
 
-        attachRowClickHandlers();  // Reattach click events after refreshing table
+        attachRowClickHandlers(); // Reattach click events after refreshing table
 
         // Disable/enable Prev/Next buttons
         document.getElementById('prevPageBtn').disabled = (currentPage === 0);
-        document.getElementById('nextPageBtn').disabled = ((currentPage + 1) * limitPerPage >= totalUsers);
+        document.getElementById('nextPageBtn').disabled = ((currentPage) * limitPerPage >= totalUsers);
 
       } catch (err) {
         console.error(err);
@@ -232,7 +230,7 @@
 
     function attachRowClickHandlers() {
       document.querySelectorAll('.user-row').forEach(row => {
-        row.addEventListener('click', async function () {
+        row.addEventListener('click', async function() {
           const userId = this.dataset.userId;
           const userType = this.dataset.userType;
 
@@ -240,7 +238,7 @@
             const response = await fetch(`/users/${userType.toLowerCase()}/${userId}`);
             const result = await response.json();
             const data = result.data?.[0];
-            
+
             if (!data) {
               alert("No user data found.");
               return;
@@ -248,7 +246,7 @@
 
             // Show detail view
             document.querySelector('.user-list').style.display = 'none';
-            document.querySelector('.pagination-controls').style.display = 'none'; 
+            document.querySelector('.pagination-controls').style.display = 'none';
             document.querySelector('.user-details').style.display = 'block';
 
             // Populate fields
@@ -301,7 +299,7 @@
     });
 
     document.getElementById('nextPageBtn').addEventListener('click', () => {
-      if ((currentPage + 1) * limitPerPage < totalUsers) {
+      if ((currentPage + 1) * limitPerPage * 3 < totalUsers) {
         currentPage++;
         loadUsersPage(currentPage);
       }
@@ -320,7 +318,6 @@
 
       const form = e.target;
       const formData = new FormData(form);
-      console.log(formData);
 
       // For student-specific subjects (if needed)
       if (form.querySelector("#json-usertype")?.value === "Student") {
@@ -330,9 +327,14 @@
           if (subjectCode) subjects.push(subjectCode);
         });
         formData.append("subjects", JSON.stringify(subjects));
+
       }
 
       try {
+        formData.set("self-userID", <?php echo $_SESSION["UserID"] ?>);
+        formData.set("self-user-type", "<?php echo strtolower($_SESSION["UserType"]) ?>");
+        formData.set("user-type", formData.get("user-type").toLowerCase());
+
         const response = await fetch("/users/edit", {
           method: "POST",
           body: formData
@@ -361,7 +363,9 @@
       try {
         const response = await fetch('/users/reset-password', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
           body: new URLSearchParams({
             userID: userID
           })
@@ -381,7 +385,7 @@
 
     async function redirectToverifyAcc() {
       const userId = document.getElementById("json-userid").value;
-      const adminId = localStorage.getItem("adminID") || sessionStorage.getItem("adminID");  
+      const adminId = localStorage.getItem("adminID") || sessionStorage.getItem("adminID");
 
       if (!userId || !adminId) {
         alert("Missing user or admin ID!");
@@ -392,9 +396,11 @@
       if (!confirmVerify) return;
 
       try {
-        const response = await fetch('/website/users/verify', {   
+        const response = await fetch('/website/users/verify', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
           body: new URLSearchParams({
             adminID: adminId,
             userID: userId
@@ -405,7 +411,7 @@
 
         if (result.success) {
           alert("Account verified successfully!");
-          window.location.href = "/dashboard";  
+          window.location.href = "/dashboard";
         } else {
           alert("Failed to verify account: " + (result.errors || []).join(", "));
         }
@@ -424,7 +430,7 @@
       fetch(`/users/delete/${encodeURIComponent(userId)}`)
         .then(async res => {
           const text = await res.text();
-          console.log("Raw response:", text);  
+          console.log("Raw response:", text);
 
           try {
             const data = JSON.parse(text);
@@ -453,7 +459,9 @@
       try {
         const response = await fetch('/users/student/subject/delete', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
           body: new URLSearchParams({
             subjectCode: subjectCode,
             userID: studentID
@@ -474,8 +482,7 @@
     }
 
 
-  loadUsersPage(currentPage); // load page 0 at first
-
+    loadUsersPage(currentPage); // load page 0 at first
   </script>
 </body>
 

@@ -213,7 +213,7 @@
                                 <img src="assets/eye-close.png" id="toggle-renewpassword" onclick="togglePasswordVisibility('renewpassword','toggle-renewpassword')">
                             </div>
                         </div>
-                        <button type="submit" id="personalinfo-changepassword" name="personalinfo-changepassword" class="indigoTheme roundBorder savebutton" form="passwordchange-form" style="margin-left: 50px;">Save Changes</button>
+                        <button type="submit" id="personalinfo-changepassword" name="personalinfo-changepassword" class="indigoTheme roundBorder savebutton" form="passwordchange-form" style="background-color: #dc3545">Save Changes</button>
                     </form>
 
                 </div>
